@@ -12,16 +12,18 @@ public class Bookly {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(nullable = false)
     private UserEntity owner;
 
-    @Column (name="start_date_time")
+    @Column (name="start_date_time", nullable = false)
     private Date startDateTime;
 
-    @Column(name="active")
+    @Column(name="active", nullable = false)
     private boolean active;
 
     @Enumerated(EnumType.STRING)
+    @Column(name="type", nullable = false)
     private BooklyType type;
 
     public Long getId() {
