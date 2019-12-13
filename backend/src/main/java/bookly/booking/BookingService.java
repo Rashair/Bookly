@@ -22,11 +22,11 @@ public class BookingService {
         return bookingRepository.findById(id).get();
     }
 
-    public Booking save(Booking user) {
-        return bookingRepository.save(user);
+    public Booking save(Booking booking) {
+        return bookingRepository.save(booking);
     }
 
-    public void delete(Booking userToDelete) {
-        bookingRepository.delete(userToDelete);
+    public void delete(Booking bookingToDelete) {
+        bookingRepository.delete(bookingToDelete);
     }
 }

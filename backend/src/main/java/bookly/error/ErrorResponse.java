@@ -1,4 +1,4 @@
-package bookly.errors;
+package bookly.error;
 
 public class ErrorResponse {
     private String message = "";
