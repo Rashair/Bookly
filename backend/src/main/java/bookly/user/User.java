@@ -20,10 +20,10 @@ public class User
     private Long id;
 
     @Column(name="first_name")
-    private String first_name;
+    private String firstName;
 
     @Column(name="last_name")
-    private String last_name;
+    private String lastName;
 
     @Column(name="login")
     private String login;
@@ -31,38 +31,28 @@ public class User
     @Column(name="date_of_birth")
     @JsonDeserialize(using = JsonDateDeserializer.class)
     @JsonSerialize(using = JsonDateSerializer.class)
-    private LocalDate date_of_birth;
+    private LocalDate dateOfBirth;
 
     @Column(name="active")
     private boolean active;
 
     public User(){}
 
-    public User(String FirstName, String LastName, String Login, LocalDate DateOfBirth, boolean Active)
+    public User(String firstName, String lastName, String login, LocalDate dateOfBirth, boolean active)
     {
-        this.first_name = FirstName;
-        this.last_name = LastName;
-        this.login = Login;
-        this.date_of_birth = DateOfBirth;
-        this.active = Active;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.login = login;
+        this.dateOfBirth = dateOfBirth;
+        this.active = active;
     }
 
     public User(Long Id, String FirstName, String LastName, String Login, LocalDate DateOfBirth, boolean Active)
     {
+        this(FirstName, LastName, Login, DateOfBirth, Active);
         this.id = Id;
-        this.first_name = FirstName;
-        this.last_name = LastName;
-        this.login = Login;
-        this.date_of_birth = DateOfBirth;
-        this.active = Active;
     }
 
-    @Override
-    public String toString() {
-        return "UserEntity [id=" + id + ", firstName=" + first_name +
-                ", lastName=" + last_name + ", login=" + login +
-                ", dateOfBirth=" + date_of_birth + ", active=" + active +"]";
-    }
 
     @JsonGetter("id")
     public Long getId()
@@ -73,13 +63,13 @@ public class User
     @JsonGetter("first_name")
     public String getFirstName()
     {
-        return this.first_name;
+        return this.firstName;
     }
 
     @JsonGetter("last_name")
     public String getLastName()
     {
-        return this.last_name;
+        return this.lastName;
     }
 
     @JsonGetter("login")
@@ -91,7 +81,7 @@ public class User
     @JsonGetter("date_of_birth")
     public LocalDate getDateOfBirth()
     {
-        return this.date_of_birth;
+        return this.dateOfBirth;
     }
 
     @JsonGetter("active")
@@ -109,13 +99,13 @@ public class User
     @JsonSetter("first_name")
     public void setFirstName(String firstName)
     {
-        this.first_name = firstName;
+        this.firstName = firstName;
     }
 
     @JsonSetter("last_name")
     public void setLastName(String lastName)
     {
-        this.last_name = lastName;
+        this.lastName = lastName;
     }
 
     @JsonSetter("login")
@@ -127,12 +117,24 @@ public class User
     @JsonSetter("date_of_birth")
     public void setDateOfBirth(LocalDate dateOfBirth)
     {
-        this.date_of_birth = dateOfBirth;
+        this.dateOfBirth = dateOfBirth;
     }
 
     @JsonSetter("active")
     public void setActive(boolean active)
     {
         this.active = active;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", first_name='" + firstName + '\'' +
+                ", last_name='" + lastName + '\'' +
+                ", login='" + login + '\'' +
+                ", date_of_birth=" + dateOfBirth +
+                ", active=" + active +
+                '}';
     }
 }
