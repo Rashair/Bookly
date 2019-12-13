@@ -18,6 +18,10 @@ public class BookingService {
         return bookingRepository.findAll();
     }
 
+    public List<Booking> findByStatus(Boolean status) {
+        return bookingRepository.findByStatus(status);
+    }
+
     public Booking findById(Long id) {
         return bookingRepository.findById(id).get();
     }

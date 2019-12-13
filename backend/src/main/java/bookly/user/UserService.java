@@ -16,17 +16,17 @@ public class UserService
         this.userRepository = userRepository;
     }
 
-    public List<UserEntity> getAllUsers()
+    public List<User> getAllUsers()
     {
-        List<UserEntity> usersList = userRepository.findAll();
+        List<User> usersList = userRepository.findAll();
         if(usersList.size() > 0)
         {
             return usersList;
         }
-        return new ArrayList<UserEntity>();
+        return new ArrayList<User>();
     }
 
-    public UserEntity saveUser(UserEntity user)
+    public User saveUser(User user)
     {
         return userRepository.save(user);
     }

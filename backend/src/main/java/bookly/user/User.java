@@ -11,8 +11,8 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="users")
-public class UserEntity
+@Table(name="user")
+public class User
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,9 +36,9 @@ public class UserEntity
     @Column(name="active")
     private boolean active;
 
-    public UserEntity(){}
+    public User(){}
 
-    public UserEntity(String FirstName, String LastName, String Login, LocalDate DateOfBirth, boolean Active)
+    public User(String FirstName, String LastName, String Login, LocalDate DateOfBirth, boolean Active)
     {
         this.first_name = FirstName;
         this.last_name = LastName;
@@ -47,7 +47,7 @@ public class UserEntity
         this.active = Active;
     }
 
-    public UserEntity(Long Id, String FirstName, String LastName, String Login, LocalDate DateOfBirth, boolean Active)
+    public User(Long Id, String FirstName, String LastName, String Login, LocalDate DateOfBirth, boolean Active)
     {
         this.id = Id;
         this.first_name = FirstName;

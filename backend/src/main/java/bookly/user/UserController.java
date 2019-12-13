@@ -15,13 +15,13 @@ public class UserController
     private UserService userService;
 
     @GetMapping("")
-    public ResponseEntity<List<UserEntity>> retrieveAllUsers()
+    public ResponseEntity<List<User>> retrieveAllUsers()
     {
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
     @PostMapping(path = "")
-    public ResponseEntity<UserEntity> createUser(@RequestBody @Valid UserEntity user)
+    public ResponseEntity<User> createUser(@RequestBody @Valid User user)
     {
         return ResponseEntity.ok().body(userService.saveUser(user));
     }

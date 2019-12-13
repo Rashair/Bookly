@@ -1,6 +1,8 @@
 package bookly.booking;
 
-import bookly.user.UserEntity;
+import bookly.user.User;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,7 +16,7 @@ public class Booking {
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private UserEntity owner;
+    private User owner;
 
     @Column(name = "start_date_time", nullable = false)
     private Date startDateTime;
@@ -29,46 +31,56 @@ public class Booking {
     public void updateBooking(Booking booking) {
         this.owner = booking.getOwner();
         this.startDateTime = booking.getStartDateTime();
-        this.active = booking.getIsActive();
+        this.active = booking.isActive();
         this.type = booking.getType();
     }
 
+    @JsonGetter("id")
     public Long getId() {
         return id;
     }
 
+    @JsonSetter("id")
     public void setId(Long id) {
         this.id = id;
     }
 
-    public UserEntity getOwner() {
+    @JsonGetter("owner")
+    public User getOwner() {
         return owner;
     }
 
-    public void setOwner(UserEntity owner) {
+    @JsonSetter("owner")
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 
+    @JsonGetter("start_date_time")
     public Date getStartDateTime() {
         return startDateTime;
     }
 
+    @JsonSetter("start_date_time")
     public void setStartDateTime(Date startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public boolean getIsActive() {
+    @JsonGetter("active")
+    public boolean isActive() {
         return active;
     }
 
-    public void setIsActive(boolean active) {
+    @JsonSetter("active")
+    public void setActive(boolean active) {
         this.active = active;
     }
 
+    @JsonGetter("type")
     public BookingType getType() {
         return type;
     }
 
+    @JsonGetter("type")
     public void setType(BookingType type) {
         this.type = type;
     }

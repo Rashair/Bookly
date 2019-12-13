@@ -23,8 +23,12 @@ public class BookingController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Booking>> getBookings() {
-        return ResponseEntity.ok(bookingService.findAll());
+    public ResponseEntity<List<Booking>> getBookings(@RequestParam(required = false) Boolean status) {
+        if (status == null) {
+            return ResponseEntity.ok(bookingService.findAll());
+        }
+
+        return ResponseEntity.ok(bookingService.findByStatus(status));
     }
 
     @GetMapping("/{id}")
