@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="booking")
+@Table(name = "booking")
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,15 +16,22 @@ public class Booking {
     @JoinColumn(nullable = false)
     private UserEntity owner;
 
-    @Column (name="start_date_time", nullable = false)
+    @Column(name = "start_date_time", nullable = false)
     private Date startDateTime;
 
-    @Column(name="active", nullable = false)
+    @Column(name = "active", nullable = false)
     private boolean active;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="type", nullable = false)
+    @Column(name = "type", nullable = false)
     private BookingType type;
+
+    public void updateBooking(Booking booking) {
+        this.owner = booking.getOwner();
+        this.startDateTime = booking.getStartDateTime();
+        this.active = booking.getIsActive();
+        this.type = booking.getType();
+    }
 
     public Long getId() {
         return id;
@@ -50,11 +57,11 @@ public class Booking {
         this.startDateTime = startDateTime;
     }
 
-    public boolean isActive() {
+    public boolean getIsActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setIsActive(boolean active) {
         this.active = active;
     }
 
