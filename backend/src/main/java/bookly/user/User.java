@@ -19,21 +19,24 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name = "login", nullable = false)
+    private String login;
+
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @Column(name = "first_name")
     private String firstName;
 
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "login")
-    private String login;
-
     @JsonDeserialize(using = JsonDateDeserializer.class)
     @JsonSerialize(using = JsonDateSerializer.class)
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    @Column(name = "active")
+    @Column(name = "active", nullable = false)
     private boolean active;
 
     public User() {
@@ -111,6 +114,16 @@ public class User {
     @JsonSetter("active")
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    @JsonGetter("password")
+    public String getPassword() {
+        return password;
+    }
+
+    @JsonSetter("password")
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
