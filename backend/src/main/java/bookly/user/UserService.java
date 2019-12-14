@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserService
-{
+public class UserService {
     private UserRepository userRepository;
 
     @Autowired
@@ -16,18 +15,15 @@ public class UserService
         this.userRepository = userRepository;
     }
 
-    public List<User> getAllUsers()
-    {
+    public List<User> getAllUsers() {
         List<User> usersList = userRepository.findAll();
-        if(usersList.size() > 0)
-        {
+        if (usersList.size() > 0) {
             return usersList;
         }
         return new ArrayList<User>();
     }
 
-    public User saveUser(User user)
-    {
-        return userRepository.save(user);
+    public User logIn(String login, String password) {
+        return userRepository.findByLoginAndPassword(login, password);
     }
 }
