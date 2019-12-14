@@ -1,5 +1,6 @@
 package bookly.user;
 
+import bookly.booking.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +12,12 @@ import java.util.List;
 @RequestMapping(path = "/user")
 public class UserController
 {
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("")
     public ResponseEntity<List<User>> retrieveAllUsers()
@@ -20,7 +25,7 @@ public class UserController
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
-    @PostMapping(path = "")
+    @PostMapping(path = "/")
     public ResponseEntity<User> createUser(@RequestBody @Valid User user)
     {
         return ResponseEntity.ok().body(userService.saveUser(user));

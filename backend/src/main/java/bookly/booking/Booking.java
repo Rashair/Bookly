@@ -1,17 +1,23 @@
 package bookly.booking;
 
 import bookly.user.User;
+import bookly.utils.JsonDateDeserializer;
+import bookly.utils.JsonDateSerializer;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "booking")
+@EntityListeners(AuditingEntityListener.class)
 public class Booking {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne
@@ -19,7 +25,7 @@ public class Booking {
     private User owner;
 
     @Column(name = "start_date_time", nullable = false)
-    private Date startDateTime;
+    private LocalDate startDateTime;
 
     @Column(name = "active", nullable = false)
     private boolean active;
@@ -56,12 +62,14 @@ public class Booking {
     }
 
     @JsonGetter("start_date_time")
-    public Date getStartDateTime() {
+    @JsonDeserialize(using = JsonDateDeserializer.class)
+    @JsonSerialize(using = JsonDateSerializer.class)
+    public LocalDate getStartDateTime() {
         return startDateTime;
     }
 
     @JsonSetter("start_date_time")
-    public void setStartDateTime(Date startDateTime) {
+    public void setStartDateTime(LocalDate startDateTime) {
         this.startDateTime = startDateTime;
     }
 
@@ -80,7 +88,7 @@ public class Booking {
         return type;
     }
 
-    @JsonGetter("type")
+    @JsonSetter("type")
     public void setType(BookingType type) {
         this.type = type;
     }

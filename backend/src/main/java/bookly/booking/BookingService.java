@@ -19,7 +19,7 @@ public class BookingService {
     }
 
     public List<Booking> findByStatus(Boolean status) {
-        return bookingRepository.findByStatus(status);
+        return bookingRepository.findByActive(status);
     }
 
     public Booking findById(Long id) {
