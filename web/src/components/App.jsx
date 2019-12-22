@@ -1,23 +1,23 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 
 import { Provider } from "react-redux";
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
-import rootReducer from "../redux/reducers";
-import Bookings from "./Bookings";
+import thunk from "redux-thunk";
 
-const store = createStore(rootReducer, {}, composeWithDevTools());
+import rootReducer from "../redux/reducers";
+import Home from "./Home";
+
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(thunk))
+);
 
 const App = () => (
   <Provider store={store}>
     <Router>
-      <Switch>
-        <Route exact path="/" />
-        <Route path="/bookings">
-          <Bookings />
-        </Route>
-      </Switch>
+      <Home />
     </Router>
   </Provider>
 );

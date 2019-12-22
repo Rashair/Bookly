@@ -1,7 +1,15 @@
 {
   "parser": "babel-eslint",
-  "plugins": ["react", "jest", "prettier"],
-  "extends": ["airbnb", "plugin:react/recommended", "prettier"],
+  "plugins": [
+    "react",
+    "jest",
+    "prettier"
+  ],
+  "extends": [
+    "airbnb",
+    "plugin:react/recommended",
+    "prettier"
+  ],
   "env": {
     "browser": true,
     "node": true,
@@ -20,7 +28,10 @@
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": ["js", "jsx"]
+        "extensions": [
+          "js",
+          "jsx"
+        ]
       }
     ],
     "react/prefer-stateless-function": 0,
@@ -35,13 +46,35 @@
     "global-require": 0,
     "max-len": [
       2,
-      80,
+      120,
       2,
       {
         "ignoreUrls": true,
         "ignoreComments": false,
         "ignoreStrings": true,
         "ignoreTemplateLiterals": true
+      }
+    ],
+    "jsx-a11y/label-has-associated-control": [
+      "error",
+      {
+        "required": {
+          "some": [
+            "nesting",
+            "id"
+          ]
+        }
+      }
+    ],
+    "jsx-a11y/label-has-for": [
+      "error",
+      {
+        "required": {
+          "some": [
+            "nesting",
+            "id"
+          ]
+        }
       }
     ],
     "object-curly-spacing": 2,

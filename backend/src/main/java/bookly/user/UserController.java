@@ -1,13 +1,9 @@
 package bookly.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,21 +20,42 @@ public class UserController {
 
     @GetMapping("")
     public ResponseEntity<List<User>> getAllUsers() {
-        if(authenticatedUser == null || !authenticatedUser.getRole().equals("Admin")){
+        if (authenticatedUser == null || !authenticatedUser.getRole().equals("Admin")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<User> logIn(@RequestParam String login, @RequestParam String password) {
-        authenticatedUser = userService.logIn(login, password);
-        if(authenticatedUser == null){
+    public static class LoginRequestBody {
+        private String login;
+        private String password;
+
+        public String getLogin() {
+            return login;
+        }
+
+        public void setLogin(String login) {
+            this.login = login;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<User> logIn(@RequestBody LoginRequestBody body) {
+        authenticatedUser = userService.logIn(body.login, body.password);
+        if (authenticatedUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-       return ResponseEntity.ok().body(authenticatedUser);
+        return ResponseEntity.ok().body(authenticatedUser);
     }
 
     public static User getAuthenticatedUser() {

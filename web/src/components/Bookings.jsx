@@ -5,15 +5,19 @@ class Bookings extends React.Component {
     super(props);
 
     this.state = {
+      isLoading: true,
       bookings: []
     };
   }
 
   componentDidMount() {
+    // TODO : put this in config file
     fetch("http://localhost:8080/booking")
       .then(data => data.json())
       .then(
-        bookings => this.setState({ bookings }),
+        bookings => {
+          this.setState({ bookings, isLoading: false });
+        },
         error => {
           // eslint-disable-next-line no-console
           console.log(`ERROR: ${error}`);
@@ -22,7 +26,11 @@ class Bookings extends React.Component {
   }
 
   render() {
-    const { bookings } = this.state;
+    const { bookings, isLoading } = this.state;
+
+    if (isLoading) {
+      return <div> Loading ...</div>;
+    }
 
     return (
       <div>
