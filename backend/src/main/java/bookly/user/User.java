@@ -113,7 +113,6 @@ public class User {
         this.lastName = lastName;
     }
 
-
     @JsonGetter("securityToken")
     public String getSecurityToken() {
         return securityToken;
