@@ -1,6 +1,7 @@
 package bookly.user;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -14,9 +15,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @JsonIgnore
     @Column(name = "login", nullable = false)
     private String login;
 
+    @JsonIgnore
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -63,22 +66,16 @@ public class User {
         this.id = id;
     }
 
-    @JsonGetter("login")
     public String getLogin() {
         return this.login;
     }
-
-    @JsonSetter("login")
     public void setLogin(String login) {
         this.login = login;
     }
 
-    @JsonGetter("password")
     public String getPassword() {
         return password;
     }
-
-    @JsonSetter("password")
     public void setPassword(String password) {
         this.password = password;
     }
