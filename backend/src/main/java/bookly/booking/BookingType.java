@@ -1,7 +1,7 @@
 package bookly.booking;
 
 public enum BookingType {
-    ROOM,
+    FLAT,
     PARKING_SPACE,
     CAR
 }
