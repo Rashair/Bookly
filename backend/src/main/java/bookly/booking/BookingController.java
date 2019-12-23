@@ -22,6 +22,7 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
+    // TODO : Authorization + filter by user
     @GetMapping("")
     public ResponseEntity<List<Booking>> getBookings(@RequestParam(required = false) Boolean status) {
         if (status == null) {

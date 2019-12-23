@@ -37,6 +37,7 @@ class Login extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
 
+    // TODO: hash password
     const data = { login: this.state.login, password: this.state.password };
     this.props.login(data);
   }

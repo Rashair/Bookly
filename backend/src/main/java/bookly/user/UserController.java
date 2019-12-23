@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/user")
 public class UserController {
-    private static User authenticatedUser;
+    private User authenticatedUser;
     private UserService userService;
 
     @Autowired
@@ -58,7 +58,7 @@ public class UserController {
         return ResponseEntity.ok().body(authenticatedUser);
     }
 
-    public static User getAuthenticatedUser() {
+    public User getAuthenticatedUser() {
         return authenticatedUser;
     }
 }
