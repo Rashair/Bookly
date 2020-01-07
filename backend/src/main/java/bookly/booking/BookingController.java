@@ -5,6 +5,7 @@ import bookly.error.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,7 +23,7 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    // TODO : Authorization + filter by user
+    @Secured("Admin")
     @GetMapping("")
     public ResponseEntity<List<Booking>> getBookings(@RequestParam(required = false) Boolean status) {
         if (status == null) {
@@ -30,6 +31,16 @@ public class BookingController {
         }
 
         return ResponseEntity.ok(bookingService.findByStatus(status));
+    }
+
+    @Secured("User")
+    @GetMapping("/token")
+    public ResponseEntity<List<Booking>> getBookings(@PathVariable(value = "token") String token, @RequestParam(required = false) Boolean status) {
+        if (status == null) {
+            return ResponseEntity.ok(bookingService.findByToken(token));
+        }
+
+        return ResponseEntity.ok(bookingService.findByTokenAndStatus(token, status));
     }
 
     @GetMapping("/{id}")

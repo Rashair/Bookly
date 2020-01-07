@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class AuthenticationFilter extends GenericFilterBean {
-
     public static final String TOKEN_SESSION_KEY = "token";
     public static final String USER_SESSION_KEY = "user";
     private final static Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
@@ -104,17 +103,17 @@ public class AuthenticationFilter extends GenericFilterBean {
         return ApiController.AUTHENTICATE_URL.equalsIgnoreCase(resourcePath) && httpRequest.getMethod().equals("POST");
     }
 
-    private void processUsernamePasswordAuthentication(HttpServletResponse httpResponse, java.util.Optional<String> username, java.util.Optional<String> password) throws IOException {
+    private void processUsernamePasswordAuthentication(HttpServletResponse httpResponse, Optional<String> username, Optional<String> password) throws IOException {
         Authentication resultOfAuthentication = tryToAuthenticateWithUsernameAndPassword(username, password);
         SecurityContextHolder.getContext().setAuthentication(resultOfAuthentication);
         httpResponse.setStatus(HttpServletResponse.SC_OK);
-        TokenResponse tokenResponse = new TokenResponse(resultOfAuthentication.getDetails().toString());
-        String tokenJsonResponse = new ObjectMapper().writeValueAsString(tokenResponse);
-        httpResponse.addHeader("Content-Type", "application/json");
+        UserDetailsResponse response = (UserDetailsResponse) resultOfAuthentication.getDetails();
+        String tokenJsonResponse = new ObjectMapper().writeValueAsString(response);
+        httpResponse.addHeader("Content-Type", "application/json; charset=utf-8");
         httpResponse.getWriter().print(tokenJsonResponse);
     }
 
-    private Authentication tryToAuthenticateWithUsernameAndPassword(java.util.Optional<String> username, java.util.Optional<String> password) {
+    private Authentication tryToAuthenticateWithUsernameAndPassword(Optional<String> username, Optional<String> password) {
         UsernamePasswordAuthenticationToken requestAuthentication = new UsernamePasswordAuthenticationToken(username, password);
         return tryToAuthenticate(requestAuthentication);
     }

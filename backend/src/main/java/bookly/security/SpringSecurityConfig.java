@@ -2,7 +2,6 @@ package bookly.security;
 
 import bookly.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +29,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserRepository userRepository;
 
     @Autowired
-    public SpringSecurityConfig( UserRepository repository) {
+    public SpringSecurityConfig(UserRepository repository) {
         userRepository = repository;
     }
 

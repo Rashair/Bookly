@@ -1,11 +1,11 @@
 package bookly.security;
 
-import bookly.user.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+
 import java.util.Optional;
 
 public class DomainUsernamePasswordAuthenticationProvider implements AuthenticationProvider {
