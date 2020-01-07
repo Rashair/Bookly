@@ -22,8 +22,4 @@ public class UserService {
         }
         return new ArrayList<User>();
     }
-
-    public User logIn(String login, String password) {
-        return userRepository.findByLoginAndPassword(login, password);
-    }
 }
