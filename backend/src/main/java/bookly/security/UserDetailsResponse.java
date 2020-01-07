@@ -47,4 +47,9 @@ public class UserDetailsResponse {
         this.securityToken = securityToken;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return securityToken;
+    }
 }

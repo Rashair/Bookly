@@ -1,5 +1,6 @@
 package bookly.booking;
 
+import bookly.api.ApiController;
 import bookly.error.BookingNotFoundException;
 import bookly.error.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class BookingController {
     }
 
     @Secured("Admin")
-    @GetMapping("")
+    @GetMapping("/all")
     public ResponseEntity<List<Booking>> getBookings(@RequestParam(required = false) Boolean status) {
         if (status == null) {
             return ResponseEntity.ok(bookingService.findAll());
@@ -32,10 +33,10 @@ public class BookingController {
 
         return ResponseEntity.ok(bookingService.findByStatus(status));
     }
-
-    @Secured("User")
-    @GetMapping("/token")
-    public ResponseEntity<List<Booking>> getBookings(@PathVariable(value = "token") String token, @RequestParam(required = false) Boolean status) {
+    
+    @GetMapping("")
+    public ResponseEntity<List<Booking>> getBookings(@RequestHeader(value = ApiController.ID_TOKEN_HEADER_KEY) String token,
+                                                     @RequestParam(required = false) Boolean status) {
         if (status == null) {
             return ResponseEntity.ok(bookingService.findByToken(token));
         }

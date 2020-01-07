@@ -69,6 +69,7 @@ public class User {
     public String getLogin() {
         return this.login;
     }
+
     public void setLogin(String login) {
         this.login = login;
     }
@@ -76,6 +77,7 @@ public class User {
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
