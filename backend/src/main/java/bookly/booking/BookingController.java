@@ -1,8 +1,9 @@
 package bookly.booking;
 
-import bookly.api.ApiController;
 import bookly.error.BookingNotFoundException;
 import bookly.error.ErrorResponse;
+import bookly.security.AuthenticationWithToken;
+import bookly.security.UserDetailsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,15 +35,16 @@ public class BookingController {
 
         return ResponseEntity.ok(bookingService.findByStatus(status));
     }
-    
+
     @GetMapping("")
-    public ResponseEntity<List<Booking>> getBookings(@RequestHeader(value = ApiController.ID_TOKEN_HEADER_KEY) String token,
-                                                     @RequestParam(required = false) Boolean status) {
-        if (status == null) {
-            return ResponseEntity.ok(bookingService.findByToken(token));
+    public ResponseEntity<List<Booking>> getBookings(@RequestParam(required = false) Boolean status, Principal userDetails) {
+        UserDetailsResponse response = (UserDetailsResponse) ((AuthenticationWithToken) userDetails).getDetails();
+        Long id = response.getId();
+        if (status != null) {
+            return ResponseEntity.ok(bookingService.findByOwnerIdAndStatus(id, status));
         }
 
-        return ResponseEntity.ok(bookingService.findByTokenAndStatus(token, status));
+        return ResponseEntity.ok(bookingService.findByOwnerId(id));
     }
 
     @GetMapping("/{id}")

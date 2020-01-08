@@ -19,7 +19,7 @@ public class AuthenticationWithToken extends PreAuthenticatedAuthenticationToken
 
     public AuthenticationWithToken(Object aPrincipal, Object aCredentials, Collection<? extends GrantedAuthority> anAuthorities, User user) {
         super(aPrincipal, aCredentials, anAuthorities);
-        detailsResponse.setFirstName(user.getFirstName()).
+        detailsResponse.setId(user.getId()).setFirstName(user.getFirstName()).
                 setLastName(user.getLastName()).
                 setIdentificationToken(user.getSecurityToken());
     }
