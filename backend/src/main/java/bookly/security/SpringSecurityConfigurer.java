@@ -4,7 +4,6 @@ import bookly.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,16 +19,15 @@ import javax.servlet.http.HttpServletResponse;
 
 
 // Source: https://www.future-processing.pl/blog/exploring-spring-boot-and-spring-security-custom-token-based-authentication-of-rest-services-with-spring-security-and-pinch-of-spring-java-configuration-and-spring-integration-testing/
-@Configuration
 @EnableWebSecurity
 @EnableScheduling
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @ComponentScan("bookly.user")
-public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+public class SpringSecurityConfigurer extends WebSecurityConfigurerAdapter {
     private UserRepository userRepository;
 
     @Autowired
-    public SpringSecurityConfig(UserRepository repository) {
+    public SpringSecurityConfigurer(UserRepository repository) {
         userRepository = repository;
     }
 

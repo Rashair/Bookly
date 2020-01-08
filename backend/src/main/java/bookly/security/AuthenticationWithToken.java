@@ -7,10 +7,11 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import java.util.Collection;
 
 public class AuthenticationWithToken extends PreAuthenticatedAuthenticationToken {
+    private UserDetailsResponse detailsResponse = new UserDetailsResponse();
+
     public AuthenticationWithToken(Object aPrincipal, Object aCredentials) {
         super(aPrincipal, aCredentials);
     }
-    private UserDetailsResponse detailsResponse = new UserDetailsResponse();
 
     public AuthenticationWithToken(Object aPrincipal, Object aCredentials, Collection<? extends GrantedAuthority> anAuthorities) {
         super(aPrincipal, aCredentials, anAuthorities);
@@ -18,12 +19,16 @@ public class AuthenticationWithToken extends PreAuthenticatedAuthenticationToken
 
     public AuthenticationWithToken(Object aPrincipal, Object aCredentials, Collection<? extends GrantedAuthority> anAuthorities, User user) {
         super(aPrincipal, aCredentials, anAuthorities);
-        detailsResponse.setFirstName(user.getFirstName()).
+        detailsResponse.setId(user.getId()).setFirstName(user.getFirstName()).
                 setLastName(user.getLastName()).
                 setIdentificationToken(user.getSecurityToken());
     }
 
-    public void setToken(String token){
+    public String getToken() {
+        return detailsResponse.getSecurityToken();
+    }
+
+    public void setToken(String token) {
         detailsResponse.setSecurityToken(token);
         setDetails(detailsResponse);
     }

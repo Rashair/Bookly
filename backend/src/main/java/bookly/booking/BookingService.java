@@ -18,16 +18,16 @@ public class BookingService {
         return bookingRepository.findAll();
     }
 
-    public List<Booking> findByToken(String token) {
-        return bookingRepository.findByOwnerSecurityToken(token);
+    public List<Booking> findByOwnerId(Long id) {
+        return bookingRepository.findByOwnerId(id);
     }
 
     public List<Booking> findByStatus(Boolean status) {
         return bookingRepository.findByActive(status);
     }
 
-    public List<Booking> findByTokenAndStatus(String token, Boolean status) {
-        return bookingRepository.findByOwnerSecurityTokenAndActive(token, status);
+    public List<Booking> findByOwnerIdAndStatus(Long id, Boolean status) {
+        return bookingRepository.findByOwnerIdAndActive(id, status);
     }
 
 

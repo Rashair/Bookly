@@ -48,7 +48,7 @@ public class AuthenticationFilter extends GenericFilterBean {
         String resourcePath = new UrlPathHelper().getPathWithinApplication(httpRequest);
 
         try {
-            if (postToAuthenticate(httpRequest, resourcePath)) {
+            if (isPostToAuthenticate(httpRequest, resourcePath)) {
                 logger.debug("Trying to authenticate user {} by X-Auth-Username method", username);
                 processUsernamePasswordAuthentication(httpResponse, username, password);
                 return;
@@ -99,7 +99,7 @@ public class AuthenticationFilter extends GenericFilterBean {
         return (HttpServletResponse) response;
     }
 
-    private boolean postToAuthenticate(HttpServletRequest httpRequest, String resourcePath) {
+    private boolean isPostToAuthenticate(HttpServletRequest httpRequest, String resourcePath) {
         return ApiController.AUTHENTICATE_URL.equalsIgnoreCase(resourcePath) && httpRequest.getMethod().equals("POST");
     }
 
@@ -108,9 +108,9 @@ public class AuthenticationFilter extends GenericFilterBean {
         SecurityContextHolder.getContext().setAuthentication(resultOfAuthentication);
         httpResponse.setStatus(HttpServletResponse.SC_OK);
         UserDetailsResponse response = (UserDetailsResponse) resultOfAuthentication.getDetails();
-        String tokenJsonResponse = new ObjectMapper().writeValueAsString(response);
+        String userDetailsJsonResponse = new ObjectMapper().writeValueAsString(response);
         httpResponse.addHeader("Content-Type", "application/json; charset=utf-8");
-        httpResponse.getWriter().print(tokenJsonResponse);
+        httpResponse.getWriter().print(userDetailsJsonResponse);
     }
 
     private Authentication tryToAuthenticateWithUsernameAndPassword(Optional<String> username, Optional<String> password) {

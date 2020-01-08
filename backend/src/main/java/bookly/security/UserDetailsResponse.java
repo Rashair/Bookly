@@ -1,16 +1,24 @@
 package bookly.security;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class UserDetailsResponse {
-    @JsonProperty
+    @JsonIgnore
+    private Long id;
+
     private String firstName;
-    @JsonProperty
     private String lastName;
-    @JsonProperty
     private String identificationToken;
-    @JsonProperty
     private String securityToken;
+
+    public Long getId() {
+        return id;
+    }
+
+    public UserDetailsResponse setId(Long id) {
+        this.id = id;
+        return this;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -46,5 +54,10 @@ public class UserDetailsResponse {
     public UserDetailsResponse setSecurityToken(String securityToken) {
         this.securityToken = securityToken;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return securityToken;
     }
 }

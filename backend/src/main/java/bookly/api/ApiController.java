@@ -1,6 +1,5 @@
 package bookly.api;
 
-import bookly.security.AuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "")
 public class ApiController {
+    public static final String AUTHENTICATE_URL = "/login";
+    public static final String ID_TOKEN_HEADER_KEY = "Id-Token";
     private final static Logger logger = LoggerFactory.getLogger(ApiController.class);
-    public static final String AUTHENTICATE_URL ="/login";
 
     @PostMapping(AUTHENTICATE_URL)
     public ResponseEntity<UserDetails> logIn(final Authentication authentication) {
