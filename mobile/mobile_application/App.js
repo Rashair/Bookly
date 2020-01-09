@@ -1,19 +1,10 @@
 import React from 'react';
+import { render } from 'react-dom'
 import { StyleSheet, Text, View } from 'react-native';
+import AppContainer from './AppContainer';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Hello there!</Text>
-    </View>
+export default function App(){
+  return(
+      <AppContainer />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
