@@ -1,11 +1,11 @@
-import { LOGIN_SUCCESS, LOGIN_ERROR } from "./constants";
+import { LOGIN_SUCCESS, LOGIN_ERROR, ANY_ERROR } from "./constants";
 
-export const loginSuccess = user => {
+export const loginSuccess = userDetails => {
   return {
     type: LOGIN_SUCCESS,
     payload: {
-      user
-    }
+      userDetails,
+    },
   };
 };
 
@@ -13,7 +13,16 @@ export const loginError = name => {
   return {
     type: LOGIN_ERROR,
     payload: {
-      name
-    }
+      name,
+    },
+  };
+};
+
+export const anyError = error => {
+  return {
+    type: ANY_ERROR,
+    payload: {
+      error,
+    },
   };
 };

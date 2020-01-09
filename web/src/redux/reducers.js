@@ -1,20 +1,25 @@
-import { LOGIN_SUCCESS, LOGIN_ERROR } from "./constants";
+import { LOGIN_SUCCESS, LOGIN_ERROR, ANY_ERROR } from "./constants";
 
-export const initialState = { auth: null };
+export const initialState = { auth: null, errorResponse: "" };
 
 // Read this: https://redux.js.org/basics/reducers
-
 const appReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_SUCCESS: {
-      const { user } = action.payload;
-      return { ...state, auth: user };
+      const { userDetails } = action.payload;
+      return { ...state, auth: userDetails };
     }
 
     case LOGIN_ERROR: {
       // eslint-disable-next-line no-alert
       alert(`Invalid login or password.`);
       return { ...state, auth: null };
+    }
+
+    case ANY_ERROR: {
+      // eslint-disable-next-line no-alert
+      alert("Something went wrong...");
+      return state;
     }
 
     default:

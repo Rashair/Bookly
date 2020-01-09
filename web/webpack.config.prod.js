@@ -14,24 +14,19 @@ module.exports = merge(base, {
   output: {
     filename: "static/js/main.[hash:8].js",
     chunkFilename: "static/js/[name].chunk.[hash:8].js",
-    path: path.resolve(__dirname, "build")
+    path: path.resolve(__dirname, "build"),
   },
   module: {
     rules: [
       {
         // css-loader
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"]
+        use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
       },
       {
         // sass/scss loader to load sass-scss style files
         test: /\.(sass|scss)$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          "css-loader",
-          "postcss-loader",
-          "sass-loader"
-        ]
+        use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader", "sass-loader"],
       },
       {
         // copies image files to assets folder in destination folder - build
@@ -41,40 +36,40 @@ module.exports = merge(base, {
             loader: "file-loader",
             options: {
               name: "[name].[hash:8].[ext]",
-              outputPath: "static/assets"
-            }
-          }
-        ]
-      }
-    ]
+              outputPath: "static/assets",
+            },
+          },
+        ],
+      },
+    ],
   },
   optimization: {
     minimizer: [
       new TerserWeppackPlugin({
         terserOptions: {
           parse: {
-            ecma: 8
+            ecma: 8,
           },
           compress: {
             ecma: 5,
             warnings: false,
             comparisons: false,
-            inline: 2
+            inline: 2,
           },
           mangle: {
-            safari10: true
+            safari10: true,
           },
           output: {
             ecma: 5,
             comments: false,
-            ascii_only: true
-          }
+            ascii_only: true,
+          },
         },
         parallel: true,
         cache: true,
-        sourceMap: true
-      })
-    ]
+        sourceMap: true,
+      }),
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -90,18 +85,18 @@ module.exports = merge(base, {
         keepClosingSlash: true,
         minifyJS: true,
         minifyCSS: true,
-        minifyURLs: true
-      }
+        minifyURLs: true,
+      },
     }),
     new MiniCssExtractPlugin({
-      filename: "static/css/[name].[hash:8].css"
+      filename: "static/css/[name].[hash:8].css",
     }),
     new OptimizeCSSAssetsPlugin({
       cssProcessorOptions: {
         parser: postcssSafeParser,
-        map: true
-      }
+        map: true,
+      },
     }),
-    new CleanWebpackPlugin()
-  ]
+    new CleanWebpackPlugin(),
+  ],
 });

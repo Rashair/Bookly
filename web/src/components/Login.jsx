@@ -10,7 +10,7 @@ class Login extends React.Component {
 
     this.state = {
       login: "",
-      password: ""
+      password: "",
     };
 
     this.loginChange = this.loginChange.bind(this);
@@ -46,7 +46,7 @@ class Login extends React.Component {
     const { auth } = this.props;
 
     if (auth !== null) {
-      return <div className="w-50 text-center"> Hi {auth.first_name}!</div>;
+      return <div className="w-50 text-center"> Hi {auth.firstName}!</div>;
     }
 
     return (
@@ -86,12 +86,12 @@ class Login extends React.Component {
 
 const mapStateToProps = (state /* , ownProps */) => {
   return {
-    auth: state.auth
+    auth: state.auth,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  login: name => dispatch(login(name))
+  login: data => dispatch(login(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));

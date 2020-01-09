@@ -1,5 +1,21 @@
 import React from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
-const Forbidden = () => <div>You do not have access to this resource.</div>;
+class Forbidden extends React.Component {
+  componentDidMount() {
+    if (this.props.auth === null) {
+      this.props.history.push("/");
+    }
+  }
 
-export default Forbidden;
+  render() {
+    return <div>You do not have access to this resource</div>;
+  }
+}
+const mapStateToProps = (state /* , ownProps */) => {
+  return {
+    auth: state.auth,
+  };
+};
+export default connect(mapStateToProps, null)(withRouter(Forbidden));
