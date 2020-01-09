@@ -68,7 +68,7 @@ public class AuthenticationFilter extends GenericFilterBean {
             httpResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } catch (AuthenticationException authenticationException) {
             SecurityContextHolder.clearContext();
-            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, authenticationException.getMessage());
+            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You do not have access to this resource.");
         } finally {
             MDC.remove(TOKEN_SESSION_KEY);
             MDC.remove(USER_SESSION_KEY);
