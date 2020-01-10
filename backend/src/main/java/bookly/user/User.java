@@ -32,8 +32,8 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "securityToken")
-    private String securityToken;
+    @Column(name = "idToken")
+    private String idToken;
 
     @Column(name = "active")
     private boolean active;
@@ -41,18 +41,18 @@ public class User {
     public User() {
     }
 
-    public User(String login, String password, String role, String firstName, String lastName, String securityToken, boolean active) {
+    public User(String login, String password, String role, String firstName, String lastName, String idToken, boolean active) {
         this.login = login;
         this.password = password;
         this.role = role;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.securityToken = securityToken;
+        this.idToken = idToken;
         this.active = active;
     }
 
-    public User(Long Id, String login, String password, String role, String firstName, String lastName, String securityToken, boolean active) {
-        this(login, password, role, firstName, lastName, securityToken, active);
+    public User(Long Id, String login, String password, String role, String firstName, String lastName, String idToken, boolean active) {
+        this(login, password, role, firstName, lastName, idToken, active);
         this.id = Id;
     }
 
@@ -112,14 +112,14 @@ public class User {
         this.lastName = lastName;
     }
 
-    @JsonGetter("securityToken")
-    public String getSecurityToken() {
-        return securityToken;
+    @JsonGetter("idToken")
+    public String getIdToken() {
+        return idToken;
     }
 
-    @JsonSetter("securityToken")
-    public void setSecurityToken(String securityToken) {
-        this.securityToken = securityToken;
+    @JsonSetter("idToken")
+    public void setIdToken(String idToken) {
+        this.idToken = idToken;
     }
 
     @JsonGetter("active")
