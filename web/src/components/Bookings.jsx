@@ -33,7 +33,7 @@ class Bookings extends React.Component {
     }
 
     const { securityToken } = this.props.auth;
-    const url = `${API_URL}/booking/all${newStatus !== null ? `?status=${newStatus.toString()}` : ""}`;
+    const url = `${API_URL}/booking${newStatus !== null ? `?status=${newStatus.toString()}` : ""}`;
     sendRequest(url, "GET", {
       [TOKEN_HEADER_KEY]: securityToken,
     }).then(

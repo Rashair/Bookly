@@ -28,7 +28,7 @@ public class BookingController {
     }
 
     @PreAuthorize("hasRole('Admin')")
-    @GetMapping("/all")
+    @GetMapping("")
     public ResponseEntity<List<Booking>> getBookings(@RequestParam(required = false) Boolean status) {
         if (status == null) {
             return ResponseEntity.ok(bookingService.findAll());
@@ -37,7 +37,7 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.findByStatus(status));
     }
 
-    @GetMapping("")
+    @GetMapping("/user")
     public ResponseEntity<List<Booking>> getBookings(@RequestParam(required = false) Boolean status, Principal userDetails) {
         UserDetailsResponse response = (UserDetailsResponse) ((AuthenticationWithToken) userDetails).getDetails();
         Long id = response.getId();
