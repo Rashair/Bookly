@@ -1,5 +1,6 @@
-import { StyleSheet, TextInput, View, Button, ActivityIndicator } from 'react-native'
-import { Container, Header, Content, DatePicker, Text, Picker, CardItem } from 'native-base'
+import { StyleSheet, View, Button, ActivityIndicator } from 'react-native'
+import { Container, Header, Content, DatePicker, Text, Picker } from 'native-base'
+import { TextInput, Subheading, List, Card, HelperText, Title, Chip } from 'react-native-paper';
 import React from 'react'
 
 export default class FlatsListScreen extends React.Component
@@ -29,18 +30,27 @@ export default class FlatsListScreen extends React.Component
     componentDidMount()
     {
         //fetch get flats
-        this.setState({sortingType: this.sortingTypes.lowestPrice})
+        return this.changeSortingType(this.sortingTypes.lowestPrice)
     }
     changeSortingType(type)
     {
         const URL = 'http://localhost:3004/flats'
         this.setState({isLoading: true})
-        fetch(URL)
-            .then(response => response.json())
-            .then(data => this.setState({flats: data, sortingType: type, isLoading: false}))
+        //DOROBIĆ RÓŻNE DZIAŁANIA DO RÓŻNYCH STATUSÓW ODPOWIEDZI
+        //+ PAGINACJA
+        return fetch(URL)
+            .then(response => Promise.all([response.status, response.json()]))
+            .then(([res,data]) => {
+                switch(res)
+                {
+                    case 200:
+                        this.setState({sortingType: type, flats: data, isLoading: false});
+                    break;
+                }
+            })
             .catch(function(error) {
                 console.log('There has been a problem with your fetch operation: ' + error.message);
-                throw error;
+                throw error
             });
     }
     createCardsList()
@@ -61,16 +71,27 @@ export default class FlatsListScreen extends React.Component
         return(
             //przyciski do sortowania
             <Container>
-                <Content>
-                <Picker
-                    selectedValue={this.state.sortingType}
-                    mode="dialog"
-                    prompt="Sort by"
-                    onValueChange={(sortingType) => this.changeSortingType(sortingType)}>
-                        <Picker.Item label="Highest price" value="Highest price"/>
-                        <Picker.Item label="Lowest price" value="Lowest price"/>
-                        <Picker.Item label="Highest rating" value="Highest rating"/>
-                </Picker>
+                <Content style={{paddingVertical: 20}}>
+                <View style={{display: 'flex', flexDirection:'row', justifyContent:'space-around', marginBottom:20}}>
+                    <Chip 
+                        mode="outlined" 
+                        selected={this.state.sortingType === this.sortingTypes.lowestPrice ? true : false}
+                        onPress={() => this.changeSortingType(this.sortingTypes.lowestPrice)}>
+                        Lowest price
+                    </Chip>
+                    <Chip 
+                        mode="outlined" 
+                        selected={this.state.sortingType === this.sortingTypes.highestPrice ? true : false}
+                        onPress={() => this.changeSortingType(this.sortingTypes.highestPrice)}>
+                        Highest price
+                    </Chip>
+                    <Chip 
+                        mode="outlined" 
+                        selected={this.state.sortingType === this.sortingTypes.highestRating ? true : false}
+                        onPress={() => this.changeSortingType(this.sortingTypes.highestRating)}>
+                        Highest rating
+                    </Chip>
+                </View>
                     {this.state.isLoading && <ActivityIndicator size="large" color="#00aaff" />}
                     {!this.state.isLoading && this.createCardsList()}
                 </Content>

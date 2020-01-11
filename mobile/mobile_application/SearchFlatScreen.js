@@ -1,11 +1,12 @@
-import { StyleSheet, TextInput, View, Button } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { Container, Header, Content, DatePicker, Text, Picker } from 'native-base'
+import { TextInput, Subheading, List, Card, HelperText, Title, Chip, Button } from 'react-native-paper';
 import React from 'react'
 import { AuthSession } from 'expo'
 
 export default class SearchFlatScreen extends React.Component
 {
-      static navigationOptions = { title: 'Search accommodation',};
+      static navigationOptions = { title: 'Find accommodation',};
       constructor(props)
       {
             super(props)
@@ -50,14 +51,14 @@ export default class SearchFlatScreen extends React.Component
             const cityPattern = /^[a-zA-z][a-zA-z][a-zA-z ]*$/
             this.setState({
                   city: city,
-                  cityValid: cityPattern.test(this.state.city) && this.state.city.length >= 3 ? true : false
+                  cityValid: cityPattern.test(city) && city.length >= 3 ? true : false
             })
       }
       setBeds(beds)
       {
             this.setState({
                   beds: beds,
-                  bedsValid: this.state.beds ? true : false
+                  bedsValid: beds ? true : false
             })
       }
       createNumberList(n)
@@ -71,52 +72,89 @@ export default class SearchFlatScreen extends React.Component
             }
             return table
       }
+      createChip(i)
+      {
+            return(
+                  <Chip 
+                        mode="outlined" 
+                        selected={this.state.beds === i ? true : false}
+                        onPress={() => this.setBeds(i)}>
+                        {i.toString()}
+                  </Chip>
+            )
+      }
       errorMessage(field)
       {
             switch(field)
             {
                   case 'City':
-                        return <Text>City name incorrect</Text>
+                        return "City name incorrect"
                   case 'DateTo':
-                        return <Text>Date to must be later than date from</Text>
+                        return "Date to must be later than date from"
                   case 'Beds':
-                        return <Text>Beds number cannot be null</Text>
+                        return "Please, choose beds number"
             }
       }
       render()
       {
             return(
                   <Container>
-                        <Content>
-                              <Text>Find place to sleep</Text>
+                        <Content style={{ paddingVertical: 20, paddingHorizontal: 10}}>
+                              <Title>City</Title>
                               <TextInput
-                                    placeholder='City'
+                                    mode="outlined"
+                                    style={{backgroundColor: 'white'}}
                                     onChangeText={text => this.setCity(text)}
                                     value={this.state.city}/>
-                              {!this.state.cityValid && this.errorMessage('City')}
+                              <HelperText
+                                    type="error"
+                                    visible={!this.state.cityValid} >
+                                    {this.errorMessage('City')}
+                              </HelperText>
+                              <Title>From</Title>
                               <DatePicker
                                     value={this.state.dateFrom}
                                     minimumDate={new Date()}
                                     onDateChange={(date) => this.setDateFrom(date)}/>
+                              <Title>To</Title>
                               <DatePicker
+                                    style={{border: 'solid 2px black'}}
                                     value={this.state.dateTo}
                                     minimumDate={new Date()}
                                     onDateChange={(date) => this.setDateTo(date)}/>
-                              {!this.state.dateToValid && this.errorMessage('DateTo')}
-                              <Picker
+                              <HelperText
+                                    type="error"
+                                    visible={!this.state.dateToValid} >
+                                    {this.errorMessage('DateTo')}
+                              </HelperText>
+                              <Title>People</Title>
+                              <View style={{display: 'flex', flexDirection:'row', justifyContent:'space-around'}}>
+                                    {this.createChip(1)}
+                                    {this.createChip(2)}
+                                    {this.createChip(3)}
+                                    {this.createChip(4)}
+                                    {this.createChip(5)}
+                                    {this.createChip(6)}
+                              </View>
+                              {/* <Picker
                                     selectedValue={this.state.beds}
                                     mode="dialog"
                                     prompt="Choose beds number"
                                     onValueChange={(beds) => this.setBeds(beds)}>
                                           {this.createNumberList(6)}
-                              </Picker>
-                              {!this.state.bedsValid && this.errorMessage('Beds')}
+                              </Picker> */}
+                              <HelperText
+                                    type="error"
+                                    visible={!this.state.bedsValid} >
+                                    {this.errorMessage('Beds')}
+                              </HelperText>
                               <Button
-                                    title="Search"
+                                    mode="contained"
                                     disabled={!(this.state.cityValid && this.state.dateTo && this.state.bedsValid)}
-                                    onPress={() => Alert.alert('Simple Button pressed')}/>
+                                    onPress={() => Alert.alert('Simple Button pressed')}>
+                                    Search
+                              </Button>
                         </Content>
-                        
                   </Container>
             );
       }
