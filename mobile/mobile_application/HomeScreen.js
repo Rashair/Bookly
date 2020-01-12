@@ -13,6 +13,9 @@ export default class HomeScreen extends React.Component {
           title="My reservations"
           onPress={() => navigate('ReservationList')}
         />
+        <Button title="Szukaj noclegu" />
+        <Button title="Szukaj samochodu" />
+        <Button title="Szukaj parkingu" />
         </View>
       );
     }
