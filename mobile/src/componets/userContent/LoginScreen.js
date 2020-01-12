@@ -38,6 +38,7 @@ class LoginScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Text>Please log in!</Text>
+        <Button title="Log in" onPress={() => navigate('HomeScreen')} />
       </View>
     );
   }

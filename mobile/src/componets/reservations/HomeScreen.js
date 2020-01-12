@@ -11,9 +11,10 @@ export default class HomeScreen extends React.Component {
         <View style={styles.container}>
         <Button
           title="My reservations"
-          onPress={() => navigate('ReservationList')}
+          onPress={() => navigate('MyReservationsList')}
         />
-        <Button title="Szukaj noclegu" />
+        <Button title="Szukaj noclegu" 
+          onPress={() => navigate('FlatsList')}/>
         <Button title="Szukaj samochodu" />
         <Button title="Szukaj parkingu" />
         </View>

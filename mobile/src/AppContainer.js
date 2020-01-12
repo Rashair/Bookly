@@ -1,15 +1,16 @@
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import LoginScreen from "./componets/userContent/LoginScreen";
-import SearchFlatScreen from "./componets/flatly/SearchFlatScreen";
+import HomeScreen from './componets/reservations/HomeScreen'
 import FlatsListScreen from "./componets/flatly/FlatsListScreen";
+import MyReservationsList from './componets/reservations/MyReservationsList'
 
 const AppNavigator = createStackNavigator(
   {
-    //Login : {screen : LoginScreen},
-    //SearchFlat : {screen: SearchFlatScreen},
+    HomeScreen : { screen: HomeScreen},
     FlatsList: { screen: FlatsListScreen },
     LoginScreen: { screen: LoginScreen },
+    MyReservationsList: { screen : MyReservationsList}
   },
   {
     initialRouteName: "LoginScreen",
