@@ -1,8 +1,8 @@
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
-import LoginScreen from "./LoginScreen";
-import SearchFlatScreen from "./SearchFlatScreen";
-import FlatsListScreen from "./FlatsListScreen";
+import LoginScreen from "./componets/userContent/LoginScreen";
+import SearchFlatScreen from "./componets/flatly/SearchFlatScreen";
+import FlatsListScreen from "./componets/flatly/FlatsListScreen";
 
 const AppNavigator = createStackNavigator(
   {
