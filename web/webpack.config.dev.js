@@ -10,19 +10,19 @@ module.exports = merge(base, {
   output: {
     filename: "static/js/main.js",
     chunkFilename: "static/js/[name].chunk.js",
-    path: path.resolve(__dirname, "dist")
+    path: path.resolve(__dirname, "dist"),
   },
   module: {
     rules: [
       {
         // css-loader
         test: /\.css$/,
-        use: ["style-loader", "css-loader", "postcss-loader"]
+        use: ["style-loader", "css-loader", "postcss-loader"],
       },
       {
         // sass/scss loader to load sass-scss style files
         test: /\.(sass|scss)$/,
-        use: ["style-loader", "css-loader", "postcss-loader", "sass-loader"]
+        use: ["style-loader", "css-loader", "postcss-loader", "sass-loader"],
       },
       {
         // copies image files to assets folder in destination folder - dist
@@ -32,25 +32,29 @@ module.exports = merge(base, {
             loader: "file-loader",
             options: {
               name: "[name].[ext]",
-              outputPath: "static/assets"
-            }
-          }
-        ]
-      }
-    ]
+              outputPath: "static/assets",
+            },
+          },
+        ],
+      },
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "public", "index.html"),
-      favicon: path.join(__dirname, "public", "favicon.ico")
+      favicon: path.join(__dirname, "public", "favicon.ico"),
     }),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
   ],
   devServer: {
     contentBase: path.resolve(__dirname, "dist"),
     port: 3000,
     hot: true,
     stats: "minimal",
-    historyApiFallback: true
-  }
+    historyApiFallback: true,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+    },
+  },
 });

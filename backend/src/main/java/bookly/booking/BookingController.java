@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,8 +27,8 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    @Secured("Admin")
-    @GetMapping("/all")
+    @PreAuthorize("hasRole('Admin')")
+    @GetMapping("")
     public ResponseEntity<List<Booking>> getBookings(@RequestParam(required = false) Boolean status) {
         if (status == null) {
             return ResponseEntity.ok(bookingService.findAll());
@@ -36,7 +37,7 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.findByStatus(status));
     }
 
-    @GetMapping("")
+    @GetMapping("/user")
     public ResponseEntity<List<Booking>> getBookings(@RequestParam(required = false) Boolean status, Principal userDetails) {
         UserDetailsResponse response = (UserDetailsResponse) ((AuthenticationWithToken) userDetails).getDetails();
         Long id = response.getId();

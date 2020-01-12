@@ -12,24 +12,24 @@ module.exports = {
         include: /src/,
         loader: "eslint-loader",
         options: {
-          emitWarning: process.env.NODE_ENV !== "production"
-        }
+          emitWarning: process.env.NODE_ENV !== "production",
+        },
       },
       {
         // transpiles react code
         test: /\.(js|jsx)$/,
         include: /src/,
-        loader: "babel-loader"
+        loader: "babel-loader",
       },
       {
         test: /\.html$/,
-        loader: "html-loader"
-      }
-    ]
+        loader: "html-loader",
+      },
+    ],
   },
   plugins: [new DotenvPlugin()],
 
   resolve: {
-    extensions: [".js", ".json", ".jsx"]
-  }
+    extensions: [".js", ".json", ".jsx"],
+  },
 };

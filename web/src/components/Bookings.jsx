@@ -1,5 +1,10 @@
 import React from "react";
 import Checkbox from "react-three-state-checkbox";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { sendRequest } from "../helpers/functions";
+import { API_URL, TOKEN_HEADER_KEY } from "../helpers/constants";
+import { anyError } from "../redux/actions";
 
 class Bookings extends React.Component {
   constructor(props) {
@@ -8,7 +13,7 @@ class Bookings extends React.Component {
     this.state = {
       isLoading: true,
       bookings: null,
-      status: null
+      status: null,
     };
 
     this.fetchBookings = this.fetchBookings.bind(this);
@@ -16,31 +21,37 @@ class Bookings extends React.Component {
     this.fetchBookings(null);
   }
 
-  componentDidUpdate() {
-    // this.fetchBookings(this.state.status);
+  componentDidMount() {
+    if (this.props.auth === null) {
+      this.props.history.push("/");
+    }
   }
 
   fetchBookings(newStatus) {
-    // TODO : put url in config file
-    const url = `http://localhost:8080/booking${
-      newStatus !== null ? `?status=${newStatus.toString()}` : ""
-    }`;
-    fetch(url)
-      .then(data => data.json())
-      .then(
-        bookings => {
-          this.setState({ bookings, isLoading: false, status: newStatus });
-        },
-        error => {
-          // eslint-disable-next-line no-console
-          console.log(`ERROR: ${error}`);
+    if (this.props.auth === null) {
+      return;
+    }
+
+    const { securityToken } = this.props.auth;
+    const url = `${API_URL}/booking${newStatus !== null ? `?status=${newStatus.toString()}` : ""}`;
+    sendRequest(url, "GET", {
+      [TOKEN_HEADER_KEY]: securityToken,
+    }).then(
+      response => {
+        if (response.ok) {
+          response.json().then(json => this.setState({ bookings: json, isLoading: false, status: newStatus }));
+        } else {
+          this.props.history.push({ pathname: "/error" });
         }
-      );
+      },
+      errorResponse => {
+        this.props.anyError(errorResponse);
+      }
+    );
   }
 
   handleCheck() {
     const currValue = this.state.status;
-    // eslint-disable-next-line no-nested-ternary
     let newValue = null;
     if (currValue === null) {
       newValue = true;
@@ -48,6 +59,7 @@ class Bookings extends React.Component {
       newValue = false;
     }
 
+    this.setState({ isLoading: true });
     this.fetchBookings(newValue);
   }
 
@@ -83,10 +95,7 @@ class Bookings extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {bookings &&
-              bookings.map((booking, ind) => (
-                <BookingLine key={booking.id} booking={booking} ind={ind} />
-              ))}
+            {bookings && bookings.map((booking, ind) => <BookingLine key={booking.id} booking={booking} ind={ind} />)}
           </tbody>
         </table>
         <span className="glyphicon glyphicon-align-left" aria-hidden="false" />
@@ -103,14 +112,18 @@ const BookingLine = ({ booking, ind }) => (
       {booking.owner.first_name} {booking.owner.last_name} ({booking.owner.id})
     </td>
     <td>{booking.start_date_time}</td>
-    <td>
-      {booking.active === true ? (
-        <i className="fas fa-check" />
-      ) : (
-        <i className="fas fa-times" />
-      )}
-    </td>
+    <td>{booking.active === true ? <i className="fas fa-check" /> : <i className="fas fa-times" />}</td>
   </tr>
 );
 
-export default Bookings;
+const mapStateToProps = (state /* , ownProps */) => {
+  return {
+    auth: state.auth,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  anyError: data => dispatch(anyError(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Bookings));

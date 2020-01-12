@@ -8,17 +8,14 @@ import Forbidden from "./Forbidden";
 
 class Home extends React.Component {
   render() {
-    const { auth } = this.props;
-    const isAdmin = auth != null && auth.role === "Admin";
-    const bookingsPathElement = isAdmin ? <Bookings /> : <Forbidden />;
-
     return (
       <div className="container h-100 text-center">
         <h2> Bookly Admin </h2>
         <div className="row justify-content-center align-content-center mt-5">
           <Switch>
             <Route exact path="/" component={Login} />
-            <Route path="/bookings">{bookingsPathElement}</Route>
+            <Route path="/bookings" component={Bookings} />
+            <Route path="/error" component={Forbidden} />
           </Switch>
         </div>
       </div>
@@ -28,7 +25,7 @@ class Home extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    auth: state.auth
+    auth: state.auth,
   };
 };
 

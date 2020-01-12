@@ -19,7 +19,7 @@ public class BooklyExternalServiceAuthenticator implements ExternalServiceAuthen
             throw new BadCredentialsException("User not found");
         }
 
-        return new AuthenticationWithToken(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList(user.getRole()), user);
+        return new AuthenticationWithToken(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_" + user.getRole()), user);
     }
 
 }

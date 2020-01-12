@@ -2,6 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
+import utf16 from "crypto-js/enc-utf16";
+import sha3 from "crypto-js/sha3";
+import hmacSHA512 from "crypto-js/hmac-sha512";
+import Base64 from "crypto-js/enc-base64";
+
 import { login } from "../redux/thunk-functions";
 
 class Login extends React.Component {
@@ -10,7 +15,7 @@ class Login extends React.Component {
 
     this.state = {
       login: "",
-      password: ""
+      password: "",
     };
 
     this.loginChange = this.loginChange.bind(this);
@@ -37,8 +42,12 @@ class Login extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    // TODO: hash password
-    const data = { login: this.state.login, password: this.state.password };
+    const { login, password } = this.state;
+    const randomMsg = utf16.parse("Keep it secret. Keep it safe");
+    const hashDigest = sha3(password + randomMsg);
+    const hash = Base64.stringify(hmacSHA512(hashDigest, login));
+
+    const data = { login: this.state.login, password: hash };
     this.props.login(data);
   }
 
@@ -46,7 +55,7 @@ class Login extends React.Component {
     const { auth } = this.props;
 
     if (auth !== null) {
-      return <div className="w-50 text-center"> Hi {auth.first_name}!</div>;
+      return <div className="w-50 text-center"> Hi {auth.firstName}!</div>;
     }
 
     return (
@@ -86,12 +95,12 @@ class Login extends React.Component {
 
 const mapStateToProps = (state /* , ownProps */) => {
   return {
-    auth: state.auth
+    auth: state.auth,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  login: name => dispatch(login(name))
+  login: data => dispatch(login(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));
