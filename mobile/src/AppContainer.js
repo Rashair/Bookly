@@ -9,11 +9,11 @@ const AppNavigator = createStackNavigator(
   {
     Login: { screen: LoginScreen },
     SearchFlat: { screen: SearchFlatScreen },
-    //FlatsList: { screen: FlatsListScreen },
+    // FlatsList: { screen: FlatsListScreen },
     SearchParking: { screen: SearchParking },
   },
   {
-    initialRouteName: "SearchParking",
+    initialRouteName: "Login",
     headerMode: "screen",
   }
 );

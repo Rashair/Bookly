@@ -30,7 +30,7 @@ class SearchParking extends React.Component {
     this.setCity = this.setCity.bind(this);
   }
 
-  setDateFrom(event, date) {
+  setDateFrom(date) {
     this.setState({
       dateFrom: date,
       dateToValid: this.state.dateTo && date <= this.state.dateTo ? true : false,
@@ -38,7 +38,7 @@ class SearchParking extends React.Component {
       showTimeFromPicker: false,
     });
   }
-  setDateTo(event, date) {
+  setDateTo(date) {
     this.setState({
       dateTo: date,
       dateToValid: this.state.dateFrom && this.state.dateFrom <= date ? true : false,
@@ -48,7 +48,7 @@ class SearchParking extends React.Component {
   }
 
   setCity(city) {
-    const cityPattern = /^[a-zA-z][a-zA-z][a-zA-z ]*$/;
+    const cityPattern = /^[a-zA-Z][a-zA-Z][a-zA-Z ]*$/;
     this.setState({
       city: city,
       cityValid: cityPattern.test(city) && city.length >= 3 ? true : false,
@@ -175,12 +175,6 @@ const styles = StyleSheet.create({
   row: {
     flex: 1,
     flexDirection: "row",
-  },
-  inputWrap: {
-    flex: 1,
-    borderColor: "#cccccc",
-    borderBottomWidth: 1,
-    marginBottom: 10,
   },
   inputDate: {
     backgroundColor: "#ffffff",
