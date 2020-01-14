@@ -1,5 +1,7 @@
 
 import { StyleSheet, Text, View, Button, ScrollView, Image } from 'react-native';
+import React from 'react'
+
 
 export default class MyReservationFlatItem extends React.Component {
    
@@ -11,7 +13,6 @@ export default class MyReservationFlatItem extends React.Component {
       return (
         <View>
             <Image source={require('./assets/car.png')} />  {/* here will be custom icon */}
-            <Text>{this.props.Flat.HotelName}</Text>
             <Text>{this.props.StartDate}</Text>
         </View>
       );

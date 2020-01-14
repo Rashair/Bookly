@@ -1,5 +1,7 @@
 
 import { StyleSheet, Text, View, Button, ScrollView, Image } from 'react-native';
+import React from 'react'
+
 
 export default class MyReservationParkingItem extends React.Component {
    
@@ -11,7 +13,6 @@ export default class MyReservationParkingItem extends React.Component {
       return (
         <View>
             <Image source={require('./assets/car.png')} />  {/* here will be custom icon */}
-            <Text>{this.props.Parking.Place}</Text>
             <Text>{this.props.DateFrom}</Text>
         </View>
       );
