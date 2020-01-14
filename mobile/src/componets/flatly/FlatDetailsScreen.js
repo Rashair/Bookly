@@ -11,21 +11,9 @@ export default class FlatDetailsScreen extends React.Component
     static navigationOptions = { title: 'Details',};
     constructor(props)
     {
-        //flat details will be passed in props
         super(props)
         const { navigation } = this.props;
         this.flat = navigation.getParam('flat')
-        // this.flat = 
-        // {
-        //     country: 'Poland',
-        //     city: 'Warsaw',
-        //     address: 'Cukrowa 18',
-        //     rooms: 3,
-        //     beds: 5,
-        //     price: 350,
-        //     rating: 4.36,
-        //     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        // }
     }
     render()
     {
@@ -56,13 +44,13 @@ export default class FlatDetailsScreen extends React.Component
                         <Title>{this.flat.price.toString()} PLN / night</Title>
                     </View>
                     <View style={{flex: 1, justifyContent: 'flex-end'}}>
-                                    <Button
-                                          style={styles.button}
-                                          color='#3579e6'
-                                          mode="contained">
-                                          Make reservation
-                                    </Button>
-                              </View>
+                        <Button
+                                style={styles.button}
+                                color='#3579e6'
+                                mode="contained">
+                                Make reservation
+                        </Button>
+                    </View>
                 </ScrollView>
             </Container>
         )

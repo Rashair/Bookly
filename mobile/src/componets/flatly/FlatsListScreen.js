@@ -80,7 +80,6 @@ export default class FlatsListScreen extends React.Component
     }
     goToDetails(flat)
     {
-        console.log(flat)
         this.props.navigation.navigate('FlatDetails', {flat: flat})
     }
     createCardsList()

@@ -29,7 +29,6 @@ export default class SearchFlatScreen extends React.Component
                   beds: 1,
                   cityValid: true,
                   dateToValid: true,
-                  formValid: false
             }
       }
       setDateFrom(date)
@@ -48,7 +47,7 @@ export default class SearchFlatScreen extends React.Component
       }
       setCity(city)
       {
-            const cityPattern = /^[a-zA-z][a-zA-z][a-zA-z ]*$/
+            const cityPattern = /^[A-ZĆŁÓŚŹŻa-ząćęłńóśźż]*$/
             this.setState({
                   city: city,
                   cityValid: cityPattern.test(city) && city.length >= 3 ? true : false
