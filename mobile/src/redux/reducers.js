@@ -1,10 +1,15 @@
-import { LOGIN_SUCCESS, LOGIN_ERROR, ANY_ERROR } from "./constants";
+import { LOGIN_SUCCESS, LOGIN_ERROR, ANY_ERROR, SEARCH_BY_DATE } from "./constants";
 
-export const initialState = { auth: null, errorResponse: "" };
+export const initialState = { auth: null, errorResponse: "", dates: { from: new Date(), to: new Date() } };
 
 // Read this: https://redux.js.org/basics/reducers
 const appReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SEARCH_BY_DATE: {
+      const { dates } = action.payload;
+      return { ...state, dates };
+    }
+
     case LOGIN_SUCCESS: {
       const { userDetails } = action.payload;
       return { ...state, auth: userDetails };
@@ -17,6 +22,7 @@ const appReducer = (state = initialState, action) => {
     }
 
     case ANY_ERROR: {
+      // eslint-disable-next-line no-console
       console.log(action.payload);
       // eslint-disable-next-line no-alert
       alert("Something went wrong...");

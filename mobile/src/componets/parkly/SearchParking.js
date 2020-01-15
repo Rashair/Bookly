@@ -1,32 +1,42 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { StyleSheet, View, TouchableOpacity } from "react-native";
-import { Container, Content, Text } from "native-base";
+import { StyleSheet, View, TouchableOpacity, ScrollView } from "react-native";
+import { Container, Text } from "native-base";
 import { TextInput, HelperText, Title, Button } from "react-native-paper";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { LocalDate, LocalTime, DateTimeFormatter, nativeJs } from "@js-joda/core";
 
-import { anyError } from "../../redux/actions";
+import { white } from "react-native-paper/lib/commonjs/styles/colors";
+import { anyError, searchByDate } from "../../redux/actions";
 import { BUTTON_COLOR } from "../../helpers/colors";
 
-const white = "#ffffff";
 const styles = StyleSheet.create({
-  contentPadding: { paddingHorizontal: 10, paddingVertical: 20 },
+  content: { paddingHorizontal: 10, paddingVertical: 20 },
+  contentContainer: {
+    alignItems: "stretch",
+    backgroundColor: white,
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
   inputDate: {
     backgroundColor: white,
+    height: 45,
+    marginBottom: 10,
     marginRight: 10,
+    marginTop: 0,
   },
-  putOnBottom: { flex: 1, justifyContent: "flex-end" },
+  putOnBottom: { marginTop: 20 },
   row: {
-    flex: 1,
     flexDirection: "row",
   },
   whiteBackground: {
     backgroundColor: white,
   },
 });
+const currDate = new Date();
 
 class SearchParking extends React.Component {
   static navigationOptions = { title: "Search parking" };
@@ -34,14 +44,16 @@ class SearchParking extends React.Component {
   constructor(props) {
     super(props);
 
+    const datePlusHour = new Date(currDate);
+    datePlusHour.setHours(currDate.getHours() + 1);
     this.state = {
       showDateFromPicker: false,
       showTimeFromPicker: false,
       showDateToPicker: false,
       showTimeToPicker: false,
       city: "",
-      dateFrom: new Date(),
-      dateTo: new Date(),
+      dateFrom: currDate,
+      dateTo: datePlusHour,
       cityValid: true,
       dateToValid: true,
     };
@@ -49,32 +61,52 @@ class SearchParking extends React.Component {
     this.setDateFrom = this.setDateFrom.bind(this);
     this.setDateTo = this.setDateTo.bind(this);
     this.setCity = this.setCity.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  setDateFrom(event, date) {
+  setDateFrom(e, date) {
+    if (!date) {
+      this.setState({ showDateFromPicker: false, showTimeFromPicker: false });
+      return;
+    }
+
     this.setState(oldstate => ({
       dateFrom: date,
-      dateToValid: !!(oldstate.dateTo && date <= oldstate.dateTo),
+      dateToValid: this.validateDateTo(date, oldstate.dateFrom),
       showDateFromPicker: false,
       showTimeFromPicker: false,
     }));
   }
 
-  setDateTo(event, date) {
+  setDateTo(e, date) {
+    if (!date) {
+      this.setState({ showDateToPicker: false, showTimeToPicker: false });
+      return;
+    }
+
     this.setState(oldstate => ({
       dateTo: date,
-      dateToValid: !!(oldstate.dateFrom && oldstate.dateFrom <= date),
+      dateToValid: this.validateDateTo(oldstate.dateFrom, date),
       showDateToPicker: false,
       showTimeToPicker: false,
     }));
   }
 
-  setCity(event, city) {
-    const cityPattern = /^[a-zA-Z][a-zA-Z][a-zA-Z ]*$/;
+  validateDateTo(dateFrom, dateTo) {
+    const ONE_HOUR = 60 * 60;
+    return Boolean(dateFrom && dateTo && parseInt((dateTo - dateFrom) / 1000, 10) >= ONE_HOUR);
+  }
+
+  setCity(city) {
     this.setState({
       city,
-      cityValid: !!(cityPattern.test(city) && city.length >= 3),
+      cityValid: this.validateCity(city),
     });
+  }
+
+  validateCity(city) {
+    const cityPattern = /^[A-ZĆŁÓŚŹŻa-ząćęłńóśźż]{3,}$/;
+    return Boolean(cityPattern.test(city));
   }
 
   errorMessage(field) {
@@ -82,10 +114,24 @@ class SearchParking extends React.Component {
       case "City":
         return "City name incorrect";
       case "DateTo":
-        return "Date to must be later than date from";
+        return "Date to must be later than date from by at least 1 hour";
       default:
         return "";
     }
+  }
+
+  handleSubmit() {
+    const { city, dateFrom, dateTo } = this.state;
+    const cityValid = this.validateCity(city);
+    const dateToValid = this.validateDateTo(dateFrom, dateTo);
+    if (!cityValid || !dateToValid) {
+      this.setState({ cityValid, dateToValid });
+      return;
+    }
+    // TODO: fetch here - reservations/find-parkings
+
+    this.props.searchByDate({ from: dateFrom, to: dateTo });
+    this.props.navigation.push("ListParking");
   }
 
   render() {
@@ -95,10 +141,9 @@ class SearchParking extends React.Component {
     const dateToFormatted = LocalDate.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("d/M/yyyy"));
     const timeToFormatted = LocalTime.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("HH:mm"));
 
-    const { navigation } = this.props;
     return (
       <Container>
-        <Content style={styles.contentPadding}>
+        <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
           <Title>City</Title>
           <TextInput
             mode="outlined"
@@ -106,17 +151,15 @@ class SearchParking extends React.Component {
             onChangeText={text => this.setCity(text)}
             value={this.state.city}
           />
-          <HelperText type="error" visible={!this.state.cityValid}>
-            {this.errorMessage("City")}
-          </HelperText>
+          {!this.state.cityValid && <HelperText type="error">{this.errorMessage("City")}</HelperText>}
           <View>
             <Title>From</Title>
             <View style={styles.row}>
               <TouchableOpacity onPress={() => this.setState({ showDateFromPicker: true })}>
-                <TextInput mode="flat" style={styles.inputDate} value={dateFromFormatted} />
+                <TextInput mode="flat" style={styles.inputDate} value={dateFromFormatted} editable={false} />
                 {showDateFromPicker && (
                   <DateTimePicker
-                    minimumDate={new Date()}
+                    minimumDate={currDate}
                     value={dateFrom}
                     mode="date"
                     display="calendar"
@@ -129,7 +172,7 @@ class SearchParking extends React.Component {
                 <TextInput mode="flat" style={styles.inputDate} value={timeFromFormatted} editable={false} />
                 {showTimeFromPicker && (
                   <DateTimePicker
-                    minimumDate={new Date()}
+                    minimumDate={currDate}
                     value={dateFrom}
                     mode="time"
                     display="clock"
@@ -147,7 +190,7 @@ class SearchParking extends React.Component {
                 <TextInput mode="flat" style={styles.inputDate} value={dateToFormatted} editable={false} />
                 {showDateToPicker && (
                   <DateTimePicker
-                    minimumDate={new Date()}
+                    minimumDate={dateFrom}
                     value={dateTo}
                     mode="date"
                     display="calendar"
@@ -169,21 +212,19 @@ class SearchParking extends React.Component {
                 )}
               </TouchableOpacity>
             </View>
-            <HelperText type="error" visible={!this.state.dateToValid}>
-              {this.errorMessage("DateTo")}
-            </HelperText>
+            {!this.state.dateToValid && <HelperText type="error">{this.errorMessage("DateTo")}</HelperText>}
           </View>
 
           <Button
             mode="contained"
-            style={styles.putOnBottom}
             color={BUTTON_COLOR}
+            style={styles.putOnBottom}
             disabled={!(this.state.cityValid && this.state.dateToValid)}
-            onPress={() => navigation.push("ListParking")}
+            onPress={this.handleSubmit}
           >
             <Text>Search</Text>
           </Button>
-        </Content>
+        </ScrollView>
       </Container>
     );
   }
@@ -197,6 +238,7 @@ const mapStateToProps = (state /* , ownProps */) => {
 
 const mapDispatchToProps = dispatch => ({
   anyError: data => dispatch(anyError(data)),
+  searchByDate: dates => dispatch(searchByDate(dates)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchParking);

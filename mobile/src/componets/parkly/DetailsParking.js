@@ -7,10 +7,10 @@ import { Headline, Button } from "react-native-paper";
 import { Table, Row } from "react-native-table-component";
 
 import { ScrollView } from "react-native-gesture-handler";
+import { white } from "react-native-paper/lib/commonjs/styles/colors";
 import { anyError } from "../../redux/actions";
 import { BUTTON_COLOR } from "../../helpers/colors";
 
-const white = "#ffffff";
 const styles = StyleSheet.create({
   button: {
     height: 54,
@@ -47,6 +47,8 @@ class DetailsParking extends React.Component {
 
   render() {
     const { parking } = this.state;
+    const { navigation } = this.props;
+
     return (
       <Container>
         <ScrollView contentContainerStyle={styles.content}>
@@ -76,9 +78,7 @@ class DetailsParking extends React.Component {
               style={styles.button}
               color={BUTTON_COLOR}
               mode="contained"
-              onPress={() => {
-                /* Redirect to make reservation here */
-              }}
+              onPress={() => navigation.push("ReserveParking", { parking })}
             >
               <Text>Make reservation</Text>
             </Button>
