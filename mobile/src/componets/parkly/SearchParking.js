@@ -8,8 +8,27 @@ import { TextInput, HelperText, Title, Button } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { LocalDate, LocalTime, DateTimeFormatter, nativeJs } from "@js-joda/core";
 
+import { anyError } from "../../redux/actions";
+
+const white = "#ffffff";
+const styles = StyleSheet.create({
+  contentPadding: { paddingHorizontal: 10, paddingVertical: 20 },
+  inputDate: {
+    backgroundColor: white,
+    marginRight: 10,
+  },
+  row: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  whiteBackground: {
+    backgroundColor: white,
+  },
+});
+
 class SearchParking extends React.Component {
-  static navigationOptions = { title: "Find parking" };
+  static navigationOptions = { title: "Search parking" };
+
   constructor(props) {
     super(props);
 
@@ -30,28 +49,29 @@ class SearchParking extends React.Component {
     this.setCity = this.setCity.bind(this);
   }
 
-  setDateFrom(date) {
-    this.setState({
+  setDateFrom(event, date) {
+    this.setState(oldstate => ({
       dateFrom: date,
-      dateToValid: this.state.dateTo && date <= this.state.dateTo ? true : false,
+      dateToValid: !!(oldstate.dateTo && date <= oldstate.dateTo),
       showDateFromPicker: false,
       showTimeFromPicker: false,
-    });
-  }
-  setDateTo(date) {
-    this.setState({
-      dateTo: date,
-      dateToValid: this.state.dateFrom && this.state.dateFrom <= date ? true : false,
-      showDateToPicker: false,
-      showTimeToPicker: false,
-    });
+    }));
   }
 
-  setCity(city) {
+  setDateTo(event, date) {
+    this.setState(oldstate => ({
+      dateTo: date,
+      dateToValid: !!(oldstate.dateFrom && oldstate.dateFrom <= date),
+      showDateToPicker: false,
+      showTimeToPicker: false,
+    }));
+  }
+
+  setCity(event, city) {
     const cityPattern = /^[a-zA-Z][a-zA-Z][a-zA-Z ]*$/;
     this.setState({
-      city: city,
-      cityValid: cityPattern.test(city) && city.length >= 3 ? true : false,
+      city,
+      cityValid: !!(cityPattern.test(city) && city.length >= 3),
     });
   }
 
@@ -61,6 +81,8 @@ class SearchParking extends React.Component {
         return "City name incorrect";
       case "DateTo":
         return "Date to must be later than date from";
+      default:
+        return "";
     }
   }
 
@@ -71,13 +93,14 @@ class SearchParking extends React.Component {
     const dateToFormatted = LocalDate.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("d/M/yyyy"));
     const timeToFormatted = LocalTime.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("HH:mm"));
 
+    const { navigation } = this.props;
     return (
       <Container>
-        <Content style={{ paddingVertical: 20, paddingHorizontal: 10 }}>
+        <Content style={styles.contentPadding}>
           <Title>City</Title>
           <TextInput
             mode="outlined"
-            style={{ backgroundColor: "white" }}
+            style={styles.whiteBackground}
             onChangeText={text => this.setCity(text)}
             value={this.state.city}
           />
@@ -152,9 +175,9 @@ class SearchParking extends React.Component {
           <Button
             mode="contained"
             disabled={!(this.state.cityValid && this.state.dateToValid)}
-            onPress={() => console.log("Simple Button pressed")}
+            onPress={() => navigation.push("ListParkings")}
           >
-            Search
+            <Text>Search</Text>
           </Button>
         </Content>
       </Container>
@@ -162,24 +185,14 @@ class SearchParking extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: "90%",
-    backgroundColor: "#fff",
-    marginLeft: "auto",
-    marginRight: "auto",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  row: {
-    flex: 1,
-    flexDirection: "row",
-  },
-  inputDate: {
-    backgroundColor: "#ffffff",
-    marginRight: 10,
-  },
+const mapStateToProps = (state /* , ownProps */) => {
+  return {
+    auth: state.auth,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  anyError: data => dispatch(anyError(data)),
 });
 
-export default connect(null, null)(SearchParking);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchParking);
