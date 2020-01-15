@@ -53,18 +53,53 @@
   "parking": [
     {
       "id": 1,
-      "location": "Urithiru",
+      "city": "Urithiru",
+      "street": "Kholinar",
+      "streetNumber": 111825101112,
+      "numberOfSpots": 500,
+      "workingHoursFrom": 8,
+      "workingHoursTo": 16,
       "pricePerHour": 5
     },
     {
       "id": 2,
-      "location": "Urithiru",
+      "city": "Urithiru",
+      "street": "Vedenar",
+      "streetNumber": 71249151210101114,
+	  "numberOfSpots": 500,
+      "workingHoursFrom": 8,
+      "workingHoursTo": 16,
       "pricePerHour": 4
     },
     {
       "id": 3,
-      "location": "Urithiru",
+      "city": "Urithiru",
+      "street": "Narak",
+      "streetNumber": 10215117112101112171,
+      "numberOfSpots": 50,
+      "workingHoursFrom": 8,
+      "workingHoursTo": 22,
       "pricePerHour": 8
+    },
+    {
+      "id": 4,
+      "city": "Urithiru",
+      "street": "Shinovar",
+	  "streetNumber": 3448311107151425414,
+      "numberOfSpots": 500,
+      "workingHoursFrom": 8,
+      "workingHoursTo": 16,
+      "pricePerHour": 5
+    },
+	{
+      "id": 5,
+      "city": "Urithiru",
+      "street": "Rall Ellorim",
+	  "streetNumber": 3410916149149341212,
+      "numberOfSpots": 500,
+      "workingHoursFrom": 8,
+      "workingHoursTo": 16,
+      "pricePerHour": 5
     }
   ]
 }

@@ -1,10 +1,11 @@
-import { createAppContainer } from "react-navigation";
+import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import LoginScreen from "./componets/userContent/LoginScreen";
 import SearchFlatScreen from "./componets/flatly/SearchFlatScreen";
 import FlatsListScreen from "./componets/flatly/FlatsListScreen";
 import SearchParking from "./componets/parkly/SearchParking";
-import ListParkings from "./componets/parkly/ListParkings";
+import ListParking from "./componets/parkly/ListParking";
+import DetailsParking from "./componets/parkly/DetailsParking";
 
 const AppNavigator = createStackNavigator(
   {
@@ -12,7 +13,19 @@ const AppNavigator = createStackNavigator(
     SearchFlat: { screen: SearchFlatScreen },
     FlatsList: { screen: FlatsListScreen },
     SearchParking: { screen: SearchParking },
-    ListParkings: { screen: ListParkings },
+    ListParking: { screen: ListParking },
+    DetailsParking: { screen: DetailsParking },
+  },
+  {
+    initialRouteName: "ListParking",
+    headerMode: "screen",
+  }
+);
+
+const AuthNavigator = createSwitchNavigator(
+  {
+    Login: { screen: LoginScreen },
+    App: AppNavigator,
   },
   {
     initialRouteName: "Login",
@@ -20,6 +33,6 @@ const AppNavigator = createStackNavigator(
   }
 );
 
-const AppContainer = createAppContainer(AppNavigator);
+const AppContainer = createAppContainer(AuthNavigator);
 
 export default AppContainer;

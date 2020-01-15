@@ -2,18 +2,23 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { StyleSheet, View, ActivityIndicator } from "react-native";
-import { Container, Content, Text } from "native-base";
+import { Container, Text } from "native-base";
 import { Card, Chip } from "react-native-paper";
 
+import { ScrollView } from "react-native-gesture-handler";
 import { PARKLY_API_URL } from "../../helpers/constants";
+import { ACTIVITY_INDICATOR_COLOR } from "../../helpers/colors";
 import { anyError } from "../../redux/actions";
 
 const styles = StyleSheet.create({
-  md_paddingVertical: { paddingVertical: 20 },
-  sortingRow: { display: "flex", flexDirection: "row", justifyContent: "space-around", marginBottom: 20 },
+  fontBold: { fontWeight: "bold" },
+  md_paddingVertical: { paddingVertical: 15 },
+  row: { flexDirection: "row", justifyContent: "space-between" },
+  sortingRow: { display: "flex", justifyContent: "space-around", marginBottom: 20 },
+  wrapInSameColumn: { flexShrink: 1 },
 });
 
-class ListParkings extends React.Component {
+class ListParking extends React.Component {
   static navigationOptions = { title: "Choose parking" };
 
   constructor(props) {
@@ -25,11 +30,11 @@ class ListParkings extends React.Component {
     };
 
     this.state = {
+      parking: null,
+      sortingType: this.sortingTypes.lowestPrice,
       // currentPage: 1,
       // parkingPerPage: 10,
-      sortingType: this.sortingTypes.lowestPrice,
       isLoading: true,
-      parking: null,
     };
 
     this.changeSortingType = this.changeSortingType.bind(this);
@@ -39,12 +44,18 @@ class ListParkings extends React.Component {
     this.changeSortingType(this.sortingTypes.lowestPrice);
   }
 
-  async changeSortingType(type) {
+  changeSortingType(type) {
     this.setState({ isLoading: true });
     fetch(`${PARKLY_API_URL}/parking`).then(
       response => {
         if (response.ok) {
-          response.json().then(json => this.setState({ sortingType: type, parking: json, isLoading: false }));
+          response.json().then(json => {
+            json.forEach(parkingSpace => {
+              /* eslint-disable no-param-reassign */
+              parkingSpace.location = `${parkingSpace.street} ${parkingSpace.streetNumber}, ${parkingSpace.city}`;
+            });
+            this.setState({ sortingType: type, parking: json, isLoading: false });
+          });
         } else {
           this.props.dispatch.anyError(`Error fetching, status code: ${response.statusCode}`);
         }
@@ -54,28 +65,32 @@ class ListParkings extends React.Component {
   }
 
   createCardsList() {
-    if (!this.state.parking) {
+    const { parking } = this.state;
+    const { navigation } = this.props;
+
+    if (!parking) {
       return <Text>Error</Text>;
     }
 
-    return this.state.parking.map(parking => (
-      <Card
-        key={parking.id}
-        onPress={() => {
-          console.log("do sth");
-        }}
-      >
-        <Card.Content>
-          <Text>{parking.pricePerHour.toString()} PLN / h</Text>
-          <Text>Location: {parking.location}</Text>
-        </Card.Content>
-      </Card>
-    ));
+    return parking.map(parkingSpace => {
+      return (
+        <Card key={parkingSpace.id} onPress={() => navigation.push("DetailsParking", { parking: parkingSpace })}>
+          <Card.Content>
+            <Text style={styles.fontBold}>Parking {parkingSpace.id}</Text>
+            <Text>Price: {parkingSpace.pricePerHour.toString()} PLN / h</Text>
+            <View style={styles.row}>
+              <Text>Location: </Text>
+              <Text style={styles.wrapInSameColumn}>{parkingSpace.location}</Text>
+            </View>
+          </Card.Content>
+        </Card>
+      );
+    });
   }
 
   render() {
     const sortingTypes = (
-      <View style={styles.sortingRow}>
+      <View style={[styles.row, styles.sortingRow]}>
         <Chip
           mode="outlined"
           selected={this.state.sortingType === this.sortingTypes.lowestPrice}
@@ -96,23 +111,17 @@ class ListParkings extends React.Component {
     const { isLoading } = this.state;
     return (
       <Container>
-        <Content style={styles.md_paddingVertical}>
+        <ScrollView contentContainerStyle={styles.md_paddingVertical}>
           {sortingTypes}
-          {isLoading ? <ActivityIndicator size="large" color="#00aaff" /> : this.createCardsList()}
-        </Content>
+          {isLoading ? <ActivityIndicator size="large" color={ACTIVITY_INDICATOR_COLOR} /> : this.createCardsList()}
+        </ScrollView>
       </Container>
     );
   }
 }
 
-const mapStateToProps = (state /* , ownProps */) => {
-  return {
-    auth: state.auth,
-  };
-};
-
 const mapDispatchToProps = dispatch => ({
   anyError: data => dispatch(anyError(data)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ListParkings);
+export default connect(null, mapDispatchToProps)(ListParking);

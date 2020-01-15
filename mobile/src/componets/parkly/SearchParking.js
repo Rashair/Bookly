@@ -9,6 +9,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { LocalDate, LocalTime, DateTimeFormatter, nativeJs } from "@js-joda/core";
 
 import { anyError } from "../../redux/actions";
+import { BUTTON_COLOR } from "../../helpers/colors";
 
 const white = "#ffffff";
 const styles = StyleSheet.create({
@@ -17,6 +18,7 @@ const styles = StyleSheet.create({
     backgroundColor: white,
     marginRight: 10,
   },
+  putOnBottom: { flex: 1, justifyContent: "flex-end" },
   row: {
     flex: 1,
     flexDirection: "row",
@@ -174,8 +176,10 @@ class SearchParking extends React.Component {
 
           <Button
             mode="contained"
+            style={styles.putOnBottom}
+            color={BUTTON_COLOR}
             disabled={!(this.state.cityValid && this.state.dateToValid)}
-            onPress={() => navigation.push("ListParkings")}
+            onPress={() => navigation.push("ListParking")}
           >
             <Text>Search</Text>
           </Button>

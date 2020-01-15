@@ -7,11 +7,12 @@ import sha3 from "crypto-js/sha3";
 import hmacSHA512 from "crypto-js/hmac-sha512";
 import Base64 from "crypto-js/enc-base64";
 import { login } from "../../redux/thunk-functions";
+import { WHITE } from "../../helpers/colors";
 
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: WHITE,
     flex: 1,
     justifyContent: "center",
   },
@@ -19,21 +20,19 @@ const styles = StyleSheet.create({
 
 class LoginScreen extends React.Component {
   componentDidMount() {
-    fetch("http://b3a59cf1.ngrok.io/cars").then(
-      response => {
-        if (response.ok) {
-          response.json().then(x => console.log(x));
-        }
-      },
-      error => console.log(`error${error}`)
-    );
-    console.log("I am here");
+    // fetch("http://b3a59cf1.ngrok.io/cars").then(
+    //   response => {
+    //     if (response.ok) {
+    //       response.json().then(x => console.log(x));
+    //     }
+    //   },
+    //   error => console.log(`error${error}`)
+    // );
   }
 
   componentDidUpdate() {
     if (this.props.auth) {
-      // TODO: Home here
-      this.props.navigation.push("SearchParking");
+      this.props.navigation.navigate("App");
     }
   }
 
@@ -50,16 +49,6 @@ class LoginScreen extends React.Component {
   }
 
   render() {
-    const { auth, navigation } = this.props;
-    if (auth) {
-      return (
-        <View style={styles.container}>
-          <Text>Hi {auth.firstName}</Text>
-          <Button mode="contained" title="Next" onPress={() => navigation.navigate("SearchParking")} />
-        </View>
-      );
-    }
-
     return (
       <View style={styles.container}>
         <Text>Please log in!</Text>
