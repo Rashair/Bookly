@@ -1,80 +1,71 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, ScrollView, FlatList, Image } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-//import MyReservationCarItem from './ListItem/MyReservationCarItem';
-//import MyReservationFlatItem from './ListItem/MyReservationFlatItem';
-///import MyReservationParkingItem from './ListItem/MyReservationParkingItem';
 
-function MyReservationCarItem ({DateFrom}) {
-  return (
-    <View>
-        {/* <Image source={require('./assets/car.png')} />  here will be custom icon */}
-        <Text>{DateFrom}</Text>
-    </View>
-  );
-}
 
-function MyReservationFlatItem ({DateFrom}) {
-  return (
-    <TouchableOpacity>
-        {/* <Image source={require('./assets/car.png')} />  here will be custom icon */}
-        <Text>{DateFrom}</Text>
-    </TouchableOpacity>
-  );
-}
+const DATA =  [ // temporary solution to display data
+  {
+    id :1,
+    type : 'car',
+    FKid:1,
+    DateFrom : " today"
+  },
+  {
+    id:2,
+    type : 'flat',
+    DateFrom : "tommorow",
+   FKid :2
+  },
+  {
+    id:3,
+    type : 'parking',
+    DateFrom : "never",
+    FKid : 3
+   
+  }
+  ]; 
 
 function MyReservationItem ({DateFrom, FKid, type, navigation}) {
   let image;
-  if(type === 'car'){
-    image = <Image />
-  }
+  // if(type === 'car'){
+    image = <Image source ={require('./assets/car.png')} />
+  // }
   return (
     <TouchableOpacity onPress={navigation}>
-      {/* {image} */}
+      {image}
         <Text>{DateFrom}</Text>
         <Text>{FKid}</Text>
     </TouchableOpacity>
   );
 }
 
-const DATA =  [ // temporary solution to display data
-{
-  id :1,
-  type : 'car',
-  FKid:1,
-  DateFrom : " today"
-},
-{
-  id:2,
-  type : 'flat',
-  DateFrom : "tommorow",
- FKid :2
-},
-{
-  id:3,
-  type : 'parking',
-  DateFrom : "never",
-  FKid : 3
- 
-}
-]; 
 export default class MyReservationList extends React.Component {
   constructor(props){
     super(props);
     this.openDetails = this.openDetails.bind(this);
     this.renderItem = this.renderItem.bind(this);
+
+    this.state ={
+      reservations : [],
+    }
   }
-  openDetails = (FKid, type) => {
+
+  componentDidMount(){
+    //fetch
+  }
+
+  openDetails = (FKid, type, id) => {
     this.props.navigation.navigate("MyReservationDetails",
     {
       FKid: FKid,
       type : type,
+      id : id
     });
   };
 
   renderItem ({item}) {
       return(
-        <MyReservationItem DateFrom={item.DateFrom} FKid={item.FKid} type={item.type} navigation={()=>this.openDetails(item.FKid, item.type)} />
+        <MyReservationItem DateFrom={item.DateFrom} FKid={item.FKid} type={item.type} navigation={()=>this.openDetails(item.FKid, item.type, item.id)} />
       );
   }
    
