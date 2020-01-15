@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Image } from 'react-native'
 import { Container, Header, Content, DatePicker, Text, Picker } from 'native-base'
 import { Headline, Subheading, Title, Button, Paragraph } from 'react-native-paper';
 import React from 'react'
@@ -21,15 +21,19 @@ export default class FlatDetailsScreen extends React.Component
             <Container>
                 <ScrollView contentContainerStyle={styles.content}>
                     <Headline>
-                        {this.flat.city + ", " + this.flat.address}
+                        {this.flat.title}
                     </Headline>
-                    <View style={{flexDirection:"column" }}>
+                    <Text>
+                        {this.flat.city + ", " + this.flat.address}
+                    </Text>
+                    <Image style={{width: '100%', height: 200}} resizeMode='cover' source={{ uri: this.flat.image}}></Image>
+                    <View style={{flexDirection:"column", marginTop: 10 }}>
                         <Title>Description</Title>
                         <Paragraph>{this.flat.description}</Paragraph>
                     </View>
                     <View style={{flexDirection:"row", justifyContent:"space-between"}}>
                         <Title>Rooms</Title>
-                        <Title>{this.flat.rooms.toString()}</Title>
+                        <Title>{this.flat.roomNumber.toString()}</Title>
                     </View>
                     <View style={{flexDirection:"row", justifyContent:"space-between"}}>
                         <Title>Beds</Title>

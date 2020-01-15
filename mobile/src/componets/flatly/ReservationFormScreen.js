@@ -51,6 +51,20 @@ export default class ReservationFormScreen extends React.Component
             emailValid: emailPattern.test(email)
         })
     }
+    setDateFrom(date)
+    {
+        this.setState({
+                dateFrom: date,
+                dateToValid: this.state.dateTo && date <= this.state.dateTo ? true : false
+        })
+    }
+    setDateTo(date)
+    {
+        this.setState({
+                dateTo: date,
+                dateToValid: this.state.dateFrom && this.state.dateFrom <= date ? true : false
+        })
+    }
     errorMessage(field)
     {
         switch(field)
@@ -72,8 +86,8 @@ export default class ReservationFormScreen extends React.Component
                     behavior="padding"
                     style={styles.container}>
                     <ScrollView contentContainerStyle={styles.inner}>
-                        <Title>First name</Title>
                         <TextInput
+                            label="First name"
                             mode="outlined"
                             theme={{ colors: { primary: this.state.firstNameValid ? '#3579e6' : 'red',underlineColor:'transparent',}}}
                             style={{backgroundColor: 'white'}}
@@ -86,8 +100,8 @@ export default class ReservationFormScreen extends React.Component
                             {this.errorMessage('FirstName')}
                         </HelperText>
 
-                        <Title>Last name</Title>
                         <TextInput
+                            label="Last name"
                             mode="outlined"
                             theme={{ colors: { primary: this.state.lastNameValid ? '#3579e6' : 'red',underlineColor:'transparent',}}}
                             style={{backgroundColor: 'white'}}
@@ -100,8 +114,8 @@ export default class ReservationFormScreen extends React.Component
                             {this.errorMessage('LastName')}
                         </HelperText>
 
-                        <Title>Email</Title>
                         <TextInput
+                            label="E-mail"
                             mode="outlined"
                             theme={{ colors: { primary: this.state.emailValid ? '#3579e6' : 'red',underlineColor:'transparent',}}}
                             style={{backgroundColor: 'white'}}
@@ -112,6 +126,30 @@ export default class ReservationFormScreen extends React.Component
                             type="error"
                             visible={!this.state.emailValid} >
                             {this.errorMessage('Email')}
+                        </HelperText>
+
+                        <DatePicker
+                            value={this.state.dateFrom}
+                            placeHolderText="From"
+                            textStyle={{color: '#3579e6'}}
+                            placeHolderTextStyle={{color: '#3579e6'}}
+                            format="YYYY-MM-DD"
+                            minimumDate={new Date()}
+                            onDateChange={(date) => this.setDateFrom(date)}/>
+                        
+                        <DatePicker
+                            value={this.state.dateTo}
+                            textStyle={{color: '#3579e6'}}
+                            placeHolderTextStyle={{color: '#3579e6'}}
+                            placeHolderText="To"
+                            minimumDate={new Date()}
+                            onDateChange={(date) => this.setDateTo(date)}/>
+                        
+                        <HelperText
+                            style={styles.helper}
+                            type="error"
+                            visible={!this.state.dateToValid} >
+                            {this.errorMessage('DateTo')}
                         </HelperText>
 
                         <View style={{flex: 1, justifyContent: 'flex-end'}}>
@@ -139,9 +177,8 @@ const styles = StyleSheet.create({
           backgroundColor: '#fff',
     },
     inner: {
-        padding: 20,
+        padding: 10,
         flex: 1,
-        justifyContent: "flex-end",
     },
     button:{
         height: 54,
