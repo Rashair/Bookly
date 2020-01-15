@@ -24,7 +24,7 @@ export default class MyReservationParkingDetails extends React.Component {
     render() {
       return (
         <View>
-           <Modal
+           {/* <Modal
             animationType="slide"
             transparent={false}
             visible={this.state.modalVisible}
@@ -49,14 +49,16 @@ export default class MyReservationParkingDetails extends React.Component {
                 </TouchableHighlight>
               </View>
             </View>
-          </Modal>
+          </Modal> */}
 
 
-            <Text>{this.props.getParam('Car', 'No car selected').Model}</Text> {/*just to test passing params */}
-            <TouchableHighlight onPress={() => {this.setModalVisible(true)}} >
-              <Text>Cancel reservation</Text>
-            </TouchableHighlight>
-            <Button title="Go back" onPress={() => this.props.navigation.goBack()} />
+            {/* <Text>{this.props.getParam('Car', 'No car selected').Model}</Text> just to test passing params */}
+            {/* <TouchableHighlight onPress={() => {this.setModalVisible(true)}} > */}
+              {/* <Text>{this.props.navigation.getParam('type', 'NO-ID')}</Text>
+              <Text>{this.props.navigation.getParam('FKid', 'NO-ID')}</Text> */}
+            {/* </TouchableHighlight> */}
+            <Text>Parking details</Text>
+            {/* <Button title="Go back" onPress={() => this.props.navigation.goBack()} /> */}
         </View>
       );
     }

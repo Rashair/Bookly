@@ -7,6 +7,7 @@ import MyReservationsList from './componets/reservations/MyReservationsList';
 import MyReservationCarDetails from './componets/reservations/Details/MyReservationCarDetails';
 import MyReservationFlatDetails from './componets/reservations/Details/MyReservationFlatDetails';
 import MyReservationParkingDetails from './componets/reservations/Details/MyReservationParkingDetails';
+import MyReservationDetails from './componets/reservations/Details/MyReservationDetails'
 
 const AppNavigator = createStackNavigator(
   {
@@ -16,7 +17,8 @@ const AppNavigator = createStackNavigator(
     MyReservationsList: { screen : MyReservationsList},
     MyReservationCarDetails : { screen : MyReservationCarDetails},
     MyReservationFlatDetails : { screen : MyReservationFlatDetails},
-    MyReservationParkingDetails : { screen : MyReservationParkingDetails}
+    MyReservationParkingDetails : { screen : MyReservationParkingDetails},
+    MyReservationDetails : { screen : MyReservationDetails},
   },
   {
     initialRouteName: "LoginScreen",

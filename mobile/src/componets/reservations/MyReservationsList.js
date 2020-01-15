@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, ScrollView, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Button, ScrollView, FlatList, Image } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 //import MyReservationCarItem from './ListItem/MyReservationCarItem';
 //import MyReservationFlatItem from './ListItem/MyReservationFlatItem';
@@ -23,10 +23,14 @@ function MyReservationFlatItem ({DateFrom}) {
   );
 }
 
-function MyReservationParkingItem ({DateFrom, FKid, navigation}) {
+function MyReservationItem ({DateFrom, FKid, type, navigation}) {
+  let image;
+  if(type === 'car'){
+    image = <Image />
+  }
   return (
-    <TouchableOpacity onPress={() =>navigation(FKid)}>
-        {/* <Image source={require('./assets/car.png')} />  here will be custom icon */}
+    <TouchableOpacity onPress={navigation}>
+      {/* {image} */}
         <Text>{DateFrom}</Text>
         <Text>{FKid}</Text>
     </TouchableOpacity>
@@ -57,40 +61,25 @@ const DATA =  [ // temporary solution to display data
 export default class MyReservationList extends React.Component {
   constructor(props){
     super(props);
-    // this.renderItem = this.renderItem.bind(this);
+    this.openDetails = this.openDetails.bind(this);
+    this.renderItem = this.renderItem.bind(this);
   }
-  openParkingDetails = (FKID) => {
-    this.props.navigation.navigate("MyReservationParkingDetails", {
-      FKid: FKID,
+  openDetails = (FKid, type) => {
+    this.props.navigation.navigate("MyReservationDetails",
+    {
+      FKid: FKid,
+      type : type,
     });
   };
 
   renderItem ({item}) {
-    console.log('halo');
-    console.log(item);
-    console.log(item.FKid);
-    console.log(this.props === undefined);
-    if(item.type === 'car'){
       return(
-        <MyReservationCarItem DateFrom ={item.DateFrom} onPress={() => this.props.navigation('MyReservationCarDetails',{car : item.FKid })} />
+        <MyReservationItem DateFrom={item.DateFrom} FKid={item.FKid} type={item.type} navigation={()=>this.openDetails(item.FKid, item.type)} />
       );
-    }
-    else if(item.type === 'flat'){
-      return(
-        <MyReservationFlatItem DateFrom ={item.DateFrom} onPress={() => this.props.navigation('MyReservationFlatDetails',{flat : item.FKid })} />
-      );
-    }
-    else if(item.type === 'parking'){
-      return(
-        <MyReservationParkingItem DateFrom={item.DateFrom} FKid={item.FKid} navigation={this.openParkingDetails} />
-      );
-    }
   }
    
 
   render() {
-    
-
     return (
       <View style={styles.container}>
        <Text>Here will be reservation list !</Text>
