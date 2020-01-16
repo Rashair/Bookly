@@ -6,22 +6,20 @@ import utf16 from "crypto-js/enc-utf16";
 import sha3 from "crypto-js/sha3";
 import hmacSHA512 from "crypto-js/hmac-sha512";
 import Base64 from "crypto-js/enc-base64";
-import CustomMaskedPassword from 'react-custom-password-mask';
 
-import { Container, Header, Content, DatePicker, Text, Picker,Form } from "native-base";
+import { Container, Header, Content, DatePicker, Text, Picker, Form } from "native-base";
 import { TextInput, Subheading, List, Card, HelperText, Title, Chip, Button } from "react-native-paper";
 
-import { AuthSession } from "expo";
+import { login } from "../../redux/thunk-functions";
 
 class LoginScreen extends React.Component {
-
-static navigationOptions = { title: "Login, dear!:P" };
+  static navigationOptions = { title: "Login, dear!:P" };
   constructor(props) {
     super(props);
 
     this.setPassword = this.setPassword.bind(this);
     this.setLogin = this.setLogin.bind(this);
-    this.handleSubmit=this.handleSubmit.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.state = {
       login: "",
       password: "",
@@ -33,16 +31,15 @@ static navigationOptions = { title: "Login, dear!:P" };
 
   setLogin(login) {
     //will be useful if login will contain @
-  //  login.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) &&
+    //  login.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) &&
     this.setState({
-      login: login,//,
-      loginValid: login.length>0 ? true : false
+      login: login, //,
+      loginValid: login.length > 0 ? true : false,
     });
     console.log(login);
   }
 
   setPassword(password) {
-   
     this.setState({
       password: password,
       passwordValid: password.length >= 6 ? true : false,
@@ -54,55 +51,30 @@ static navigationOptions = { title: "Login, dear!:P" };
         return "Login name incorrect";
       case "Password":
         return "Please, enter password";
-    
     }
   }
-  componentDidMount() {
-   
-  }
+  componentDidMount() {}
 
   handleSubmit() {
-   // e.preventDefault();
+    // e.preventDefault();
 
-  
-   const { login, password } = this.state;
-   const randomMsg = utf16.parse("Keep it secret. Keep it safe");
-   const hashDigest = sha3(password + randomMsg);
-   const hash = Base64.stringify(hmacSHA512(hashDigest, login));
+    const { login, password } = this.state;
+    const randomMsg = utf16.parse("Keep it secret. Keep it safe");
+    const hashDigest = sha3(password + randomMsg);
+    const hash = Base64.stringify(hmacSHA512(hashDigest, login));
 
-    fetch("http://f268f239.ngrok.io/login",
-    {
-      method: 'POST',
-      headers: {
-          'X-Auth-Username': login,
-          'X-Auth-Password': hash,
-          'Content-Type': 'application/json'
-      }}
-    ).then(
-      response => {
-        if (response.ok) {
-          response.json().then(x => console.log(x));
-        }
-      },
-      error => console.log(error)
-    );
-
-    const data_2 = { login: this.state.login, password: hash };
-    //don't work
-   //this.props.login(data_2);
+    const data = { login: login, password: hash };
+    // For this to work, you must change API_URL in helpers/constants to your ngrok url
+    this.props.login(data);
   }
 
   render() {
     const { navigate } = this.props.navigation;
     return (
-      
-    
-        <Container>
+      <Container>
         <Content style={{ paddingVertical: 20, paddingHorizontal: 10 }}>
-       
           <Title>Login</Title>
           <TextInput
-        
             mode="outlined"
             style={{ backgroundColor: "white" }}
             onChangeText={text => this.setLogin(text)}
@@ -113,8 +85,8 @@ static navigationOptions = { title: "Login, dear!:P" };
           </HelperText>
           <Title>Password</Title>
           <TextInput
-           secureTextEntry={true} style={styles.default}
-         
+            secureTextEntry={true}
+            style={styles.default}
             mode="outlined"
             style={{ backgroundColor: "white" }}
             onChangeText={text => this.setPassword(text)}
@@ -123,19 +95,16 @@ static navigationOptions = { title: "Login, dear!:P" };
           <HelperText type="error" visible={!this.state.passwordValid}>
             {this.errorMessage("Password")}
           </HelperText>
-         
-         
+
           <Button
             mode="contained"
-            disabled={!(this.state.loginValid &&this.state.passwordValid)}
-            onPress={this.handleSubmit}>>
-            Login
+            disabled={!(this.state.loginValid && this.state.passwordValid)}
+            onPress={this.handleSubmit}
+          >
+            > Login
           </Button>
-     
         </Content>
       </Container>
-
-
     );
   }
 }
