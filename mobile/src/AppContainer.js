@@ -1,17 +1,25 @@
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import LoginScreen from "./componets/userContent/LoginScreen";
-import SearchFlatScreen from "./componets/flatly/SearchFlatScreen";
+import HomeScreen from "./componets/userContent/HomeScreen";
 import FlatsListScreen from "./componets/flatly/FlatsListScreen";
 import SearchCarScreen from "./componets/carly/SearchCarScreen";
+import MyReservationsList from "./componets/userContent/MyReservationsList";
+import MyReservationCarDetails from "./componets/userContent/details/MyReservationCarDetails";
+import MyReservationFlatDetails from "./componets/userContent/details/MyReservationFlatDetails";
+import MyReservationParkingDetails from "./componets/userContent/details/MyReservationParkingDetails";
+import MyReservationDetails from "./componets/userContent/details/MyReservationDetails";
 
 const AppNavigator = createStackNavigator(
   {
-    Login: { screen: LoginScreen },
-    SearchFlat: { screen: SearchFlatScreen },
-    SearchCar: { screen: SearchCarScreen },
+    HomeScreen: { screen: HomeScreen },
     FlatsList: { screen: FlatsListScreen },
     LoginScreen: { screen: LoginScreen },
+    MyReservationsList: { screen: MyReservationsList },
+    MyReservationCarDetails: { screen: MyReservationCarDetails },
+    MyReservationFlatDetails: { screen: MyReservationFlatDetails },
+    MyReservationParkingDetails: { screen: MyReservationParkingDetails },
+    MyReservationDetails: { screen: MyReservationDetails },
   },
   {
     initialRouteName: "LoginScreen",
