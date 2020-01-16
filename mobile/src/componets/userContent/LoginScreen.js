@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { connect } from "react-redux";
 
 import utf16 from "crypto-js/enc-utf16";
@@ -7,13 +7,25 @@ import sha3 from "crypto-js/sha3";
 import hmacSHA512 from "crypto-js/hmac-sha512";
 import Base64 from "crypto-js/enc-base64";
 
-import { Container, Header, Content, DatePicker, Text, Picker, Form } from "native-base";
-import { TextInput, Subheading, List, Card, HelperText, Title, Chip, Button } from "react-native-paper";
+import { Container, Content } from "native-base";
+import { TextInput, HelperText, Title, Button } from "react-native-paper";
 
+import { white } from "react-native-paper/lib/commonjs/styles/colors";
 import { login } from "../../redux/thunk-functions";
+
+const styles = StyleSheet.create({
+  backgroundWhite: {
+    backgroundColor: white,
+  },
+  content: {
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+  },
+});
 
 class LoginScreen extends React.Component {
   static navigationOptions = { title: "Login, dear!:P" };
+
   constructor(props) {
     super(props);
 
@@ -25,70 +37,77 @@ class LoginScreen extends React.Component {
       password: "",
       loginValid: true,
       passwordValid: true,
-      formValid: false,
     };
   }
 
+  componentDidUpdate() {
+    if (this.props.auth) {
+      this.props.navigation.navigate("Home");
+    }
+  }
+
   setLogin(login) {
-    //will be useful if login will contain @
+    // will be useful if login will contain @
     //  login.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) &&
     this.setState({
-      login: login, //,
-      loginValid: login.length > 0 ? true : false,
+      login, // ,
+      loginValid: login.length > 0,
     });
+    // eslint-disable-next-line no-console
     console.log(login);
   }
 
   setPassword(password) {
     this.setState({
-      password: password,
-      passwordValid: password.length >= 6 ? true : false,
+      password,
+      passwordValid: password.length >= 6,
     });
   }
+
   errorMessage(field) {
     switch (field) {
       case "Login":
         return "Login name incorrect";
       case "Password":
         return "Please, enter password";
+      default:
+        return "";
     }
   }
-  componentDidMount() {}
 
   handleSubmit() {
-    // e.preventDefault();
+    // TODO: Check if password and login valid here (user may not changed it)
 
     const { login, password } = this.state;
     const randomMsg = utf16.parse("Keep it secret. Keep it safe");
     const hashDigest = sha3(password + randomMsg);
     const hash = Base64.stringify(hmacSHA512(hashDigest, login));
 
-    const data = { login: login, password: hash };
+    const data = { login, password: hash };
     // For this to work, you must change API_URL in helpers/constants to your ngrok url
     this.props.login(data);
   }
 
   render() {
-    const { navigate } = this.props.navigation;
     return (
       <Container>
-        <Content style={{ paddingVertical: 20, paddingHorizontal: 10 }}>
+        <Content style={styles.content}>
           <Title>Login</Title>
           <TextInput
             mode="outlined"
-            style={{ backgroundColor: "white" }}
+            style={styles.backgroundWhite}
             onChangeText={text => this.setLogin(text)}
             value={this.state.login}
           />
           <HelperText type="error" visible={!this.state.loginValid}>
             {this.errorMessage("Login")}
           </HelperText>
+
           <Title>Password</Title>
           <TextInput
-            secureTextEntry={true}
-            style={styles.default}
+            secureTextEntry
             mode="outlined"
-            style={{ backgroundColor: "white" }}
+            style={styles.backgroundWhite}
             onChangeText={text => this.setPassword(text)}
             value={this.state.password}
           />
@@ -101,22 +120,13 @@ class LoginScreen extends React.Component {
             disabled={!(this.state.loginValid && this.state.passwordValid)}
             onPress={this.handleSubmit}
           >
-            > Login
+            <Text> Login</Text>
           </Button>
         </Content>
       </Container>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
 
 const mapStateToProps = (state /* , ownProps */) => {
   return {

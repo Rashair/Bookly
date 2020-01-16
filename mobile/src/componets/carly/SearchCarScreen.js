@@ -5,13 +5,7 @@ import React from "react";
 import { AuthSession } from "expo";
 import CustomMultiPicker from "react-native-multiple-select-list";
 
-
-
-
-
-
 export default class SearchCarScreen extends React.Component {
-
   static navigationOptions = { title: "Find your perfect car!" };
   constructor(props) {
     super(props);
@@ -25,7 +19,6 @@ export default class SearchCarScreen extends React.Component {
     this.setCity = this.setCity.bind(this);
     this.setPeople = this.setPeople.bind(this);
 
-
     this.state = {
       city: "",
       dateFrom: null,
@@ -37,7 +30,7 @@ export default class SearchCarScreen extends React.Component {
       formValid: false,
       cars: [],
       carsMap: [],
-      isLoading: true
+      isLoading: true,
     };
   }
   setDateFrom(date) {
@@ -85,33 +78,26 @@ export default class SearchCarScreen extends React.Component {
     }
   }
 
-
   componentDidMount() {
     //Url should be variable
-    fetch('http://814e452c.ngrok.io/cars')
+    fetch("http://814e452c.ngrok.io/cars")
       .then(res => res.json())
-      .then((data) => {
-        
+      .then(data => {
         const arr = [];
-        data.forEach((car) => arr[car.id] = car.model);
+        data.forEach(car => (arr[car.id] = car.model));
         console.log(arr);
-        this.setState({ cars: data, carsMap: arr })
-
+        this.setState({ cars: data, carsMap: arr });
       });
   }
-
-
 
   render() {
     const userList = this.state.carsMap;
 
     return (
-
       <Container>
         <Content style={{ paddingVertical: 0, paddingHorizontal: 10 }}>
-          
           <Title>City</Title>
-          <TextInput 
+          <TextInput
             mode="outlined"
             style={{ backgroundColor: "white" }}
             onChangeText={text => this.setCity(text)}
@@ -139,7 +125,6 @@ export default class SearchCarScreen extends React.Component {
             {this.errorMessage("DateTo")}
           </HelperText>
 
-
           <Title>People</Title>
           <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
             {this.createChip(1)}
@@ -158,9 +143,11 @@ export default class SearchCarScreen extends React.Component {
             search={true} // should show search bar
             multiple={true} //
             placeholder={"Search"}
-            placeholderTextColor={'#fff'}
+            placeholderTextColor={"#fff"}
             returnValue={"label"} // label or value
-            callback={(res) => { console.log(res) }} // callback, array of selected items
+            callback={res => {
+              console.log(res);
+            }} // callback, array of selected items
             rowBackgroundColor={"#eee"}
             rowHeight={40}
             rowRadius={5}
@@ -172,20 +159,19 @@ export default class SearchCarScreen extends React.Component {
             selectedIconName={"ios-checkmark-circle-outline"}
             unselectedIconName={"ios-radio-button-off-outline"}
             scrollViewHeight={130}
-          //selected={["Tom", "Christin"]} // list of options which are selected by default
+            //selected={["Tom", "Christin"]} // list of options which are selected by default
           />
           <HelperText type="error" visible={!this.state.carValid}>
             {this.errorMessage("Car")}
           </HelperText>
 
-
           <Button
             mode="contained"
             disabled={!(this.state.cityValid && this.state.dateTo && this.state.carValid)}
-            onPress={() => Alert.alert("Simple Button pressed")}>
+            onPress={() => Alert.alert("Simple Button pressed")}
+          >
             Search
           </Button>
-          
         </Content>
       </Container>
     );
