@@ -1,24 +1,24 @@
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import LoginScreen from "./componets/userContent/LoginScreen";
-import HomeScreen from './componets/reservations/HomeScreen'
+import HomeScreen from "./componets/userContent/HomeScreen";
 import FlatsListScreen from "./componets/flatly/FlatsListScreen";
-import MyReservationsList from './componets/reservations/MyReservationsList';
-import MyReservationCarDetails from './componets/reservations/Details/MyReservationCarDetails';
-import MyReservationFlatDetails from './componets/reservations/Details/MyReservationFlatDetails';
-import MyReservationParkingDetails from './componets/reservations/Details/MyReservationParkingDetails';
-import MyReservationDetails from './componets/reservations/Details/MyReservationDetails'
+import MyReservationsList from "./componets/userContent/MyReservationsList";
+import MyReservationCarDetails from "./componets/userContent/details/MyReservationCarDetails";
+import MyReservationFlatDetails from "./componets/userContent/details/MyReservationFlatDetails";
+import MyReservationParkingDetails from "./componets/userContent/details/MyReservationParkingDetails";
+import MyReservationDetails from "./componets/userContent/details/MyReservationDetails";
 
 const AppNavigator = createStackNavigator(
   {
-    HomeScreen : { screen: HomeScreen},
+    HomeScreen: { screen: HomeScreen },
     FlatsList: { screen: FlatsListScreen },
     LoginScreen: { screen: LoginScreen },
-    MyReservationsList: { screen : MyReservationsList},
-    MyReservationCarDetails : { screen : MyReservationCarDetails},
-    MyReservationFlatDetails : { screen : MyReservationFlatDetails},
-    MyReservationParkingDetails : { screen : MyReservationParkingDetails},
-    MyReservationDetails : { screen : MyReservationDetails},
+    MyReservationsList: { screen: MyReservationsList },
+    MyReservationCarDetails: { screen: MyReservationCarDetails },
+    MyReservationFlatDetails: { screen: MyReservationFlatDetails },
+    MyReservationParkingDetails: { screen: MyReservationParkingDetails },
+    MyReservationDetails: { screen: MyReservationDetails },
   },
   {
     initialRouteName: "LoginScreen",
