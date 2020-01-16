@@ -28,7 +28,7 @@ export default class FlatsListScreen extends React.Component {
     return this.changeSortingType(this.sortingTypes.lowestPrice);
   }
   changeSortingType(type) {
-    const URL = "http://localhost:3004/flats";
+    const URL = "http://localhost:3000/employees";
     this.setState({ isLoading: true });
     //DOROBIĆ RÓŻNE DZIAŁANIA DO RÓŻNYCH STATUSÓW ODPOWIEDZI
     //+ PAGINACJA

@@ -48,6 +48,24 @@
 		"year" : 2000,
 		"licence" : "",
 		"location" : "Bolvangar"
+	},
+	{
+		"id" : 4,
+		"model" : "Porgggggshe",
+		"engine" : "3.4 L RV8KLM",
+		"seats": 5,
+		"year" : 2015,
+		"licence" : "",
+		"location" : "Cittàgazze"
+	},
+	{
+		"id" : 5,
+		"model" : "Merceggggdes",
+		"engine" : "3.4 L RV8KLM",
+		"seats": 6,
+		"year" : 2000,
+		"licence" : "",
+		"location" : "Bolvangar"
 	}
   ],
   "parking": [
