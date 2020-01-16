@@ -1,10 +1,13 @@
-import { StyleSheet, View, KeyboardAvoidingView } from 'react-native'
-import { Container, Header, Content, DatePicker, Text, Picker } from 'native-base'
-import { Headline, Subheading, Title, Button, Paragraph, TextInput, HelperText } from 'react-native-paper';
+import { StyleSheet, View, TouchableOpacity } from 'react-native'
+import { Container, Header, Content, Text, Picker, Right } from 'native-base'
+import { Title, Button, Chip, Paragraph, TextInput, HelperText } from 'react-native-paper';
+import { ScrollView } from 'react-native-gesture-handler';
 import React from 'react'
 import { sendRequest } from '../../helpers/functions';
 import { API_URL } from '../../helpers/constants';
-import { ScrollView } from 'react-native-gesture-handler';
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { LocalDate, DateTimeFormatter, nativeJs } from "@js-joda/core";
+import { styles, themeColors} from '../../styles'
 
 export default class ReservationFormScreen extends React.Component
 {
@@ -14,17 +17,22 @@ export default class ReservationFormScreen extends React.Component
         super(props)
         const { navigation } = this.props;
         this.flat = navigation.getParam('flat')
+        const tomorrowDate = new Date()
+        tomorrowDate.setDate(tomorrowDate.getDate() + 1)
         this.state = 
         {
             firstName: "",
             lastName: "",
             email: "",
-            dateFrom: null,
-            dateTo: null,
+            dateFrom: new Date(),
+            dateTo: tomorrowDate,
+            people: 1,
             firstNameValid: true,
             lastNameValid: true,
             emailValid: true,
-            dateToValid: true
+            dateToValid: true,
+            showDateFromPicker: false,
+            showDateToPicker: false
         }
     }
     setFirstName(name)
@@ -53,17 +61,44 @@ export default class ReservationFormScreen extends React.Component
     }
     setDateFrom(date)
     {
-        this.setState({
-                dateFrom: date,
-                dateToValid: this.state.dateTo && date <= this.state.dateTo ? true : false
-        })
+        this.setState(oldState => ({
+                showDateFromPicker: false,
+                dateFrom: date ? date : oldState.dateFrom,
+                dateToValid: date ? (oldState.dateTo && date < oldState.dateTo ? true : false) : oldState.dateToValid
+        }))
     }
     setDateTo(date)
     {
+        this.setState(oldState => ({
+                showDateToPicker: false,
+                dateTo: date ? date : oldState.dateTo,
+                dateToValid: date ? (oldState.dateFrom && oldState.dateFrom < date ? true : false) : oldState.dateToValid
+        }))
+    }
+    setPeople(people)
+    {
         this.setState({
-                dateTo: date,
-                dateToValid: this.state.dateFrom && this.state.dateFrom <= date ? true : false
+            people: people
         })
+    }
+    countTotalPrice()
+    {
+        if(this.state.dateFrom && this.state.dateTo && this.state.dateToValid)
+        {
+            return ((this.state.dateTo.getDate() - this.state.dateFrom.getDate()) * this.flat.price).toString() + " PLN"
+        }
+        return "--- PLN"
+    }
+    createChip(i)
+    {
+        return(
+                <Chip 
+                    mode="outlined" 
+                    selected={this.state.people === i ? true : false}
+                    onPress={() => this.setPeople(i)}>
+                    {i.toString()}
+                </Chip>
+        )
     }
     errorMessage(field)
     {
@@ -76,115 +111,154 @@ export default class ReservationFormScreen extends React.Component
             case 'Email':
                 return "Email address is incorrect"
             case 'DateTo':
-                return "Ending date must be later or equal to beginning date"
+                return "Ending date must be later than beginning date"
         }
     }
     render()
     {
+        const { showDateFromPicker, dateFrom, showDateToPicker, dateTo } = this.state;
+        const dateFromFormatted = LocalDate.from(nativeJs(dateFrom)).format(DateTimeFormatter.ofPattern("d/MM/yyyy"));
+        const dateToFormatted = LocalDate.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("d/MM/yyyy"));
         return(
-                <KeyboardAvoidingView 
-                    behavior="padding"
-                    style={styles.container}>
-                    <ScrollView contentContainerStyle={styles.inner}>
-                        <TextInput
-                            label="First name"
-                            mode="outlined"
-                            theme={{ colors: { primary: this.state.firstNameValid ? '#3579e6' : 'red',underlineColor:'transparent',}}}
-                            style={{backgroundColor: 'white'}}
-                            onChangeText={text => this.setFirstName(text)}
-                            value={this.state.firstName}/>
+            <Container>
+                <ScrollView contentContainerStyle={styles.container}>
+                    <Text>First name</Text>
+                    <TextInput
+                        mode="flat"
+                        theme={{ colors: { primary: this.state.firstNameValid ? themeColors.primary : themeColors.danger, underlineColor:'transparent',}}}
+                        style={styles.input}
+                        onChangeText={text => this.setFirstName(text)}
+                        value={this.state.firstName}/>
+                    {!this.state.firstNameValid &&
                         <HelperText
                             style={styles.helper}
-                            type="error"
-                            visible={!this.state.firstNameValid} >
+                            type="error">
                             {this.errorMessage('FirstName')}
-                        </HelperText>
+                        </HelperText>}
 
-                        <TextInput
-                            label="Last name"
-                            mode="outlined"
-                            theme={{ colors: { primary: this.state.lastNameValid ? '#3579e6' : 'red',underlineColor:'transparent',}}}
-                            style={{backgroundColor: 'white'}}
-                            onChangeText={text => this.setLastName(text)}
-                            value={this.state.lastName}/>
+                    <Text>Last name</Text>
+                    <TextInput
+                        mode="flat"
+                        theme={{ colors: { primary: this.state.lastNameValid ? themeColors.primary : themeColors.danger, underlineColor:'transparent',}}}
+                        style={styles.input}
+                        onChangeText={text => this.setLastName(text)}
+                        value={this.state.lastName}/>
+                    {!this.state.lastNameValid &&
                         <HelperText
                             style={styles.helper}
-                            type="error"
-                            visible={!this.state.lastNameValid} >
+                            type="error">
                             {this.errorMessage('LastName')}
-                        </HelperText>
-
-                        <TextInput
-                            label="E-mail"
-                            mode="outlined"
-                            theme={{ colors: { primary: this.state.emailValid ? '#3579e6' : 'red',underlineColor:'transparent',}}}
-                            style={{backgroundColor: 'white'}}
-                            onChangeText={text => this.setEmail(text)}
-                            value={this.state.email}/>
-                        <HelperText
-                            style={styles.helper}
-                            type="error"
-                            visible={!this.state.emailValid} >
-                            {this.errorMessage('Email')}
-                        </HelperText>
-
-                        <DatePicker
-                            value={this.state.dateFrom}
-                            placeHolderText="From"
-                            textStyle={{color: '#3579e6'}}
-                            placeHolderTextStyle={{color: '#3579e6'}}
-                            format="YYYY-MM-DD"
-                            minimumDate={new Date()}
-                            onDateChange={(date) => this.setDateFrom(date)}/>
-                        
-                        <DatePicker
-                            value={this.state.dateTo}
-                            textStyle={{color: '#3579e6'}}
-                            placeHolderTextStyle={{color: '#3579e6'}}
-                            placeHolderText="To"
-                            minimumDate={new Date()}
-                            onDateChange={(date) => this.setDateTo(date)}/>
-                        
-                        <HelperText
-                            style={styles.helper}
-                            type="error"
-                            visible={!this.state.dateToValid} >
-                            {this.errorMessage('DateTo')}
-                        </HelperText>
-
-                        <View style={{flex: 1, justifyContent: 'flex-end'}}>
-                            <Button
-                                    style={styles.button}
-                                    color='#3579e6'
-                                    mode="contained"
-                                    disabled={
-                                        this.state.firstName & this.state.lastName & this.state.email & this.state.dateTo &
-                                        this.state.firstNameValid & this.state.lastNameValid & this.state.emailValid & this.state.dateToValid}>
-                                    Make reservation
-                            </Button>
-                        </View>
-                    </ScrollView>
-
+                        </HelperText>}
                     
-                </KeyboardAvoidingView>
+                    <Text>E-mail</Text>
+                    <TextInput
+                        mode="flat"
+                        theme={{ colors: { primary: this.state.emailValid ? themeColors.primary : themeColors.danger, underlineColor:'transparent',}}}
+                        style={styles.input}
+                        onChangeText={text => this.setEmail(text)}
+                        value={this.state.email}/>
+                    {!this.state.emailValid &&
+                        <HelperText
+                            style={styles.helper}
+                            type="error">
+                            {this.errorMessage('Email')}
+                        </HelperText>}
+
+                    <View>
+                        <Text>From</Text>
+                        <TouchableOpacity onPress={() => this.setState({ showDateFromPicker: true })}>
+                        <TextInput 
+                                editable={false}
+                                mode="flat" 
+                                value={dateFromFormatted}
+                                style={styles.input} />
+                        {showDateFromPicker && (
+                                <DateTimePicker
+                                minimumDate={new Date()}
+                                value={dateFrom}
+                                mode="date"
+                                display="calendar"
+                                onChange={(event,date) => this.setDateFrom(date)}
+                                />
+                        )}
+                        </TouchableOpacity>
+                    </View>
+                    <View>
+                        <Text>To</Text>
+                        <TouchableOpacity onPress={() => this.setState({ showDateToPicker: true })}>
+                        <TextInput 
+                                editable={false}
+                                mode="flat" 
+                                value={dateToFormatted} 
+                                style={styles.input}
+                                theme={{ colors: { primary: this.state.dateToValid ? themeColors.primary : themeColors.danger,underlineColor:'transparent',}}}/>
+                        {showDateToPicker && (
+                                <DateTimePicker
+                                minimumDate={new Date()}
+                                value={dateTo}
+                                mode="date"
+                                display="calendar"
+                                onChange={(event,date) => this.setDateTo(date)}
+                                />
+                        )}
+                        </TouchableOpacity>
+                    </View>
+                    
+                    {!this.state.dateToValid && <HelperText
+                        style={styles.helper}
+                        type="error">
+                        {this.errorMessage('DateTo')}
+                    </HelperText>}
+
+                    <Text style={styles.marginBottomSmall}>People</Text>
+                    <View style={[styles.contentRow, styles.marginBottomSmall]}>
+                        {this.createChip(1)}
+                        {this.createChip(2)}
+                        {this.createChip(3)}
+                        {this.createChip(4)}
+                        {this.createChip(5)}
+                        {this.createChip(6)}
+                    </View>
+
+                    <View style={[styles.contentToEnd, styles.marginTopBig]}>
+                        <View style={[{alignSelf: 'flex-end'}, styles.marginBottomSmall]}>
+                            <Text style={styles.textToRight}>Total price</Text>
+                            <Title style={styles.textToRight}>{this.countTotalPrice()}</Title>
+                        </View>
+                        <Button
+                                style={styles.button}
+                                color={themeColors.primary}
+                                mode="contained"
+                                disabled={
+                                    this.state.firstName & this.state.lastName & this.state.email & this.state.dateTo &
+                                    this.state.firstNameValid & this.state.lastNameValid & this.state.emailValid & this.state.dateToValid}>
+                                Make reservation
+                        </Button>
+                    </View>
+                </ScrollView>
+            </Container>
         )
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-          flex: 1,
-          backgroundColor: '#fff',
-    },
-    inner: {
-        padding: 10,
-        flex: 1,
-    },
-    button:{
-        height: 54,
-        justifyContent: "center",
-    },
-    helper:{
-            color: 'red'
-    }
-  });
+// const styles = StyleSheet.create({
+//     container: {
+//           flex: 1,
+//           backgroundColor: '#fff',
+//     },
+//     textInput: {
+//         backgroundColor: '#fff',
+//         padding: 0
+//     },
+//     inner: {
+//         padding: 10,
+//         flex: 1
+//     },
+//     button:{
+//         height: 54,
+//         justifyContent: "center",
+//     },
+//     helper:{
+//             color: 'red'
+//     }
+//   });

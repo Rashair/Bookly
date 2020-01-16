@@ -5,6 +5,7 @@ import React from 'react'
 import { sendRequest } from '../../helpers/functions';
 import { API_URL } from '../../helpers/constants';
 import { ScrollView } from 'react-native-gesture-handler';
+import { styles, themeColors} from '../../styles'
 
 export default class FlatDetailsScreen extends React.Component
 {
@@ -12,46 +13,51 @@ export default class FlatDetailsScreen extends React.Component
     constructor(props)
     {
         super(props)
-        const { navigation } = this.props;
-        this.flat = navigation.getParam('flat')
+        //const { navigation } = this.props;
+        this.flat = this.props.navigation.getParam('flat')
+    }
+    makeReservation()
+    {
+        this.props.navigation.navigate('ReservationForm', {flat: this.flat})
     }
     render()
     {
         return(
             <Container>
-                <ScrollView contentContainerStyle={styles.content}>
+                <ScrollView contentContainerStyle={styles.container}>
                     <Headline>
                         {this.flat.title}
                     </Headline>
-                    <Text>
+                    <Text style={styles.marginBottomSmall}>
                         {this.flat.city + ", " + this.flat.address}
                     </Text>
-                    <Image style={{width: '100%', height: 200}} resizeMode='cover' source={{ uri: this.flat.image}}></Image>
-                    <View style={{flexDirection:"column", marginTop: 10 }}>
+                    <Image style={styles.image} resizeMode='cover' source={{ uri: this.flat.image}}></Image>
+                    <View style={[styles.contentColumn, styles.marginBottomSmall]}>
                         <Title>Description</Title>
                         <Paragraph>{this.flat.description}</Paragraph>
                     </View>
-                    <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                    <View style={styles.contentRow}>
                         <Title>Rooms</Title>
                         <Title>{this.flat.roomNumber.toString()}</Title>
                     </View>
-                    <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                    <View style={styles.contentRow}>
                         <Title>Beds</Title>
                         <Title>{this.flat.beds.toString()}</Title>
                     </View>
-                    <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                    <View style={styles.contentRow}>
                         <Title>Rating</Title>
                         <Title>{this.flat.rating.toString()}</Title>
                     </View>
-                    <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                    <View style={styles.contentRow}>
                         <Title>Price</Title>
                         <Title>{this.flat.price.toString()} PLN / night</Title>
                     </View>
-                    <View style={{flex: 1, justifyContent: 'flex-end'}}>
+                    <View style={[styles.contentToEnd, styles.marginTopBig]}>
                         <Button
                                 style={styles.button}
-                                color='#3579e6'
-                                mode="contained">
+                                color={themeColors.primary}
+                                mode="contained"
+                                onPress={() => this.makeReservation()}>
                                 Make reservation
                         </Button>
                     </View>
@@ -61,16 +67,15 @@ export default class FlatDetailsScreen extends React.Component
     }
 }
 
-const styles = StyleSheet.create({
-    content: {
-          flex: 1,
-          paddingHorizontal: 20,
-          paddingVertical: 20,
-          backgroundColor: '#fff',
-          alignItems: "stretch",
-    },
-    button:{
-          height: 54,
-          justifyContent: "center",
-    },
-  });
+// const styles = StyleSheet.create({
+//     content: {
+//         padding: 20,
+//         backgroundColor: '#fff',
+//         alignItems: "stretch",
+//     },
+//     button:{
+//         marginTop: 10,
+//         height: 54,
+//         justifyContent: "center",
+//     },
+//   });

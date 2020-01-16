@@ -5,6 +5,7 @@ import React from 'react'
 import { sendRequest } from '../../helpers/functions';
 import { API_URL } from '../../helpers/constants';
 import { ScrollView } from 'react-native-gesture-handler';
+import { styles, themeColors} from '../../styles'
 
 export default class FlatSummaryScreen extends React.Component
 {
@@ -19,31 +20,31 @@ export default class FlatSummaryScreen extends React.Component
     {
         return(
             <Container>
-                <ScrollView contentContainerStyle={styles.content}>
+                <ScrollView contentContainerStyle={styles.container}>
                     {/*id rezerwacji*/}
                     <Headline>
                         {this.flat.city + ", " + this.flat.address}
                     </Headline>
-                    <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                    <View style={styles.contentRow}>
                         <Title>Rooms</Title>
                         <Title>{this.flat.rooms.toString()}</Title>
                     </View>
-                    <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                    <View style={styles.contentRow}>
                         <Title>Beds</Title>
                         <Title>{this.flat.beds.toString()}</Title>
                     </View>
-                    <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                    <View style={styles.contentRow}>
                         <Title>Rating</Title>
                         <Title>{this.flat.rating.toString()}</Title>
                     </View>
-                    <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                    <View style={styles.contentRow}>
                         <Title>Price</Title>
                         <Title>{this.flat.price.toString()} PLN / night</Title>
                     </View>
-                    <View style={{flex: 1, justifyContent: 'flex-end'}}>
+                    <View style={styles.contentToEnd}>
                         <Button
                                 style={styles.button}
-                                color='#3579e6'
+                                color={themeColors.primary}
                                 mode="contained">
                                 My reservations
                         </Button>
@@ -54,16 +55,16 @@ export default class FlatSummaryScreen extends React.Component
     }
 }
 
-const styles = StyleSheet.create({
-    content: {
-          flex: 1,
-          paddingHorizontal: 20,
-          paddingVertical: 20,
-          backgroundColor: '#fff',
-          alignItems: "stretch",
-    },
-    button:{
-          height: 54,
-          justifyContent: "center",
-    },
-  });
+// const styles = StyleSheet.create({
+//     content: {
+//           flex: 1,
+//           paddingHorizontal: 20,
+//           paddingVertical: 20,
+//           backgroundColor: '#fff',
+//           alignItems: "stretch",
+//     },
+//     button:{
+//           height: 54,
+//           justifyContent: "center",
+//     },
+//   });

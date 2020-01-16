@@ -4,6 +4,7 @@ import { Title, Chip, Paragraph } from 'react-native-paper';
 import React from 'react'
 import { API_URL } from '../../helpers/constants';
 import { sendRequest } from '../../helpers/functions';
+import { styles, themeColors} from '../../styles'
 
 export default class FlatsListScreen extends React.Component
 {
@@ -71,13 +72,15 @@ export default class FlatsListScreen extends React.Component
         const URL = API_URL + '/flats'
         this.setState({isLoading: true})
         sendRequest(URL, 'GET', /*headers*/)
-            .then(response => Promise.all([response.status, response.json()]))
-            .then(([res,data]) => {
-                switch(res)
+            .then(response => {
+                if(response.ok)
                 {
-                    case 200:
-                        this.setState({sortingType: type, flats: data}, this.setState({isLoading: false}));
-                    break;
+                    response.json()
+                        .then(json => this.setState({ sortingType: type, flats: json, isLoading: false }));
+                }
+                else
+                {
+
                 }
             })
             .catch(function(error) {
@@ -85,36 +88,16 @@ export default class FlatsListScreen extends React.Component
                 throw error
             });
     }
-
-    // createCardsList()
-    // {
-    //     return(
-    //         <View>
-    //             {this.state.flats && this.state.flats.map((flat) =>{
-    //                 return(
-    //                     <Card key={flat.id} elevation={2} style={{marginBottom:10}} onPress={() => this.goToDetails(flat)}>
-    //                         <Card.Content style={{flex:1, flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
-    //                             <Paragraph>{flat.rating.toString()}</Paragraph>
-    //                             <Paragraph>{flat.city + ", " + flat.address}</Paragraph>
-    //                             <Paragraph>{flat.price.toString()} PLN</Paragraph>
-    //                         </Card.Content>
-    //                     </Card>
-    //                 )
-    //             })}
-    //         </View>
-    //     )
-    // }
     goToDetails = (flat) =>
     {
-        console.log(flat)
         this.props.navigation.navigate('FlatDetails', {flat: flat})
     }
     Item({item})
     {
         return(
-            <TouchableOpacity style={{padding: 10}} onPress={() => this.goToDetails(item)}>
+            <TouchableOpacity style={styles.marginBottomSmall}onPress={() => this.goToDetails(item)}>
                 <Title>{item.title}</Title>
-                <View style={{flex:1, flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
+                <View style={styles.contentRow}>
                     <Paragraph>{item.rating.toString()}</Paragraph>
                     <Paragraph>{item.city + ", " + item.address}</Paragraph>
                     <Paragraph>{item.price.toString()} PLN</Paragraph>
@@ -126,8 +109,8 @@ export default class FlatsListScreen extends React.Component
     {
         return(
             //przyciski do sortowania
-            <Container style={{paddingVertical: 20}}>
-                <View style={{display: 'flex', flexDirection:'row', justifyContent:'space-around', marginBottom:20}}>
+            <Container>
+                <View style={[styles.marginTopSmall,styles.contentRow]}>
                     <Chip 
                         mode="outlined" 
                         selected={this.state.sortingType === this.sortingTypes.lowestPrice ? true : false}
@@ -147,13 +130,15 @@ export default class FlatsListScreen extends React.Component
                         Highest rating
                     </Chip>
                 </View>
-                    {this.state.isLoading && <ActivityIndicator size="large" color='#3579e6'/>}
-                    {!this.state.isLoading && 
+                <View style={styles.container}>
+                    {this.state.isLoading ? <ActivityIndicator size="large" color={themeColors.primary}/> :
                     <FlatList
                         data={this.state.flats}
                         renderItem={this.Item}
                         keyExtractor={(item) => item.id.toString()}
                         />}
+                </View>
+                    
             </Container>
         )
     }
