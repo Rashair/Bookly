@@ -9,7 +9,25 @@ export default class MyReservationParkingDetails extends React.Component {
     }
 
     componentDidMount(){
-      //fetch
+      const URL = "http://localhost:5000/car"; //?
+      fetch(URL,
+        {
+          method: 'post',
+          headers: {
+            //add token?
+          },
+          body: JSON.stringify({
+            id : this.props.FKid
+          })
+        })
+        .then(response => 
+          {
+  
+          }
+          )
+        .catch(function(error) {
+          console.log(error.message);
+        });
     }
 
     render() {

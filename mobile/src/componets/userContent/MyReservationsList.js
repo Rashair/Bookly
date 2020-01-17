@@ -77,7 +77,6 @@ export default class MyReservationList extends React.Component {
       <View style={styles.container}>
         <Text>Here will be reservation list !</Text>
         <FlatList data={DATA} keyExtractor={item => item.id.toString()} renderItem={this.renderItem} />
-        <Button title="Go back to Home" onPress={() => this.props.navigation.goBack()} />
       </View>
     );
   }

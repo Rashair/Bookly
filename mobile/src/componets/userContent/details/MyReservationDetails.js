@@ -46,12 +46,14 @@ export default class MyReservationDetails extends React.Component {
 
   render() {
     let body;
-    if (this.props.navigation.getParam("type") === "car") {
-      body = <MyReservationCarDetails FKid={this.props.navigation.getParam("FKid")} />;
-    } else if (this.props.navigation.getParam("type") === "flat") {
-      body = <MyReservationFlatDetails FKid={this.props.navigation.getParam("FKid")} />;
-    } else if (this.props.navigation.getParam("type") === "parking") {
-      body = <MyReservationParkingDetails FKid={this.props.navigation.getParam("FKid")} />;
+    let type= this.props.navigation.getParam("type");
+    let fkid = this.props.navigation.getParam("FKid");
+    if (type === "car") {
+      body = <MyReservationCarDetails FKid={fkid} />;
+    } else if (type === "flat") {
+      body = <MyReservationFlatDetails FKid={fkid } />;
+    } else if (type === "parking") {
+      body = <MyReservationParkingDetails FKid={fkid} />;
     }
     return (
       <View>
@@ -84,6 +86,7 @@ export default class MyReservationDetails extends React.Component {
             </View>
           </View>
         </Modal>
+        
 
         {body}
 
