@@ -53,7 +53,6 @@ export default class FlatsListScreen extends React.Component
             //         image: 'https://projektyzwizja.pl/media/cache/max_size/uploads/wyjatkowy-1/wyjatkowy1-front-1200_1507029951.jpeg'
             //     }
             // ]
-
         }
         this.changeSortingType = this.changeSortingType.bind(this)
         this.goToDetails = this.goToDetails.bind(this)
