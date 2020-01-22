@@ -28,6 +28,7 @@
 		"engine" : "3.4 L RV8KLM",
 		"seats": 4,
 		"year" : 2012,
+		"price": 500,
 		"licence" : "",
 		"location" : "Svalbard"
 	},
@@ -37,6 +38,7 @@
 		"engine" : "3.4 L RV8KLM",
 		"seats": 5,
 		"year" : 2015,
+		"price": 700,
 		"licence" : "",
 		"location" : "Cittàgazze"
 	},
@@ -47,6 +49,7 @@
 		"seats": 6,
 		"year" : 2000,
 		"licence" : "",
+		"price": 500,
 		"location" : "Bolvangar"
 	},
 	{
@@ -56,6 +59,7 @@
 		"seats": 5,
 		"year" : 2015,
 		"licence" : "",
+		"price": 700,
 		"location" : "Cittàgazze"
 	},
 	{
@@ -65,6 +69,7 @@
 		"seats": 6,
 		"year" : 2000,
 		"licence" : "",
+		"price": 600,
 		"location" : "Bolvangar"
 	}
   ],

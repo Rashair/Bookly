@@ -4,12 +4,12 @@ import { TextInput, Subheading, List, Card, HelperText, Title, Chip, Button, Pic
 import React from "react";
 import { AuthSession } from "expo";
 import CustomMultiPicker from "react-native-multiple-select-list";
-
+import { CARLY_API_URL } from "../../helpers/constants";
 export default class SearchCarScreen extends React.Component {
   static navigationOptions = { title: "Find your perfect car!" };
   constructor(props) {
     super(props);
-
+    
     this.showPeoplePicker = false;
     this.showDateFromPicker = false;
     this.showDateToPicker = false;
@@ -23,14 +23,16 @@ export default class SearchCarScreen extends React.Component {
       city: "",
       dateFrom: null,
       dateTo: null,
-      car: 1,
+      people: 1,
       cityValid: true,
       dateToValid: true,
       carValid: true,
       formValid: false,
-      cars: [],
+      all_cars: [],
       carsMap: [],
       isLoading: true,
+      cars:[],
+    
     };
   }
   setDateFrom(date) {
@@ -49,19 +51,24 @@ export default class SearchCarScreen extends React.Component {
     const cityPattern = /^[a-zA-z][a-zA-z][a-zA-z ]*$/;
     this.setState({
       city: city,
-      cityValid: cityPattern.test(city) && city.length >= 3 ? true : false,
+      cityValid: cityPattern.test(city) || city.length==1 ? true : false,
     });
   }
-  setPeople(car) {
+  setPeople(people) {
     this.setState({
-      car: car,
-      carValid: car ? true : false,
+      people: people,
+      carValid: people ? true : false,
     });
   }
-
+  setSelectedCars(car) {
+    this.setState({
+      cars: car
+     
+    });
+  }
   createChip(i) {
     return (
-      <Chip mode="outlined" selected={this.state.car === i ? true : false} onPress={() => this.setPeople(i)}>
+      <Chip mode="outlined" selected={this.state.people === i ? true : false} onPress={() => this.setPeople(i)}>
         {i.toString()}
       </Chip>
     );
@@ -79,19 +86,21 @@ export default class SearchCarScreen extends React.Component {
   }
 
   componentDidMount() {
-    //Url should be variable
-    fetch("http://814e452c.ngrok.io/cars")
+      fetch(`${CARLY_API_URL}/cars`)
       .then(res => res.json())
       .then(data => {
         const arr = [];
         data.forEach(car => (arr[car.id] = car.model));
         console.log(arr);
-        this.setState({ cars: data, carsMap: arr });
+        this.setState({ all_cars: data, carsMap: arr });
       });
   }
 
   render() {
     const userList = this.state.carsMap;
+    const { navigation } = this.props;
+    const { all_cars } = this.state;
+    const { cars,city,people } = this.state;
 
     return (
       <Container>
@@ -145,9 +154,7 @@ export default class SearchCarScreen extends React.Component {
             placeholder={"Search"}
             placeholderTextColor={"#fff"}
             returnValue={"label"} // label or value
-            callback={res => {
-              console.log(res);
-            }} // callback, array of selected items
+            callback={car => this.setSelectedCars(car)} // callback, array of selected items
             rowBackgroundColor={"#eee"}
             rowHeight={40}
             rowRadius={5}
@@ -168,7 +175,7 @@ export default class SearchCarScreen extends React.Component {
           <Button
             mode="contained"
             disabled={!(this.state.cityValid && this.state.dateTo && this.state.carValid)}
-            onPress={() => Alert.alert("Simple Button pressed")}
+            onPress={() => navigation.push("ListCars", { cars,city,people })}
           >
             Search
           </Button>
