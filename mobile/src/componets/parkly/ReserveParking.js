@@ -12,7 +12,7 @@ import { white, redA700 } from "react-native-paper/lib/commonjs/styles/colors";
 import { sendRequest } from "../../helpers/functions";
 import { anyError } from "../../redux/actions";
 import { BUTTON_COLOR } from "../../helpers/colors";
-import { PARKLY_API_URL } from "../../helpers/constants";
+import { PARKLY_API_URL, API_URL, TOKEN_HEADER_KEY } from "../../helpers/constants";
 
 const styles = StyleSheet.create({
   button: {
@@ -53,11 +53,12 @@ class ReserveParking extends React.Component {
     super(props);
     const { parking } = this.props.navigation.state.params;
     const { dates } = this.props;
+    const { firstName, lastName } = this.props.auth;
 
     this.state = {
       parking,
-      firstName: "",
-      lastName: "",
+      firstName,
+      lastName,
       email: "",
       dateFrom: dates.from,
       dateTo: dates.to,
@@ -68,8 +69,11 @@ class ReserveParking extends React.Component {
     };
 
     this.setFirstName = this.setFirstName.bind(this);
+    this.setLastName = this.setLastName.bind(this);
+    this.setEmail = this.setEmail.bind(this);
     this.setDateFrom = this.setDateFrom.bind(this);
     this.setDateTo = this.setDateTo.bind(this);
+    this.getTotalPrice = this.getTotalPrice.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -144,20 +148,67 @@ class ReserveParking extends React.Component {
     }
   }
 
+  getTotalPrice() {
+    const { parking, dateFrom, dateTo } = this.state;
+    const timeInMinutes = parseInt((dateTo - dateFrom) / 1000 / 60, 10);
+    const timeInHours = Math.ceil((timeInMinutes - 4) / 60);
+    return parking.pricePerHour * timeInHours;
+  }
+
   handleSubmit() {
-    const { dateFrom, dateTo } = this.state;
+    const { parking, firstName, lastName, email, dateFrom, dateTo } = this.state;
     const dateToValid = this.validateDateTo(dateFrom, dateTo);
     if (!dateToValid) {
       this.setState({ dateToValid });
       return;
     }
 
-    // TODO: request here + body here
     const url = `${PARKLY_API_URL}/reservations/`;
-    const data = {};
-    sendRequest(url, "POST", {}, data).then();
+    const data = JSON.stringify({
+      parkingId: parking.id,
+      city: parking.city,
+      street: parking.street,
+      streetNumber: parking.streetNumber,
+      totalCost: this.getTotalPrice(),
+      dateFrom: dateFrom.toISOString(),
+      dateTo: dateTo.toISOString(),
+    });
 
-    // this.props.searchByDate({ from: dateFrom, to: dateTo });
+    // Auth headers  here
+    const headers = {};
+    sendRequest(url, "POST", headers, data)
+      .then(response => {
+        if (response.ok) {
+          response.json().then(responseJson => {
+            const externalBookingId = responseJson.id;
+            const bookingData = JSON.stringify({
+              start_date_time: dateFrom,
+              owner: {
+                firstName,
+                lastName,
+              },
+              active: true,
+              type: "PARKING",
+            });
+            const bookingUrl = `${API_URL}/booking/`;
+            sendRequest(bookingUrl, "POST", { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, bookingData).then(
+              () => {
+                if (response.ok) {
+                  this.props.navigation.navigate("");
+                } else {
+                  throw new Error(`Error sending data to bookly, status code: ${response.status}`);
+                }
+              }
+            );
+          });
+        } else {
+          throw new Error(`Error sending data to parkly, status code: ${response.status}`);
+        }
+      })
+      .catch(error => {
+        this.props.anyError(error);
+      });
+
     // this.props.navigation.push("ListParking");
   }
 
@@ -176,7 +227,7 @@ class ReserveParking extends React.Component {
     const timeFromFormatted = LocalTime.from(nativeJs(dateFrom)).format(DateTimeFormatter.ofPattern("HH:mm"));
     const dateToFormatted = LocalDate.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("d/M/yyyy"));
     const timeToFormatted = LocalTime.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("HH:mm"));
-    const getPrice = () => {
+    const getTotalPrice = () => {
       const timeInMinutes = parseInt((dateTo - dateFrom) / 1000 / 60, 10);
       const timeInHours = Math.ceil((timeInMinutes - 4) / 60);
       return parking.pricePerHour * timeInHours;
@@ -298,7 +349,7 @@ class ReserveParking extends React.Component {
             {!this.state.dateToValid && <HelperText type="error">{this.errorMessage("DateTo")}</HelperText>}
           </View>
 
-          <Title style={styles.inner}>Price: {getPrice()}</Title>
+          <Title style={styles.inner}>Price: {getTotalPrice()}</Title>
           <View style={styles.putOnBottom}>
             <Button
               style={styles.button}
