@@ -6,13 +6,13 @@ import utf16 from "crypto-js/enc-utf16";
 import sha3 from "crypto-js/sha3";
 import hmacSHA512 from "crypto-js/hmac-sha512";
 import Base64 from "crypto-js/enc-base64";
+import { white } from "react-native-paper/lib/commonjs/styles/colors";
 import { login } from "../../redux/thunk-functions";
-import { WHITE } from "../../helpers/colors";
 
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    backgroundColor: WHITE,
+    backgroundColor: white,
     flex: 1,
     justifyContent: "center",
   },

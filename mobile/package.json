@@ -16,6 +16,7 @@
     "@react-native-community/datetimepicker": "^2.1.0",
     "@react-native-community/masked-view": "0.1.5",
     "expo": "^36.0.0",
+    "http-status-codes": "^1.4.0",
     "native-base": "^2.13.8",
     "react": "16.9.0",
     "react-dom": "16.9.0",

@@ -24,44 +24,62 @@ class ListParking extends React.Component {
   constructor(props) {
     super(props);
 
+    const idCmp = (a, b) => a.dd - b.id;
     this.sortingTypes = {
-      highestPrice: "Highest price",
-      lowestPrice: "Lowest price",
+      lowestPrice: {
+        name: "Lowest price",
+        cmp: (a, b) => {
+          const res = a.pricePerHour - b.pricePerHour;
+          return res === 0 ? idCmp(a, b) : res;
+        },
+      },
+      highestPrice: {
+        name: "Highest price",
+        cmp: (a, b) => {
+          const res = b.pricePerHour - a.pricePerHour;
+          return res === 0 ? idCmp(a, b) : res;
+        },
+      },
     };
 
     this.state = {
-      parking: null,
+      fetchUrl: this.props.navigation.getParam("url", ""),
       sortingType: this.sortingTypes.lowestPrice,
-      // currentPage: 1,
-      // parkingPerPage: 10,
+      parking: null,
       isLoading: true,
     };
 
-    this.changeSortingType = this.changeSortingType.bind(this);
+    this.sortByType = this.sortParkingByType.bind(this);
   }
 
   componentDidMount() {
-    this.changeSortingType(this.sortingTypes.lowestPrice);
-  }
-
-  changeSortingType(type) {
-    this.setState({ isLoading: true });
-    fetch(`${PARKLY_API_URL}/parking`).then(
-      response => {
+    const url = `${PARKLY_API_URL}/parking`; // this.state.fetchUrl
+    console.log(`url ${this.state.fetchUrl}`);
+    fetch(url)
+      .then(response => {
         if (response.ok) {
-          response.json().then(json => {
-            json.forEach(parkingSpace => {
+          response.json().then(responseJson => {
+            responseJson.forEach(parkingSpace => {
               /* eslint-disable no-param-reassign */
               parkingSpace.location = `${parkingSpace.street} ${parkingSpace.streetNumber}, ${parkingSpace.city}`;
             });
-            this.setState({ sortingType: type, parking: json, isLoading: false });
+            responseJson.sort(this.state.sortingType.cmp);
+            this.setState({ isLoading: false, parking: responseJson });
           });
         } else {
-          this.props.dispatch.anyError(`Error fetching, status code: ${response.statusCode}`);
+          throw new Error(`Error fetching, status code: ${response.statusCode}`);
         }
-      },
-      error => this.props.anyError(error)
-    );
+      })
+      .catch(error => {
+        this.props.anyError(error);
+      });
+  }
+
+  sortParkingByType(cmp) {
+    this.setState(prevState => {
+      const parking = [...prevState.parking].sort(cmp);
+      return { isLoading: false, parking };
+    });
   }
 
   createCardsList() {
@@ -93,15 +111,15 @@ class ListParking extends React.Component {
       <View style={[styles.row, styles.sortingRow]}>
         <Chip
           mode="outlined"
-          selected={this.state.sortingType === this.sortingTypes.lowestPrice}
-          onPress={() => this.changeSortingType(this.sortingTypes.lowestPrice)}
+          selected={this.state.sortingType === this.sortingTypes.lowestPrice.name}
+          onPress={() => this.sortParkingByType(this.sortingTypes.lowestPrice.cmp)}
         >
           <Text>Lowest price</Text>
         </Chip>
         <Chip
           mode="outlined"
-          selected={this.state.sortingType === this.sortingTypes.highestPrice}
-          onPress={() => this.changeSortingType(this.sortingTypes.highestPrice)}
+          selected={this.state.sortingType === this.sortingTypes.highestPrice.name}
+          onPress={() => this.sortParkingByType(this.sortingTypes.highestPrice.cmp)}
         >
           <Text>Highest price</Text>
         </Chip>

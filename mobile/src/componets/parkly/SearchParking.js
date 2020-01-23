@@ -10,7 +10,9 @@ import { LocalDate, LocalTime, DateTimeFormatter, nativeJs } from "@js-joda/core
 
 import { white } from "react-native-paper/lib/commonjs/styles/colors";
 import { anyError, searchByDate } from "../../redux/actions";
+import { createQueryParams } from "../../helpers/functions";
 import { BUTTON_COLOR } from "../../helpers/colors";
+import { PARKLY_API_URL } from "../../helpers/constants";
 
 const styles = StyleSheet.create({
   content: { paddingHorizontal: 10, paddingVertical: 20 },
@@ -128,10 +130,11 @@ class SearchParking extends React.Component {
       this.setState({ cityValid, dateToValid });
       return;
     }
-    // TODO: fetch here - reservations/find-parkings
 
     this.props.searchByDate({ from: dateFrom, to: dateTo });
-    this.props.navigation.push("ListParking");
+    const params = createQueryParams({ city, dateFrom: dateFrom.toISOString(), dateTo: dateTo.toISOString() });
+    const url = `${PARKLY_API_URL}/reservations/find-parkings?${params.toString()}`;
+    this.props.navigation.navigate("ListParking", { url });
   }
 
   render() {
