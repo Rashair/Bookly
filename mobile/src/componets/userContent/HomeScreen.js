@@ -3,7 +3,10 @@ import { render } from "react-dom";
 import { StyleSheet, Text, View, Button } from "react-native";
 
 export default class HomeScreen extends React.Component {
+
+  static navigationOptions = { title: "Bookly" };
   render() {
+
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>

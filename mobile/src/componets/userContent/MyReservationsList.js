@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, Button, ScrollView, FlatList, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { Row } from "native-base";
 
 const DATA = [
   // temporary solution to display data
@@ -27,10 +28,10 @@ const DATA = [
 function MyReservationItem({ DateFrom, FKid, type, navigation }) {
   let image;
   // if(type === 'car'){
-  image = <Image source={require("./assets/car.png")} />;
+  image = <Image style={{width: 50, height: 50}} source={require("./assets/car.png")} />;
   // }
   return (
-    <TouchableOpacity onPress={navigation}>
+    <TouchableOpacity onPress={navigation} style={{flexDirection: 'row', alignItems : 'center', alignContent: 'stretch', margin: '2%'}}>
       {image}
       <Text>{DateFrom}</Text>
       <Text>{FKid}</Text>

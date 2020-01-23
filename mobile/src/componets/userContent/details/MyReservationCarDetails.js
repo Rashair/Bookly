@@ -16,10 +16,10 @@ export default class MyReservationCarDetails extends React.Component {
   }
 
   componentDidMount() {
-    const URL = "http://localhost:5000/car"; //?
+    const URL = "http://localhost:5000/car/reservations/"+this.props.FKid; //?
     fetch(URL,
       {
-        method: 'post',
+        method: 'get',
         headers: {
           //add token?
         },
@@ -41,7 +41,6 @@ export default class MyReservationCarDetails extends React.Component {
     return (
       <View>
         <Text>Car reservation</Text>
-        <Text>User : Gal Anonim {/* {this.state.BookingUserInfo.Name} {this.state.BookingUserInfo.Surname} */}</Text>
         <Text>Date from : 20-15-2020 {/* {this.state.DateFrom} */}</Text>
         <Text>Date to : 25-15-2020 {/* {this.state.DateTo} */}</Text>
         <Text>Car details</Text>
@@ -52,7 +51,6 @@ export default class MyReservationCarDetails extends React.Component {
         <Text>Number of doors : 4 {/*{this.state.Car.Doors}*/}</Text>
         <Text>License : None {/*{this.state.Car.License}*/}</Text>
         <Text>Location : Nice {/*{this.state.Car.Location}*/}</Text>
-        <Text>Extra comments : Nothing to add {/* {this.state.Comment} */}</Text>
       </View>
     );
   }

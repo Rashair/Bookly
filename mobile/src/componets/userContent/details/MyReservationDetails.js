@@ -1,4 +1,5 @@
-import { View, Modal } from "react-native";
+import { View, Modal, TouchableHighlight, Button } from "react-native";
+import {Container, Text} from 'native-base'
 import React from "react";
 import MyReservationCarDetails from "./MyReservationCarDetails";
 import MyReservationFlatDetails from "./MyReservationFlatDetails";
@@ -66,7 +67,7 @@ export default class MyReservationDetails extends React.Component {
           }}
         >
           <View style={{ marginTop: 22 }}>
-            <View>
+            <Container>
               <Text>Do you want to cancel that reservation?</Text>
 
               <TouchableHighlight
@@ -83,21 +84,34 @@ export default class MyReservationDetails extends React.Component {
               >
                 <Text>No</Text>
               </TouchableHighlight>
-            </View>
+            </Container>
           </View>
         </Modal>
         
 
         {body}
 
-        <TouchableHighlight
+        <Button
           onPress={() => {
             this.setModalVisible(true);
-          }}
-        >
-          <Text>Cancel reservation</Text>
-        </TouchableHighlight>
+          }} title= "Cancel reservation"
+         />
       </View>
     );
   }
 }
+const styles = StyleSheet.create({  
+  acceptbutton: {
+    alignItems: 'center',
+    backgroundColor: '#DDDDDD',
+    padding: 10
+  },
+  countContainer: {
+    alignItems: 'center',
+    padding: 10
+  },
+  countText: {
+    color: '#FF00FF'
+  }
+})
+
