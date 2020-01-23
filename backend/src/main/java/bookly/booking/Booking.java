@@ -27,6 +27,9 @@ public class Booking {
     @Column(name = "start_date_time", nullable = false)
     private LocalDate startDateTime;
 
+    @Column(name = "end_date_time", nullable = false)
+    private LocalDate endDateTime;
+
     @Column(name = "active", nullable = false)
     private boolean active;
 
@@ -34,11 +37,16 @@ public class Booking {
     @Column(name = "type", nullable = false)
     private BookingType type;
 
+    @Column(name = "external_id")
+    private Long externalId;
+
     public void updateBooking(Booking booking) {
         this.owner = booking.getOwner();
         this.startDateTime = booking.getStartDateTime();
+        this.endDateTime = booking.getEndDateTime();
         this.active = booking.isActive();
         this.type = booking.getType();
+        this.externalId = booking.getExternalId();
     }
 
     @JsonGetter("id")
@@ -73,6 +81,18 @@ public class Booking {
         this.startDateTime = startDateTime;
     }
 
+    @JsonGetter("end_date_time")
+    @JsonDeserialize(using = JsonDateDeserializer.class)
+    @JsonSerialize(using = JsonDateSerializer.class)
+    public LocalDate getEndDateTime() {
+        return endDateTime;
+    }
+
+    @JsonSetter("end_date_time")
+    public void setEndDateTime(LocalDate endDateTime) {
+        this.endDateTime = endDateTime;
+    }
+
     @JsonGetter("active")
     public boolean isActive() {
         return active;
@@ -91,5 +111,15 @@ public class Booking {
     @JsonSetter("type")
     public void setType(BookingType type) {
         this.type = type;
+    }
+
+    @JsonGetter("external_id")
+    public Long getExternalId() {
+        return externalId;
+    }
+
+    @JsonSetter("id")
+    public void setExternalId(Long id) {
+        this.externalId = id;
     }
 }
