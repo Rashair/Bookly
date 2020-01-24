@@ -7,9 +7,8 @@ import { Card, Chip } from "react-native-paper";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { PARKLY_API_URL } from "../../helpers/constants";
-import { ACTIVITY_INDICATOR_COLOR } from "../../helpers/colors";
 import { anyError } from "../../redux/actions";
-import { styles } from "../../styles";
+import { styles, themeColors } from "../../styles";
 
 const innerStyles = StyleSheet.create({
   fontBold: { fontWeight: "bold" },
@@ -130,7 +129,7 @@ class ListParking extends React.Component {
       <Container>
         <ScrollView contentContainerStyle={styles.container}>
           {sortingTypes}
-          {isLoading ? <ActivityIndicator size="large" color={ACTIVITY_INDICATOR_COLOR} /> : this.createCardsList()}
+          {isLoading ? <ActivityIndicator size="large" color={themeColors.primary} /> : this.createCardsList()}
         </ScrollView>
       </Container>
     );

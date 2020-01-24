@@ -3,7 +3,6 @@ import { StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
 import { Container, Content } from "native-base";
 import { TextInput, HelperText, Title, Button } from "react-native-paper";
-import { white } from "react-native-paper/lib/commonjs/styles/colors";
 
 import utf16 from "crypto-js/enc-utf16";
 import sha3 from "crypto-js/sha3";
@@ -15,7 +14,7 @@ import { styles, themeColors } from "../../styles";
 
 const innerStyles = StyleSheet.create({
   backgroundWhite: {
-    backgroundColor: white,
+    backgroundColor: themeColors.background,
   },
   content: {
     paddingHorizontal: 10,
