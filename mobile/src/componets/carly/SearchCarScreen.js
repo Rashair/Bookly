@@ -7,6 +7,7 @@ import CustomMultiPicker from "react-native-multiple-select-list";
 
 export default class SearchCarScreen extends React.Component {
   static navigationOptions = { title: "Find your perfect car!" };
+
   constructor(props) {
     super(props);
 
@@ -33,35 +34,39 @@ export default class SearchCarScreen extends React.Component {
       isLoading: true,
     };
   }
+
   setDateFrom(date) {
     this.setState({
       dateFrom: date,
-      dateToValid: this.state.dateTo && date <= this.state.dateTo ? true : false,
+      dateToValid: !!(this.state.dateTo && date <= this.state.dateTo),
     });
   }
+
   setDateTo(date) {
     this.setState({
       dateTo: date,
-      dateToValid: this.state.dateFrom && this.state.dateFrom <= date ? true : false,
+      dateToValid: !!(this.state.dateFrom && this.state.dateFrom <= date),
     });
   }
+
   setCity(city) {
     const cityPattern = /^[a-zA-z][a-zA-z][a-zA-z ]*$/;
     this.setState({
-      city: city,
-      cityValid: cityPattern.test(city) && city.length >= 3 ? true : false,
+      city,
+      cityValid: !!(cityPattern.test(city) && city.length >= 3),
     });
   }
+
   setPeople(car) {
     this.setState({
-      car: car,
-      carValid: car ? true : false,
+      car,
+      carValid: !!car,
     });
   }
 
   createChip(i) {
     return (
-      <Chip mode="outlined" selected={this.state.car === i ? true : false} onPress={() => this.setPeople(i)}>
+      <Chip mode="outlined" selected={this.state.car === i} onPress={() => this.setPeople(i)}>
         {i.toString()}
       </Chip>
     );
@@ -79,7 +84,7 @@ export default class SearchCarScreen extends React.Component {
   }
 
   componentDidMount() {
-    //Url should be variable
+    // Url should be variable
     fetch("http://814e452c.ngrok.io/cars")
       .then(res => res.json())
       .then(data => {
@@ -140,26 +145,26 @@ export default class SearchCarScreen extends React.Component {
 
           <CustomMultiPicker
             options={userList}
-            search={true} // should show search bar
-            multiple={true} //
-            placeholder={"Search"}
-            placeholderTextColor={"#fff"}
-            returnValue={"label"} // label or value
+            search // should show search bar
+            multiple //
+            placeholder="Search"
+            placeholderTextColor="#fff"
+            returnValue="label" // label or value
             callback={res => {
               console.log(res);
             }} // callback, array of selected items
-            rowBackgroundColor={"#eee"}
+            rowBackgroundColor="#eee"
             rowHeight={40}
             rowRadius={5}
             searchIconName="ios-checkmark"
             searchIconColor="red"
             searchIconSize={30}
-            iconColor={"#8500dd"}
+            iconColor="#8500dd"
             iconSize={30}
-            selectedIconName={"ios-checkmark-circle-outline"}
-            unselectedIconName={"ios-radio-button-off-outline"}
+            selectedIconName="ios-checkmark-circle-outline"
+            unselectedIconName="ios-radio-button-off-outline"
             scrollViewHeight={130}
-            //selected={["Tom", "Christin"]} // list of options which are selected by default
+            // selected={["Tom", "Christin"]} // list of options which are selected by default
           />
           <HelperText type="error" visible={!this.state.carValid}>
             {this.errorMessage("Car")}
@@ -180,12 +185,12 @@ export default class SearchCarScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    width: "90%",
+    alignItems: "center",
     backgroundColor: "#fff",
+    flex: 1,
+    justifyContent: "center",
     marginLeft: "auto",
     marginRight: "auto",
-    alignItems: "center",
-    justifyContent: "center",
+    width: "90%",
   },
 });

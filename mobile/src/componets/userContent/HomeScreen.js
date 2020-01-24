@@ -1,5 +1,4 @@
 import React from "react";
-import { render } from "react-dom";
 import { StyleSheet, Text, View, Button } from "react-native";
 
 export default class HomeScreen extends React.Component {
@@ -18,9 +17,9 @@ export default class HomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
+    backgroundColor: "#fff",
+    flex: 1,
     justifyContent: "center",
   },
 });

@@ -5,8 +5,10 @@ export const sendRequest = (url, method, additionalHeaders, body) => {
     headers: { "Content-type": "application/json", ...additionalHeaders },
     mode: "cors",
     cache: "no-cache",
-    body: JSON.stringify(body),
   });
+  if (method !== "GET") {
+    request.body = JSON.stringify(body);
+  }
 
   return fetch(request);
 };
