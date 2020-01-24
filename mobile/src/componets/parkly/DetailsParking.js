@@ -7,24 +7,18 @@ import { Headline, Button } from "react-native-paper";
 import { Table, Row } from "react-native-table-component";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { white } from "react-native-paper/lib/commonjs/styles/colors";
 import { anyError } from "../../redux/actions";
-import { BUTTON_COLOR } from "../../helpers/colors";
+import { styles, themeColors } from "../../styles";
 
-const styles = StyleSheet.create({
-  button: {
-    height: 54,
-    justifyContent: "center",
-  },
+const innerStyles = StyleSheet.create({
   content: {
     alignItems: "stretch",
-    backgroundColor: white,
+    backgroundColor: themeColors.background,
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 20,
   },
   fontBold: { fontWeight: "700" },
-  putOnBottom: { flex: 1, justifyContent: "flex-end" },
   row: { alignItems: "flex-start", flexDirection: "row", marginBottom: 20 },
   rowText: {
     fontSize: 20,
@@ -51,36 +45,40 @@ class DetailsParking extends React.Component {
 
     return (
       <Container>
-        <ScrollView contentContainerStyle={styles.content}>
+        <ScrollView contentContainerStyle={innerStyles.content}>
           <Headline>Parking</Headline>
           <Table>
             <Row
-              style={styles.row}
-              textStyle={[styles.rowText, styles.fontBold]}
+              style={innerStyles.row}
+              textStyle={[innerStyles.rowText, innerStyles.fontBold]}
               flexArr={[0, 30, 5]}
               data={["", parking.location, ""]}
             />
-            <Row textStyle={styles.rowText} flexArr={[6, 30]} data={["Price:", `${parking.pricePerHour} PLN / hour`]} />
             <Row
-              textStyle={styles.rowText}
+              textStyle={innerStyles.rowText}
+              flexArr={[6, 30]}
+              data={["Price:", `${parking.pricePerHour} PLN / hour`]}
+            />
+            <Row
+              textStyle={innerStyles.rowText}
               flexArr={[23, 30]}
               data={["Working hours:", `${parking.workingHoursFrom}:00 - ${parking.workingHoursTo}:00`]}
             />
             <Row
-              textStyle={styles.rowText}
+              textStyle={innerStyles.rowText}
               flexArr={[30, 30]}
               data={["Number of spots:", `${parking.numberOfSpots}`]}
             />
           </Table>
 
-          <View style={styles.putOnBottom}>
+          <View style={styles.contentToEnd}>
             <Button
-              style={styles.button}
-              color={BUTTON_COLOR}
               mode="contained"
+              color={themeColors.primary}
+              style={styles.button}
               onPress={() => navigation.push("ReserveParking", { parking })}
             >
-              <Text>Make reservation</Text>
+              <Text style={styles.buttonText}>Make reservation</Text>
             </Button>
           </View>
         </ScrollView>

@@ -89,7 +89,7 @@
       "id": 2,
       "city": "Urithiru",
       "street": "Vedenar",
-      "streetNumber": 71249151210101114,
+      "streetNumber": 71249151210101110,
       "numberOfSpots": 500,
       "workingHoursFrom": 8,
       "workingHoursTo": 16,
@@ -99,7 +99,7 @@
       "id": 3,
       "city": "Urithiru",
       "street": "Narak",
-      "streetNumber": 10215117112101112171,
+      "streetNumber": 10215117112101112000,
       "numberOfSpots": 50,
       "workingHoursFrom": 8,
       "workingHoursTo": 22,
@@ -109,7 +109,7 @@
       "id": 4,
       "city": "Urithiru",
       "street": "Shinovar",
-      "streetNumber": 3448311107151425414,
+      "streetNumber": 3448311107151425500,
       "numberOfSpots": 500,
       "workingHoursFrom": 8,
       "workingHoursTo": 16,
@@ -119,11 +119,63 @@
       "id": 5,
       "city": "Urithiru",
       "street": "Rall Ellorim",
-      "streetNumber": 3410916149149341212,
+      "streetNumber": 3410916149149341000,
       "numberOfSpots": 500,
       "workingHoursFrom": 8,
       "workingHoursTo": 16,
       "pricePerHour": 5
+    },
+    {
+      "id": 6
+    },
+    {
+      "id": 7
+    },
+    {
+      "id": 8
+    },
+    {
+      "id": 9
+    },
+    {
+      "parkingId": 4,
+      "city": "Urithiru",
+      "street": "Shinovar",
+      "streetNumber": 3448311107151425500,
+      "totalCost": 5,
+      "dateFrom": "2020-01-24T21:14:17.717Z",
+      "dateTo": "2020-01-24T22:14:17.717Z",
+      "id": 10
+    },
+    {
+      "parkingId": 4,
+      "city": "Urithiru",
+      "street": "Shinovar",
+      "streetNumber": 3448311107151425500,
+      "totalCost": 5,
+      "dateFrom": "2020-01-24T21:14:17.717Z",
+      "dateTo": "2020-01-24T22:14:17.717Z",
+      "id": 11
+    },
+    {
+      "parkingId": 4,
+      "city": "Urithiru",
+      "street": "Shinovar",
+      "streetNumber": 3448311107151425500,
+      "totalCost": 5,
+      "dateFrom": "2020-01-24T21:14:17.717Z",
+      "dateTo": "2020-01-24T22:14:17.717Z",
+      "id": 12
+    },
+    {
+      "parkingId": 1,
+      "city": "Urithiru",
+      "street": "Kholinar",
+      "streetNumber": 111825101112,
+      "totalCost": 5,
+      "dateFrom": "2020-01-24T21:20:27.876Z",
+      "dateTo": "2020-01-24T22:20:27.876Z",
+      "id": 13
     }
   ]
 }

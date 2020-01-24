@@ -1,41 +1,37 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { StyleSheet, View, TouchableOpacity, ScrollView } from "react-native";
-import { Container, Text } from "native-base";
+import { StyleSheet, View, TouchableOpacity, ScrollView, Text } from "react-native";
+import { Container } from "native-base";
 import { TextInput, HelperText, Title, Button } from "react-native-paper";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { LocalDate, LocalTime, DateTimeFormatter, nativeJs } from "@js-joda/core";
 
-import { white } from "react-native-paper/lib/commonjs/styles/colors";
 import { anyError, searchByDate } from "../../redux/actions";
 import { createQueryParams } from "../../helpers/functions";
-import { BUTTON_COLOR } from "../../helpers/colors";
 import { PARKLY_API_URL } from "../../helpers/constants";
+import { styles, themeColors } from "../../styles";
 
-const styles = StyleSheet.create({
-  content: { paddingHorizontal: 10, paddingVertical: 20 },
+const innerStyles = StyleSheet.create({
+  backgroundColor: {
+    backgroundColor: themeColors.background,
+  },
   contentContainer: {
     alignItems: "stretch",
-    backgroundColor: white,
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 20,
   },
   inputDate: {
-    backgroundColor: white,
+    backgroundColor: themeColors.background,
     height: 45,
     marginBottom: 10,
     marginRight: 10,
     marginTop: 0,
   },
-  putOnBottom: { marginTop: 20 },
   row: {
     flexDirection: "row",
-  },
-  whiteBackground: {
-    backgroundColor: white,
   },
 });
 const currDate = new Date();
@@ -146,20 +142,20 @@ class SearchParking extends React.Component {
 
     return (
       <Container>
-        <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
+        <ScrollView style={styles.container} contentContainerStyle={innerStyles.contentContainer}>
           <Title>City</Title>
           <TextInput
             mode="outlined"
-            style={styles.whiteBackground}
+            style={innerStyles.backgroundColor}
             onChangeText={text => this.setCity(text)}
             value={this.state.city}
           />
           {!this.state.cityValid && <HelperText type="error">{this.errorMessage("City")}</HelperText>}
           <View>
             <Title>From</Title>
-            <View style={styles.row}>
+            <View style={innerStyles.row}>
               <TouchableOpacity onPress={() => this.setState({ showDateFromPicker: true })}>
-                <TextInput mode="flat" style={styles.inputDate} value={dateFromFormatted} editable={false} />
+                <TextInput mode="flat" style={innerStyles.inputDate} value={dateFromFormatted} editable={false} />
                 {showDateFromPicker && (
                   <DateTimePicker
                     minimumDate={currDate}
@@ -172,7 +168,7 @@ class SearchParking extends React.Component {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => this.setState({ showTimeFromPicker: true })}>
-                <TextInput mode="flat" style={styles.inputDate} value={timeFromFormatted} editable={false} />
+                <TextInput mode="flat" style={innerStyles.inputDate} value={timeFromFormatted} editable={false} />
                 {showTimeFromPicker && (
                   <DateTimePicker
                     minimumDate={currDate}
@@ -188,9 +184,9 @@ class SearchParking extends React.Component {
 
           <View>
             <Title>To</Title>
-            <View style={styles.row}>
+            <View style={innerStyles.row}>
               <TouchableOpacity onPress={() => this.setState({ showDateToPicker: true })}>
-                <TextInput mode="flat" style={styles.inputDate} value={dateToFormatted} editable={false} />
+                <TextInput mode="flat" style={innerStyles.inputDate} value={dateToFormatted} editable={false} />
                 {showDateToPicker && (
                   <DateTimePicker
                     minimumDate={dateFrom}
@@ -203,7 +199,7 @@ class SearchParking extends React.Component {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => this.setState({ showTimeToPicker: true })}>
-                <TextInput mode="flat" style={styles.inputDate} value={timeToFormatted} editable={false} />
+                <TextInput mode="flat" style={innerStyles.inputDate} value={timeToFormatted} editable={false} />
                 {showTimeToPicker && (
                   <DateTimePicker
                     minimumDate={dateFrom}
@@ -218,15 +214,17 @@ class SearchParking extends React.Component {
             {!this.state.dateToValid && <HelperText type="error">{this.errorMessage("DateTo")}</HelperText>}
           </View>
 
-          <Button
-            mode="contained"
-            color={BUTTON_COLOR}
-            style={styles.putOnBottom}
-            disabled={!(this.state.cityValid && this.state.dateToValid)}
-            onPress={this.handleSubmit}
-          >
-            <Text>Search</Text>
-          </Button>
+          <View style={styles.contentToEnd}>
+            <Button
+              mode="contained"
+              color={themeColors.primary}
+              style={[styles.button, styles.marginTopBig]}
+              disabled={!(this.state.cityValid && this.state.dateToValid)}
+              onPress={this.handleSubmit}
+            >
+              <Text style={styles.buttonText}>Search</Text>
+            </Button>
+          </View>
         </ScrollView>
       </Container>
     );

@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View, Button, ScrollView, Image, TouchableHighlight, Modal } from "react-native";
 import React from "react";
+import { connect } from "react-redux";
+import { anyError } from "../../redux/actions";
 
-export default class MyReservationParkingDetails extends React.Component {
+class SummaryParking extends React.Component {
   constructor(props) {
     super(props);
 
@@ -46,3 +48,15 @@ export default class MyReservationParkingDetails extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state /* , ownProps */) => {
+  return {
+    auth: state.auth,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  anyError: data => dispatch(anyError(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SummaryParking);

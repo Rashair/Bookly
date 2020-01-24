@@ -1,31 +1,20 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { ScrollView, StyleSheet, View, TouchableOpacity, KeyboardAvoidingView } from "react-native";
-import { Text } from "native-base";
+import { ScrollView, StyleSheet, View, TouchableOpacity, KeyboardAvoidingView, Text } from "react-native";
 import { Title, Button, TextInput, HelperText } from "react-native-paper";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { LocalDate, LocalTime, DateTimeFormatter, nativeJs } from "@js-joda/core";
-
-import { white, redA700 } from "react-native-paper/lib/commonjs/styles/colors";
 import { sendRequest } from "../../helpers/functions";
 import { anyError } from "../../redux/actions";
-import { BUTTON_COLOR } from "../../helpers/colors";
 import { PARKLY_API_URL, API_URL, TOKEN_HEADER_KEY } from "../../helpers/constants";
+import { styles, themeColors } from "../../styles";
 
-const styles = StyleSheet.create({
-  button: {
-    height: 54,
-    justifyContent: "center",
-  },
+const innerStyles = StyleSheet.create({
   container: {
-    backgroundColor: white,
-    flex: 1,
+    backgroundColor: themeColors.background,
     padding: 20,
-  },
-  helper: {
-    color: redA700,
   },
   inner: {
     flex: 1,
@@ -33,11 +22,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   input: {
-    backgroundColor: white,
+    backgroundColor: themeColors.background,
     fontSize: 18,
     height: 40,
   },
-  putOnBottom: { flex: 1, justifyContent: "flex-end" },
   row: {
     flexDirection: "row",
   },
@@ -163,8 +151,9 @@ class ReserveParking extends React.Component {
       return;
     }
 
-    const url = `${PARKLY_API_URL}/reservations/`;
-    const data = JSON.stringify({
+    const url = `${PARKLY_API_URL}/parking`; // reservations/`;
+    const ownerId = this.props.auth.id;
+    const data = {
       parkingId: parking.id,
       city: parking.city,
       street: parking.street,
@@ -172,44 +161,40 @@ class ReserveParking extends React.Component {
       totalCost: this.getTotalPrice(),
       dateFrom: dateFrom.toISOString(),
       dateTo: dateTo.toISOString(),
-    });
-
-    // Auth headers  here
-    const headers = {};
+    };
+    const headers = {}; // Auth headers here
     sendRequest(url, "POST", headers, data)
       .then(response => {
         if (response.ok) {
-          response.json().then(responseJson => {
-            const externalBookingId = responseJson.id;
-            const bookingData = JSON.stringify({
-              start_date_time: dateFrom,
-              owner: {
-                firstName,
-                lastName,
-              },
-              active: true,
-              type: "PARKING",
-            });
-            const bookingUrl = `${API_URL}/booking/`;
-            sendRequest(bookingUrl, "POST", { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, bookingData).then(
-              () => {
-                if (response.ok) {
-                  this.props.navigation.navigate("");
-                } else {
-                  throw new Error(`Error sending data to bookly, status code: ${response.status}`);
-                }
-              }
-            );
-          });
+          return response.json();
+        }
+        throw new Error(`Error sending data to parkly, status code: ${response.status}`);
+      })
+      .then(responseJson => {
+        const externalBookingId = responseJson.id;
+        const bookingData = {
+          owner: {
+            id: ownerId,
+          },
+          start_date_time: dateFrom.toISOString(),
+          end_date_time: dateTo.toISOString(),
+          type: "PARKING_SPACE",
+          external_id: externalBookingId,
+        };
+        const bookingUrl = `${API_URL}/booking/`;
+        return sendRequest(bookingUrl, "POST", { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, bookingData);
+      })
+      .then(booklyResponse => {
+        if (booklyResponse.ok) {
+          const summaryData = { ...data, dateFrom, dateTo, firstName, lastName, email };
+          this.props.navigation.navigate("SummaryParking", { summaryData });
         } else {
-          throw new Error(`Error sending data to parkly, status code: ${response.status}`);
+          throw new Error(`Error sending data to bookly, status code: ${booklyResponse.status}`);
         }
       })
       .catch(error => {
         this.props.anyError(error);
       });
-
-    // this.props.navigation.push("ListParking");
   }
 
   render() {
@@ -234,16 +219,19 @@ class ReserveParking extends React.Component {
     };
 
     return (
-      <ScrollView style={styles.container}>
-        <KeyboardAvoidingView contentContainerStyle={styles.inner} behavior="padding">
+      <ScrollView style={innerStyles.container}>
+        <KeyboardAvoidingView contentContainerStyle={innerStyles.inner} behavior="padding">
           <Title>First name</Title>
           <View>
             <TextInput
               mode="outlined"
               theme={{
-                colors: { primary: firstNameValid ? BUTTON_COLOR : redA700, underlineColor: "transparent" },
+                colors: {
+                  primary: firstNameValid ? themeColors.primary : themeColors.danger,
+                  underlineColor: "transparent",
+                },
               }}
-              style={styles.input}
+              style={innerStyles.input}
               onChangeText={text => this.setFirstName(text)}
               value={firstName}
             />
@@ -258,9 +246,12 @@ class ReserveParking extends React.Component {
           <TextInput
             mode="outlined"
             theme={{
-              colors: { primary: lastNameValid ? BUTTON_COLOR : redA700, underlineColor: "transparent" },
+              colors: {
+                primary: lastNameValid ? themeColors.primary : themeColors.danger,
+                underlineColor: "transparent",
+              },
             }}
-            style={styles.input}
+            style={innerStyles.input}
             onChangeText={text => this.setLastName(text)}
             value={lastName}
           />
@@ -273,10 +264,12 @@ class ReserveParking extends React.Component {
           <Title>Email</Title>
           <TextInput
             mode="outlined"
+            autoCompleteType="email"
+            autoCapitalize="none"
             theme={{
-              colors: { primary: emailValid ? BUTTON_COLOR : redA700, underlineColor: "transparent" },
+              colors: { primary: emailValid ? themeColors.primary : themeColors.danger, underlineColor: "transparent" },
             }}
-            style={styles.input}
+            style={innerStyles.input}
             onChangeText={text => this.setEmail(text)}
             value={email}
           />
@@ -288,9 +281,9 @@ class ReserveParking extends React.Component {
 
           <View>
             <Title>From</Title>
-            <View style={styles.row}>
+            <View style={innerStyles.row}>
               <TouchableOpacity onPress={() => this.setState({ showDateFromPicker: true })}>
-                <TextInput mode="flat" style={styles.input} value={dateFromFormatted} editable={false} />
+                <TextInput mode="flat" style={innerStyles.input} value={dateFromFormatted} editable={false} />
                 {showDateFromPicker && (
                   <DateTimePicker
                     minimumDate={currDate}
@@ -303,7 +296,7 @@ class ReserveParking extends React.Component {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => this.setState({ showTimeFromPicker: true })}>
-                <TextInput mode="flat" style={styles.input} value={timeFromFormatted} editable={false} />
+                <TextInput mode="flat" style={innerStyles.input} value={timeFromFormatted} editable={false} />
                 {showTimeFromPicker && (
                   <DateTimePicker
                     minimumDate={currDate}
@@ -319,9 +312,9 @@ class ReserveParking extends React.Component {
 
           <View>
             <Title>To</Title>
-            <View style={styles.row}>
+            <View style={innerStyles.row}>
               <TouchableOpacity onPress={() => this.setState({ showDateToPicker: true })}>
-                <TextInput mode="flat" style={styles.input} value={dateToFormatted} editable={false} />
+                <TextInput mode="flat" style={innerStyles.input} value={dateToFormatted} editable={false} />
                 {showDateToPicker && (
                   <DateTimePicker
                     minimumDate={dateFrom}
@@ -334,7 +327,7 @@ class ReserveParking extends React.Component {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => this.setState({ showTimeToPicker: true })}>
-                <TextInput mode="flat" style={styles.input} value={timeToFormatted} editable={false} />
+                <TextInput mode="flat" style={innerStyles.input} value={timeToFormatted} editable={false} />
                 {showTimeToPicker && (
                   <DateTimePicker
                     minimumDate={dateFrom}
@@ -349,11 +342,11 @@ class ReserveParking extends React.Component {
             {!this.state.dateToValid && <HelperText type="error">{this.errorMessage("DateTo")}</HelperText>}
           </View>
 
-          <Title style={styles.inner}>Price: {getTotalPrice()}</Title>
-          <View style={styles.putOnBottom}>
+          <Title style={innerStyles.inner}>Price: {getTotalPrice()}</Title>
+          <View style={styles.contentToEnd}>
             <Button
               style={styles.button}
-              color={BUTTON_COLOR}
+              color={themeColors.primary}
               mode="contained"
               disabled={
                 !(
@@ -370,7 +363,7 @@ class ReserveParking extends React.Component {
               }
               onPress={this.handleSubmit}
             >
-              <Text>Make reservation</Text>
+              <Text style={styles.buttonText}>Make reservation</Text>
             </Button>
           </View>
         </KeyboardAvoidingView>

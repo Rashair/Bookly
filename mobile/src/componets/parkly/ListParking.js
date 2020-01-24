@@ -1,19 +1,18 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { StyleSheet, View, ActivityIndicator } from "react-native";
-import { Container, Text } from "native-base";
+import { StyleSheet, View, ActivityIndicator, Text } from "react-native";
+import { Container } from "native-base";
 import { Card, Chip } from "react-native-paper";
 
 import { ScrollView } from "react-native-gesture-handler";
 import { PARKLY_API_URL } from "../../helpers/constants";
 import { ACTIVITY_INDICATOR_COLOR } from "../../helpers/colors";
 import { anyError } from "../../redux/actions";
+import { styles } from "../../styles";
 
-const styles = StyleSheet.create({
+const innerStyles = StyleSheet.create({
   fontBold: { fontWeight: "bold" },
-  md_paddingVertical: { paddingVertical: 15 },
-  row: { flexDirection: "row", justifyContent: "space-between" },
   sortingRow: { display: "flex", justifyContent: "space-around", marginBottom: 20 },
   wrapInSameColumn: { flexShrink: 1 },
 });
@@ -94,11 +93,11 @@ class ListParking extends React.Component {
       return (
         <Card key={parkingSpace.id} onPress={() => navigation.push("DetailsParking", { parking: parkingSpace })}>
           <Card.Content>
-            <Text style={styles.fontBold}>Parking {parkingSpace.id}</Text>
-            <Text>Price: {parkingSpace.pricePerHour.toString()} PLN / h</Text>
-            <View style={styles.row}>
+            <Text style={innerStyles.fontBold}>Parking {parkingSpace.id}</Text>
+            <Text>Price: {parkingSpace.pricePerHour?.toString()} PLN / h</Text>
+            <View style={styles.contentRow}>
               <Text>Location: </Text>
-              <Text style={styles.wrapInSameColumn}>{parkingSpace.location}</Text>
+              <Text style={innerStyles.wrapInSameColumn}>{parkingSpace.location}</Text>
             </View>
           </Card.Content>
         </Card>
@@ -108,7 +107,7 @@ class ListParking extends React.Component {
 
   render() {
     const sortingTypes = (
-      <View style={[styles.row, styles.sortingRow]}>
+      <View style={[styles.contentRow, innerStyles.sortingRow]}>
         <Chip
           mode="outlined"
           selected={this.state.sortingType === this.sortingTypes.lowestPrice.name}
@@ -129,7 +128,7 @@ class ListParking extends React.Component {
     const { isLoading } = this.state;
     return (
       <Container>
-        <ScrollView contentContainerStyle={styles.md_paddingVertical}>
+        <ScrollView contentContainerStyle={styles.container}>
           {sortingTypes}
           {isLoading ? <ActivityIndicator size="large" color={ACTIVITY_INDICATOR_COLOR} /> : this.createCardsList()}
         </ScrollView>

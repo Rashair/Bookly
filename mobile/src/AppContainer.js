@@ -8,6 +8,7 @@ import SearchFlatScreen from "./componets/flatly/SearchFlatScreen";
 import ListParking from "./componets/parkly/ListParking";
 import DetailsParking from "./componets/parkly/DetailsParking";
 import ReserveParking from "./componets/parkly/ReserveParking";
+import SummaryParking from "./componets/parkly/SummaryParking";
 import SearchCarScreen from "./componets/carly/SearchCarScreen";
 import CarListScreen from "./componets/carly/CarListScreen";
 import MyReservationsList from "./componets/userContent/MyReservationsList";
@@ -32,6 +33,7 @@ const AppNavigator = createStackNavigator(
     ListParking: { screen: ListParking },
     DetailsParking: { screen: DetailsParking },
     ReserveParking: { screen: ReserveParking },
+    SummaryParking: { screen: SummaryParking },
   },
   {
     initialRouteName: "Home",

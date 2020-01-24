@@ -7,16 +7,17 @@
  * @param {Boolean} useCache
  */
 export const sendRequest = (url, method, additionalHeaders = {}, body = {}, useCache = false) => {
-  const request = new Request(url, {
+  const requestData = {
     method,
     headers: { "Content-type": "application/json", ...additionalHeaders },
     mode: "cors",
     cache: useCache ? "only-if-cached" : "no-cache",
-  });
+  };
   if (method !== "GET") {
-    request.body = JSON.stringify(body);
+    requestData.body = JSON.stringify(body);
   }
 
+  const request = new Request(url, requestData);
   return fetch(request);
 };
 

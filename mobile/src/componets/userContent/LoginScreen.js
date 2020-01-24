@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
 import { Container, Content } from "native-base";
 import { TextInput, HelperText, Title, Button } from "react-native-paper";
@@ -11,8 +11,9 @@ import hmacSHA512 from "crypto-js/hmac-sha512";
 import Base64 from "crypto-js/enc-base64";
 
 import { login } from "../../redux/thunk-functions";
+import { styles, themeColors } from "../../styles";
 
-const styles = StyleSheet.create({
+const innerStyles = StyleSheet.create({
   backgroundWhite: {
     backgroundColor: white,
   },
@@ -86,12 +87,12 @@ class LoginScreen extends React.Component {
 
   render() {
     return (
-      <Container>
-        <Content style={styles.content}>
+      <Container style={styles.container}>
+        <Content style={innerStyles.content}>
           <Title>Login</Title>
           <TextInput
             mode="outlined"
-            style={styles.backgroundWhite}
+            style={innerStyles.backgroundWhite}
             onChangeText={text => this.setLogin(text)}
             value={this.state.login}
           />
@@ -103,7 +104,7 @@ class LoginScreen extends React.Component {
           <TextInput
             secureTextEntry
             mode="outlined"
-            style={styles.backgroundWhite}
+            style={innerStyles.backgroundWhite}
             onChangeText={text => this.setPassword(text)}
             value={this.state.password}
           />
@@ -111,13 +112,17 @@ class LoginScreen extends React.Component {
             {this.errorMessage("Password")}
           </HelperText>
 
-          <Button
-            mode="contained"
-            disabled={!(this.state.loginValid && this.state.passwordValid)}
-            onPress={this.handleSubmit}
-          >
-            <Text> Login</Text>
-          </Button>
+          <View style={styles.contentToEnd}>
+            <Button
+              style={styles.button}
+              color={themeColors.primary}
+              mode="contained"
+              disabled={!(this.state.loginValid && this.state.passwordValid)}
+              onPress={this.handleSubmit}
+            >
+              <Text style={styles.buttonText}> Login</Text>
+            </Button>
+          </View>
         </Content>
       </Container>
     );
