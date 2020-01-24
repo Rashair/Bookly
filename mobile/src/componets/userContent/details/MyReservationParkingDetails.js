@@ -10,7 +10,7 @@ export default class MyReservationParkingDetails extends React.Component {
         this.state={
           DateFrom : null,
           DateTo: null,
-          TotalCost =0,
+          TotalCost: 0,
           City : '',
           Street : '',
           StreetNumber :0

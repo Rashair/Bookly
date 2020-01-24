@@ -2,6 +2,8 @@ import React from "react";
 import { StyleSheet, Text, View, Button, ScrollView, FlatList, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Row } from "native-base";
+import { styles, themeColors} from '../../styles'
+import { Paragraph } from "react-native-paper";
 
 const DATA = [
   // temporary solution to display data
@@ -31,10 +33,12 @@ function MyReservationItem({ DateFrom, FKid, type, navigation }) {
   image = <Image style={{width: 50, height: 50}} source={require("./assets/car.png")} />;
   // }
   return (
-    <TouchableOpacity onPress={navigation} style={{flexDirection: 'row', alignItems : 'center', alignContent: 'stretch', margin: '2%'}}>
+    <TouchableOpacity style={styles.marginBottomSmall} onPress={navigation} >
+      <View style={styles.contentRow}>
       {image}
-      <Text>{DateFrom}</Text>
-      <Text>{FKid}</Text>
+      <Paragraph>{DateFrom}</Paragraph>
+      <Paragraph>{FKid}</Paragraph>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -83,11 +87,3 @@ export default class MyReservationList extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

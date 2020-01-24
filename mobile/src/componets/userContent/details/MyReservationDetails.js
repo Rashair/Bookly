@@ -4,6 +4,9 @@ import React from "react";
 import MyReservationCarDetails from "./MyReservationCarDetails";
 import MyReservationFlatDetails from "./MyReservationFlatDetails";
 import MyReservationParkingDetails from "./MyReservationParkingDetails";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
+import {styles} from '../../../styles'
+import { Title } from "react-native-paper";
 
 export default class MyReservationDetails extends React.Component {
   constructor(props) {
@@ -45,6 +48,7 @@ export default class MyReservationDetails extends React.Component {
   cancelFlatReservation(fkid) {}
   cancelReservationInBookly(id) {}
 
+  static navigationOptions = { title: "Reservation Details" };
   render() {
     let body;
     let type= this.props.navigation.getParam("type");
@@ -57,7 +61,7 @@ export default class MyReservationDetails extends React.Component {
       body = <MyReservationParkingDetails FKid={fkid} />;
     }
     return (
-      <View>
+      <Container>
         <Modal
           animationType="slide"
           transparent={false}
@@ -66,52 +70,36 @@ export default class MyReservationDetails extends React.Component {
             Alert.alert("Modal has been closed.");
           }}
         >
-          <View style={{ marginTop: 22 }}>
-            <Container>
-              <Text>Do you want to cancel that reservation?</Text>
-
-              <TouchableHighlight
+          <View style={styles.container_modal}>
+              <Title>Do you want to cancel that reservation?</Title>
+              <Button style={styles.button}
                 onPress={() => {
                   this.cancelReservation();
                 }}
-              >
-                <Text>Yes</Text>
-              </TouchableHighlight>
-              <TouchableHighlight
+                mode="contained"
+                title="Yes"
+              />
+              <Button style={styles.button}
                 onPress={() => {
                   this.setModalVisible(false);
                 }}
-              >
-                <Text>No</Text>
-              </TouchableHighlight>
-            </Container>
+                title="No"
+              />
           </View>
         </Modal>
         
+  <ScrollView contentContainerStyle={styles.container}>
+{body}
 
-        {body}
-
-        <Button
-          onPress={() => {
-            this.setModalVisible(true);
-          }} title= "Cancel reservation"
-         />
-      </View>
+<Button
+  onPress={() => {
+    this.setModalVisible(true);
+  }} title= "Cancel reservation"
+ />
+  </ScrollView>   
+      </Container>
     );
   }
 }
-const styles = StyleSheet.create({  
-  acceptbutton: {
-    alignItems: 'center',
-    backgroundColor: '#DDDDDD',
-    padding: 10
-  },
-  countContainer: {
-    alignItems: 'center',
-    padding: 10
-  },
-  countText: {
-    color: '#FF00FF'
-  }
-})
+
 

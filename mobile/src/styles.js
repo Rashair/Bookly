@@ -21,7 +21,8 @@ export const styles = StyleSheet.create({
     },
     contentRow: {
         flexDirection: 'row',
-        justifyContent:'space-between'
+        justifyContent:'space-between',
+        textAlignVertical:"center"
     },
     contentToEnd:{
         flex: 1,
@@ -57,5 +58,17 @@ export const styles = StyleSheet.create({
     },
     textToLeft:{
         textAlign: 'left'
+    },
+    icon:{
+        height : 50,
+        width : 50,
+        padding : 3
+    },
+    container_modal:{
+        padding:10,
+        alignItems : "center",
+        textAlignVertical:"center",
+        justifyContent: "center",
+        flex :1
     }
 })
