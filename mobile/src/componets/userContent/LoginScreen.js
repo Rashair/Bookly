@@ -52,8 +52,6 @@ class LoginScreen extends React.Component {
       login, // ,
       loginValid: login.length > 0,
     });
-    // eslint-disable-next-line no-console
-    console.log(login);
   }
 
   setPassword(password) {
@@ -76,7 +74,7 @@ class LoginScreen extends React.Component {
 
   handleSubmit() {
     // TODO: Check if password and login valid here (user may not changed it)
-    const { login, password } = { login: "malostkowys", password: "blabla" };
+    const { login, password } = this.state;
     const randomMsg = utf16.parse("Keep it secret. Keep it safe");
     const hashDigest = sha3(password + randomMsg);
     const hash = Base64.stringify(hmacSHA512(hashDigest, login));

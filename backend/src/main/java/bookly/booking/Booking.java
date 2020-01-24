@@ -30,8 +30,8 @@ public class Booking {
     @Column(name = "end_date_time", nullable = false)
     private LocalDate endDateTime;
 
-    @Column(name = "active", nullable = false)
-    private boolean active;
+    @Column(name = "active")
+    private boolean active = true;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
@@ -118,7 +118,7 @@ public class Booking {
         return externalId;
     }
 
-    @JsonSetter("id")
+    @JsonSetter("external_id")
     public void setExternalId(Long id) {
         this.externalId = id;
     }

@@ -1,6 +1,5 @@
 import React from "react";
-import { render } from "react-dom";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, View, Button } from "react-native";
 
 export default class HomeScreen extends React.Component {
   render() {
@@ -8,9 +7,9 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Button title="My reservations" onPress={() => navigate("MyReservationsList")} />
-        <Button title="Find flat" onPress={() => navigate("FlatsList")} />
-        <Button title="Find car" />
-        <Button title="Find parking" />
+        <Button title="Find flat" onPress={() => navigate("SearchFlat")} />
+        <Button title="Find car" onPress={() => navigate("SearchCar")} />
+        <Button title="Find parking" onPress={() => navigate("SearchParking")} />
       </View>
     );
   }
@@ -18,9 +17,9 @@ export default class HomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
+    backgroundColor: "#fff",
+    flex: 1,
     justifyContent: "center",
   },
 });
