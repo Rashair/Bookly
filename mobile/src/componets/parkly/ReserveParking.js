@@ -1,12 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { ScrollView, StyleSheet, View, TouchableOpacity, KeyboardAvoidingView, Text } from "react-native";
+import { ScrollView, StyleSheet, View, TouchableOpacity, KeyboardAvoidingView, Text, Alert } from "react-native";
 import { Title, Button, TextInput, HelperText } from "react-native-paper";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { LocalDate, LocalTime, DateTimeFormatter, nativeJs } from "@js-joda/core";
-import { sendRequest } from "../../helpers/functions";
+import { sendRequest, combineDateAndTime } from "../../helpers/functions";
 import { anyError } from "../../redux/actions";
 import { PARKLY_API_URL, API_URL, TOKEN_HEADER_KEY } from "../../helpers/constants";
 import { styles, themeColors } from "../../styles";
@@ -54,6 +54,7 @@ class ReserveParking extends React.Component {
       lastNameValid: true,
       emailValid: true,
       dateToValid: true,
+      isFetching: false,
     };
 
     this.setFirstName = this.setFirstName.bind(this);
@@ -89,29 +90,33 @@ class ReserveParking extends React.Component {
     });
   }
 
-  setDateFrom(e, date) {
-    if (!date) {
+  setDateFrom(date, time) {
+    if (!date && !time) {
       this.setState({ showDateFromPicker: false, showTimeFromPicker: false });
       return;
     }
 
+    const oldDate = this.state.dateFrom;
+    const newDate = combineDateAndTime(date ?? oldDate, time ?? oldDate);
     this.setState(oldstate => ({
-      dateFrom: date,
-      dateToValid: this.validateDateTo(date, oldstate.dateFrom),
+      dateFrom: newDate,
+      dateToValid: this.validateDateTo(newDate, oldstate.dateTo),
       showDateFromPicker: false,
       showTimeFromPicker: false,
     }));
   }
 
-  setDateTo(e, date) {
-    if (!date) {
+  setDateTo(date, time) {
+    if (!date && !time) {
       this.setState({ showDateToPicker: false, showTimeToPicker: false });
       return;
     }
 
+    const oldDate = this.state.dateTo;
+    const newDate = combineDateAndTime(date ?? oldDate, time ?? oldDate);
     this.setState(oldstate => ({
-      dateTo: date,
-      dateToValid: this.validateDateTo(oldstate.dateFrom, date),
+      dateTo: newDate,
+      dateToValid: this.validateDateTo(oldstate.dateFrom, newDate),
       showDateToPicker: false,
       showTimeToPicker: false,
     }));
@@ -151,6 +156,7 @@ class ReserveParking extends React.Component {
       return;
     }
 
+    this.setState({ isFetching: true });
     const url = `${PARKLY_API_URL}/parking`; // reservations/`;
     const ownerId = this.props.auth.id;
     const data = {
@@ -186,19 +192,20 @@ class ReserveParking extends React.Component {
       })
       .then(booklyResponse => {
         if (booklyResponse.ok) {
-          const summaryData = { ...data, dateFrom, dateTo, firstName, lastName, email };
+          const summaryData = { parking, totalCost: data.totalCost, dateFrom, dateTo, firstName, lastName, email };
           this.props.navigation.navigate("SummaryParking", { summaryData });
         } else {
           throw new Error(`Error sending data to bookly, status code: ${booklyResponse.status}`);
         }
       })
       .catch(error => {
+        this.setState({ isFetching: false });
         this.props.anyError(error);
       });
   }
 
   render() {
-    const { firstName, firstNameValid, lastName, lastNameValid, email, emailValid, parking } = this.state;
+    const { firstName, firstNameValid, lastName, lastNameValid, email, emailValid, isFetching } = this.state;
     const {
       showDateFromPicker,
       showTimeFromPicker,
@@ -208,15 +215,17 @@ class ReserveParking extends React.Component {
       dateTo,
       dateToValid,
     } = this.state;
-    const dateFromFormatted = LocalDate.from(nativeJs(dateFrom)).format(DateTimeFormatter.ofPattern("d/M/yyyy"));
+    const dateFromFormatted = LocalDate.from(nativeJs(dateFrom)).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     const timeFromFormatted = LocalTime.from(nativeJs(dateFrom)).format(DateTimeFormatter.ofPattern("HH:mm"));
-    const dateToFormatted = LocalDate.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("d/M/yyyy"));
+    const dateToFormatted = LocalDate.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     const timeToFormatted = LocalTime.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("HH:mm"));
-    const getTotalPrice = () => {
-      const timeInMinutes = parseInt((dateTo - dateFrom) / 1000 / 60, 10);
-      const timeInHours = Math.ceil((timeInMinutes - 4) / 60);
-      return parking.pricePerHour * timeInHours;
-    };
+
+    const submitButtons = [
+      { text: "Cancel", onPress: () => {} },
+      { text: "Yes", onPress: () => this.handleSubmit() },
+    ];
+    const confirmationAlert = () =>
+      Alert.alert("Confirm reservation", "Are you sure that you want to reserve this parking?", submitButtons);
 
     return (
       <ScrollView style={innerStyles.container}>
@@ -290,7 +299,7 @@ class ReserveParking extends React.Component {
                     value={dateFrom}
                     mode="date"
                     display="calendar"
-                    onChange={this.setDateFrom}
+                    onChange={(e, date) => this.setDateFrom(date)}
                   />
                 )}
               </TouchableOpacity>
@@ -303,7 +312,7 @@ class ReserveParking extends React.Component {
                     value={dateFrom}
                     mode="time"
                     display="clock"
-                    onChange={this.setDateFrom}
+                    onChange={(e, date) => this.setDateFrom(null, date)}
                   />
                 )}
               </TouchableOpacity>
@@ -321,7 +330,7 @@ class ReserveParking extends React.Component {
                     value={dateTo}
                     mode="date"
                     display="calendar"
-                    onChange={this.setDateTo}
+                    onChange={(e, date) => this.setDateTo(date)}
                   />
                 )}
               </TouchableOpacity>
@@ -334,7 +343,7 @@ class ReserveParking extends React.Component {
                     value={dateTo}
                     mode="time"
                     display="clock"
-                    onChange={this.setDateTo}
+                    onChange={(e, date) => this.setDateTo(null, date)}
                   />
                 )}
               </TouchableOpacity>
@@ -342,7 +351,7 @@ class ReserveParking extends React.Component {
             {!this.state.dateToValid && <HelperText type="error">{this.errorMessage("DateTo")}</HelperText>}
           </View>
 
-          <Title style={innerStyles.inner}>Price: {getTotalPrice()}</Title>
+          <Title style={innerStyles.inner}>Price: {this.getTotalPrice()}</Title>
           <View style={styles.contentToEnd}>
             <Button
               style={styles.button}
@@ -358,10 +367,11 @@ class ReserveParking extends React.Component {
                   firstNameValid &&
                   lastNameValid &&
                   emailValid &&
-                  dateToValid
+                  dateToValid &&
+                  !isFetching
                 )
               }
-              onPress={this.handleSubmit}
+              onPress={confirmationAlert}
             >
               <Text style={styles.buttonText}>Make reservation</Text>
             </Button>

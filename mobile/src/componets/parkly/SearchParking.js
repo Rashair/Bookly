@@ -9,7 +9,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { LocalDate, LocalTime, DateTimeFormatter, nativeJs } from "@js-joda/core";
 
 import { anyError, searchByDate } from "../../redux/actions";
-import { createQueryParams } from "../../helpers/functions";
+import { createQueryParams, combineDateAndTime } from "../../helpers/functions";
 import { PARKLY_API_URL } from "../../helpers/constants";
 import { styles, themeColors } from "../../styles";
 
@@ -62,29 +62,33 @@ class SearchParking extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  setDateFrom(e, date) {
-    if (!date) {
+  setDateFrom(date, time) {
+    if (!date && !time) {
       this.setState({ showDateFromPicker: false, showTimeFromPicker: false });
       return;
     }
 
+    const oldDate = this.state.dateFrom;
+    const newDate = combineDateAndTime(date ?? oldDate, time ?? oldDate);
     this.setState(oldstate => ({
-      dateFrom: date,
-      dateToValid: this.validateDateTo(date, oldstate.dateFrom),
+      dateFrom: newDate,
+      dateToValid: this.validateDateTo(newDate, oldstate.dateTo),
       showDateFromPicker: false,
       showTimeFromPicker: false,
     }));
   }
 
-  setDateTo(e, date) {
-    if (!date) {
+  setDateTo(date, time) {
+    if (!date && !time) {
       this.setState({ showDateToPicker: false, showTimeToPicker: false });
       return;
     }
 
+    const oldDate = this.state.dateTo;
+    const newDate = combineDateAndTime(date ?? oldDate, time ?? oldDate);
     this.setState(oldstate => ({
-      dateTo: date,
-      dateToValid: this.validateDateTo(oldstate.dateFrom, date),
+      dateTo: newDate,
+      dateToValid: this.validateDateTo(oldstate.dateFrom, newDate),
       showDateToPicker: false,
       showTimeToPicker: false,
     }));
@@ -135,9 +139,9 @@ class SearchParking extends React.Component {
 
   render() {
     const { showDateFromPicker, showTimeFromPicker, dateFrom, showDateToPicker, showTimeToPicker, dateTo } = this.state;
-    const dateFromFormatted = LocalDate.from(nativeJs(dateFrom)).format(DateTimeFormatter.ofPattern("d/M/yyyy"));
+    const dateFromFormatted = LocalDate.from(nativeJs(dateFrom)).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     const timeFromFormatted = LocalTime.from(nativeJs(dateFrom)).format(DateTimeFormatter.ofPattern("HH:mm"));
-    const dateToFormatted = LocalDate.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("d/M/yyyy"));
+    const dateToFormatted = LocalDate.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     const timeToFormatted = LocalTime.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("HH:mm"));
 
     return (
@@ -162,7 +166,7 @@ class SearchParking extends React.Component {
                     value={dateFrom}
                     mode="date"
                     display="calendar"
-                    onChange={this.setDateFrom}
+                    onChange={(e, date) => this.setDateFrom(date)}
                   />
                 )}
               </TouchableOpacity>
@@ -175,7 +179,7 @@ class SearchParking extends React.Component {
                     value={dateFrom}
                     mode="time"
                     display="clock"
-                    onChange={this.setDateFrom}
+                    onChange={(e, time) => this.setDateFrom(null, time)}
                   />
                 )}
               </TouchableOpacity>
@@ -189,11 +193,11 @@ class SearchParking extends React.Component {
                 <TextInput mode="flat" style={innerStyles.inputDate} value={dateToFormatted} editable={false} />
                 {showDateToPicker && (
                   <DateTimePicker
-                    minimumDate={dateFrom}
+                    minimumDate={currDate}
                     value={dateTo}
                     mode="date"
                     display="calendar"
-                    onChange={this.setDateTo}
+                    onChange={(e, date) => this.setDateTo(date)}
                   />
                 )}
               </TouchableOpacity>
@@ -202,11 +206,11 @@ class SearchParking extends React.Component {
                 <TextInput mode="flat" style={innerStyles.inputDate} value={timeToFormatted} editable={false} />
                 {showTimeToPicker && (
                   <DateTimePicker
-                    minimumDate={dateFrom}
+                    minimumDate={currDate}
                     value={dateTo}
                     mode="time"
                     display="clock"
-                    onChange={this.setDateTo}
+                    onChange={(e, time) => this.setDateTo(null, time)}
                   />
                 )}
               </TouchableOpacity>

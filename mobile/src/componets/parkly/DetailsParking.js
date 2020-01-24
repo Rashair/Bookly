@@ -19,7 +19,7 @@ const innerStyles = StyleSheet.create({
     paddingVertical: 20,
   },
   fontBold: { fontWeight: "700" },
-  row: { alignItems: "flex-start", flexDirection: "row", marginBottom: 20 },
+  row: { alignItems: "flex-start", flexDirection: "row" },
   rowText: {
     fontSize: 20,
     letterSpacing: 0.15,
@@ -49,7 +49,7 @@ class DetailsParking extends React.Component {
           <Headline>Parking</Headline>
           <Table>
             <Row
-              style={innerStyles.row}
+              style={[innerStyles.row, styles.marginBottomBig]}
               textStyle={[innerStyles.rowText, innerStyles.fontBold]}
               flexArr={[0, 30, 5]}
               data={["", parking.location, ""]}
@@ -76,7 +76,7 @@ class DetailsParking extends React.Component {
               mode="contained"
               color={themeColors.primary}
               style={styles.button}
-              onPress={() => navigation.push("ReserveParking", { parking })}
+              onPress={() => navigation.navigate("ReserveParking", { parking })}
             >
               <Text style={styles.buttonText}>Make reservation</Text>
             </Button>
