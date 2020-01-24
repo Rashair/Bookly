@@ -3,9 +3,7 @@ package bookly.security;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class UserDetailsResponse {
-    @JsonIgnore
     private Long id;
-
     private String firstName;
     private String lastName;
     private String identificationToken;

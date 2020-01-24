@@ -6,14 +6,14 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class JsonDateSerializer extends JsonSerializer {
+public class JsonDateSerializer extends JsonSerializer<LocalDateTime> {
 
     @Override
-    public void serialize(Object o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        final LocalDate date = (LocalDate) o;
-        final String dateString = date.format(DateTimeFormatter.ISO_DATE);
+    public void serialize(LocalDateTime date, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        final String dateString = date.format(DateTimeFormatter.ISO_DATE_TIME);
         jsonGenerator.writeString(dateString);
     }
 }
