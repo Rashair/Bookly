@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     container:{
-        padding: 10
+        padding: 10,
     },
     contentColumn:{
         flexDirection: 'column',
@@ -22,7 +22,8 @@ export const styles = StyleSheet.create({
     contentRow: {
         flexDirection: 'row',
         justifyContent:'space-between',
-        textAlignVertical:"center"
+        textAlignVertical:"center",
+        
     },
     contentToEnd:{
         flex: 1,
@@ -70,5 +71,22 @@ export const styles = StyleSheet.create({
         textAlignVertical:"center",
         justifyContent: "center",
         flex :1
-    }
+    },
+    container_reservationdetailsmain:{
+        padding: 10,
+        flex:1,
+    },
+    container_reservationdetails:{
+        marginTop : 20,
+        marginBottom : 20
+    },
+    button_bottompage:{
+        justifyContent: 'center', 
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: 0,
+        marginBottom : 20,
+        flexDirection: "row",
+        alignSelf : 'center'
+    },
 })

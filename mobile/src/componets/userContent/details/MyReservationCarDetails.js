@@ -43,7 +43,8 @@ export default class MyReservationCarDetails extends React.Component {
   render() {
     return (
       <View>
-        <Headline>Car reservation</Headline>
+        <Headline>Car reservation</Headline>        
+        <View style={styles.container_reservationdetails}>
         <View style={styles.contentRow}>
           <Title>Date from : </Title>
           <Paragraph>20-15-2020 {/* {this.state.DateFrom} */}</Paragraph>
@@ -86,6 +87,7 @@ export default class MyReservationCarDetails extends React.Component {
         <View style={styles.contentRow}>
           <Title>Total cost:</Title>
           <Paragraph>100 $ {/*{this.state.Cost}*/}</Paragraph>
+        </View>
         </View>
       </View>
     );

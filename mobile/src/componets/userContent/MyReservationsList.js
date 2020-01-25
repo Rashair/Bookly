@@ -12,20 +12,26 @@ const DATA = [
   {
     id: 1,
     type: "car",
-    FKid: 1,
-    DateFrom: " today",
+    externalId: 1,
+    startDateTime: "10=02-2020",
+    active : false,
+    endDateTime : '20-02-2020'
   },
   {
     id: 2,
     type: "flat",
-    DateFrom: "tommorow",
-    FKid: 2,
+    startDateTime: "02-01-2020",
+    externalId: 2,
+    active : true,
+    endDateTime : '20-02-2020'
   },
   {
     id: 3,
     type: "parking",
-    DateFrom: "never",
-    FKid: 3,
+    startDateTime: "19-12-2019",
+    externalId: 3,
+    active : true,
+    endDateTime : '20-02-2020'
   },
 ];
 
@@ -42,30 +48,33 @@ export default class MyReservationList extends React.Component {
   }
 
   componentDidMount() {
-    const URL = "BookingDetails/" + this.props.FKid; //?
-    // sendRequest(URL, 'get', '')
-    //   .then(response => {
-    //     if(response.ok){
+    // const ownerId = this.props.auth.id;
+
+    // const bookingUrl = '${API_URL}/booking/user';
+    // sendRequest(bookingUrl, 'get', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, ownerId)
+    //   .then(res => {
+    //     if (res.ok) {
     //       response.json()
-    //       .then(res=>{
-    //         console.log(res);
-    //         this.setState({
-    //           reservations : res
+    //         .then(res => {
+    //           console.log(res);
+    //           this.setState({
+    //             reservations: res
+    //           })
     //         })
-    //       })
     //     }
-    //     }
-    //     )
-    //   .catch(function(error) {
+    //   }
+    //   )
+    //   .catch(function (error) {
     //     console.log(error.message);
     //   });
   }
 
-  openDetails = (FKid, type, id) => {
+  openDetails = (FKid, type, id, active) => {
     this.props.navigation.navigate("MyReservationDetails", {
       FKid: FKid,
       type: type,
       id: id,
+      isActive : active
     });
   };
 
@@ -87,9 +96,12 @@ export default class MyReservationList extends React.Component {
     return (
       <ListItem 
     title={title}
-    subtitle={item.DateFrom}
+    subtitle={
+      <View>
+        <Text>{item.startDateTime} - {item.endDateTime}</Text>
+      </View>} 
     leftAvatar={{source : imgsource}}
-    onPress={()=>this.openDetails(item.FKid, item.type, item.id)}
+    onPress={()=>this.openDetails(item.externalId, item.type, item.id, item.active)}
     chevron
     />
     );
@@ -99,9 +111,7 @@ export default class MyReservationList extends React.Component {
   render() {
     return (
       <Container>
-        <View style={styles.container}>
           <FlatList data={DATA} keyExtractor={item => item.id.toString()} renderItem={this.renderItem} />
-        </View>
       </Container>
     );
   }

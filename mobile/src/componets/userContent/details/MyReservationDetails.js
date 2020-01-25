@@ -1,10 +1,10 @@
-import { View, Modal, TouchableHighlight, Button } from "react-native";
+import { View, Modal, Button } from "react-native";
 import {Container, Text} from 'native-base'
 import React from "react";
 import MyReservationCarDetails from "./MyReservationCarDetails";
 import MyReservationFlatDetails from "./MyReservationFlatDetails";
 import MyReservationParkingDetails from "./MyReservationParkingDetails";
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 import {styles} from '../../../styles'
 import { Title } from "react-native-paper";
 
@@ -29,24 +29,67 @@ export default class MyReservationDetails extends React.Component {
     let id = this.props.navigation.getParam("id");
     let result;
     if (type === "car") {
-      result = this.cancelCarReservation(fkid);
+      result = this.cancelCarReservation(fkid, id);
     } else if (type === "flat") {
       result = this.cancelFlatReservation(fkid);
     } else {
-      result = this.cancelParkingReservation(fkid);
-    }
-    if (result.isSucces) {
-      this.cancelReservationInBookly(id);
+      result = this.cancelParkingReservation(fkid, id);
     }
   }
-  cancelCarReservation(fkid) {
-    //fetch
+  cancelCarReservation(fkid, id) {
+    // const carlyUrl = '${API_URL}/reservations/';
+    // sendRequest(carlyUrl, 'delete', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, fkid)
+    //   .then(res => {
+    //     if (res.ok) {
+    //       response.json()
+    //         .then(res => {
+    //           return this.cancelReservationInBookly(id);
+    //         })
+    //     }
+    //   }
+    //   )
+    //   .catch(function (error) {
+    //     console.log(error.message);
+    //   });
   }
-  cancelParkingReservation(fkid) {
-    //fetch
+  cancelParkingReservation(fkid, id) {
+    // const parklyUrl = '${API_URL}/reservations/';
+    // sendRequest(parklyUrl, 'delete', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, fkid)
+    //   .then(res => {
+    //     if (res.ok) {
+    //       response.json()
+    //         .then(res => {
+    //           return this.cancelReservationInBookly(id);
+    //         })
+    //     }
+    //   }
+    //   )
+    //   .catch(function (error) {
+    //     console.log(error.message);
+    //   });
   }
-  cancelFlatReservation(fkid) {}
-  cancelReservationInBookly(id) {}
+  cancelFlatReservation(fkid) {
+    //chyba brak
+  }
+  cancelReservationInBookly(id) {
+
+    // const bookingUrl = '${API_URL}/booking/';
+    // sendRequest(bookingUrl, 'delete', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, id)
+    //   .then(res => {
+    //     if (res.ok) {
+    //       response.json()
+    //         .then(res => {
+    //           if(res.deleted == true){
+    //             this.props.navigation.navigate("MyReservationsList");
+    // }           
+    //         })
+    //     }
+    //   }
+    //   )
+    //   .catch(function (error) {
+    //     console.log(error.message);
+    //   });
+  }
 
   static navigationOptions = { title: "Reservation Details" };
   render() {
@@ -60,6 +103,14 @@ export default class MyReservationDetails extends React.Component {
     } else if (type === "parking") {
       body = <MyReservationParkingDetails FKid={fkid} />;
     }
+    let button;
+    if(this.props.navigation.getParam("isActive")==true){
+      button=<Button
+      onPress={() => {
+        this.setModalVisible(true);
+      }} title="Cancel reservation"
+    />;
+    }
     return (
       <Container>
         <Modal
@@ -71,7 +122,7 @@ export default class MyReservationDetails extends React.Component {
           }}
         >
           <View style={styles.container_modal}>
-              <Title>Do you want to cancel that reservation?</Title>
+              <Title>Do you want to cancel that reservation? This reservation won't be visible anymore.</Title>
               <Button style={styles.button}
                 onPress={() => {
                   this.cancelReservation();
@@ -88,15 +139,12 @@ export default class MyReservationDetails extends React.Component {
           </View>
         </Modal>
         
-  <ScrollView contentContainerStyle={styles.container}>
-{body}
-
-<Button
-  onPress={() => {
-    this.setModalVisible(true);
-  }} title= "Cancel reservation"
- />
-  </ScrollView>   
+        <ScrollView contentContainerStyle={styles.container_reservationdetailsmain}>
+          {body}
+          <View style={styles.button_bottompage}>
+          {button} 
+          </View>         
+        </ScrollView>
       </Container>
     );
   }

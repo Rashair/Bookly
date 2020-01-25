@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Button, Image } from "react-native";
+import { Text, View,} from "react-native";
 import { Title, Paragraph, Headline } from 'react-native-paper';
 import {sendRequest} from '../../../helpers/functions'
 import {styles} from '../../../styles'
@@ -57,8 +57,9 @@ export default class MyReservationFlatDetails extends React.Component {
           {this.state.Title}
         </Headline>
         <Text>
-          {this.state.Country} , {this.state.City}, {this.state.Address}
+          {this.state.Country}, {this.state.City}, {this.state.Address}
         </Text>
+        <View style={styles.container_reservationdetails}>
         <View style={[styles.contentColumn, styles.marginBottomSmall]}>
           <Title>Description</Title>
           <Paragraph>{this.state.Description}</Paragraph>
@@ -78,6 +79,7 @@ export default class MyReservationFlatDetails extends React.Component {
         <View style={styles.contentRow}>
           <Title>Price</Title>
           <Title>{this.state.Price} PLN / night</Title>
+        </View>
         </View>
       </View>
     );
