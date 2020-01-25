@@ -1,9 +1,11 @@
 import React from "react";
 import { StyleSheet, Text, View, Button, ScrollView, FlatList, Image } from "react-native";
+import {ListItem} from 'react-native-elements'
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Row } from "native-base";
+import { Row, Container } from "native-base";
 import { styles, themeColors} from '../../styles'
 import { Paragraph } from "react-native-paper";
+import {sendRequest} from '../../helpers/functions'
 
 const DATA = [
   // temporary solution to display data
@@ -27,21 +29,6 @@ const DATA = [
   },
 ];
 
-function MyReservationItem({ DateFrom, FKid, type, navigation }) {
-  let image;
-  // if(type === 'car'){
-  image = <Image style={{width: 50, height: 50}} source={require("./assets/car.png")} />;
-  // }
-  return (
-    <TouchableOpacity style={styles.marginBottomSmall} onPress={navigation} >
-      <View style={styles.contentRow}>
-      {image}
-      <Paragraph>{DateFrom}</Paragraph>
-      <Paragraph>{FKid}</Paragraph>
-      </View>
-    </TouchableOpacity>
-  );
-}
 
 export default class MyReservationList extends React.Component {
   constructor(props) {
@@ -55,7 +42,23 @@ export default class MyReservationList extends React.Component {
   }
 
   componentDidMount() {
-    //fetch
+    const URL = "BookingDetails/" + this.props.FKid; //?
+    // sendRequest(URL, 'get', '')
+    //   .then(response => {
+    //     if(response.ok){
+    //       response.json()
+    //       .then(res=>{
+    //         console.log(res);
+    //         this.setState({
+    //           reservations : res
+    //         })
+    //       })
+    //     }
+    //     }
+    //     )
+    //   .catch(function(error) {
+    //     console.log(error.message);
+    //   });
   }
 
   openDetails = (FKid, type, id) => {
@@ -67,22 +70,39 @@ export default class MyReservationList extends React.Component {
   };
 
   renderItem({ item }) {
+    let title;
+    let imgsource;
+    if(item.type=='car'){
+      title= "Car reservation";
+      imgsource = require("./assets/car.png");
+    }
+    if(item.type=='flat'){
+      title="Flat reservation";
+      imgsource = require("./assets/car.png");
+    }
+    if(item.type=='parking'){
+      title="Parking reservation";
+      imgsource = require("./assets/car.png");
+    }
     return (
-      <MyReservationItem
-        DateFrom={item.DateFrom}
-        FKid={item.FKid}
-        type={item.type}
-        navigation={() => this.openDetails(item.FKid, item.type, item.id)}
-      />
+      <ListItem 
+    title={title}
+    subtitle={item.DateFrom}
+    leftAvatar={{source : imgsource}}
+    onPress={()=>this.openDetails(item.FKid, item.type, item.id)}
+    chevron
+    />
     );
   }
 
+  static navigationOptions = { title: "My reservations" };
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Here will be reservation list !</Text>
-        <FlatList data={DATA} keyExtractor={item => item.id.toString()} renderItem={this.renderItem} />
-      </View>
+      <Container>
+        <View style={styles.container}>
+          <FlatList data={DATA} keyExtractor={item => item.id.toString()} renderItem={this.renderItem} />
+        </View>
+      </Container>
     );
   }
 }
