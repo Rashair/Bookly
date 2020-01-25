@@ -1,4 +1,6 @@
-import { LOGIN_SUCCESS, LOGIN_ERROR, ANY_ERROR } from "./constants";
+import {  LOGIN_SUCCESS, 
+          LOGIN_ERROR, 
+          ANY_ERROR,  } from "./constants";
 
 export const loginSuccess = userDetails => {
   return {
@@ -26,3 +28,4 @@ export const anyError = error => {
     },
   };
 };
+

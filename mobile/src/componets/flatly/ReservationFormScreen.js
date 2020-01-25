@@ -3,19 +3,22 @@ import { Container, Header, Content, Text, Picker, Right } from 'native-base'
 import { Title, Button, Chip, Paragraph, TextInput, HelperText } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import React from 'react'
-import { sendRequest } from '../../helpers/functions';
-import { API_URL } from '../../helpers/constants';
+import { connect } from "react-redux";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { LocalDate, DateTimeFormatter, nativeJs } from "@js-joda/core";
-import { styles, themeColors} from '../../styles'
+import { styles, themeColors} from '../../styles';
+import { anyError } from "../../redux/actions";
+import { makeBooklyReservation, makeFlatlyReservation} from "../../redux/thunk-functions";
+import { Types } from "../../helpers/constants";
 
-export default class ReservationFormScreen extends React.Component
+class ReservationFormScreen extends React.Component
 {
-    static navigationOptions = { title: 'Make reservation',};
+    static navigationOptions = { title: 'Make reservation'};
     constructor(props)
     {
         super(props)
-        const { navigation } = this.props;
+        const { navigation } = this.props
+        //const { dates } = navigation.getParam('dates')
         this.flat = navigation.getParam('flat')
         const tomorrowDate = new Date()
         tomorrowDate.setDate(tomorrowDate.getDate() + 1)
@@ -26,13 +29,16 @@ export default class ReservationFormScreen extends React.Component
             email: "",
             dateFrom: new Date(),
             dateTo: tomorrowDate,
+            // dateFrom: dates.from,
+            // dateTo: dates.to,
             people: 1,
             firstNameValid: true,
             lastNameValid: true,
             emailValid: true,
             dateToValid: true,
             showDateFromPicker: false,
-            showDateToPicker: false
+            showDateToPicker: false,
+            isFetching: false
         }
     }
     setFirstName(name)
@@ -85,9 +91,82 @@ export default class ReservationFormScreen extends React.Component
     {
         if(this.state.dateFrom && this.state.dateTo && this.state.dateToValid)
         {
-            return ((this.state.dateTo.getDate() - this.state.dateFrom.getDate()) * this.flat.price).toString() + " PLN"
+            return ((this.state.dateTo.getTime() - this.state.dateFrom.getTime()) / (1000 * 3600 * 24) * this.flat.price)
         }
-        return "--- PLN"
+    }
+    // makeReservation()
+    // {
+    //     const data =
+    //     {
+    //         startDate: this.state.dateFrom,
+    //         endDate: this.state.endTo,
+    //         offerId: this.flat.id,
+    //         type: Types.FLATLY
+    //     };
+    //     const booking = 
+    //     {
+    //         flat: this.flat,
+    //         date:
+    //         {
+    //             from: this.state.dateFrom,
+    //             to: this.state.dateTo
+    //         }
+    //     }
+    //     //TODO FlatlyReservation instead of BooklyReservation
+    //     this.props.makeBooklyReservation(data, this.props.auth)
+    //         .then(this.props.navigation.navigate('FlatSummary', {booking: booking}))
+    // }
+    makeReservation()
+    {
+        const { firstName, lastName, email, dateFrom, dateTo } = this.state;
+        const flat = this.flat;
+
+        this.setState({ isFetching: true });
+        const url = `${FLATLY_API_URL}/flat/${flat.id}`; // reservations/`;
+        const ownerId = this.props.auth.id;
+        const totalCost = this.countTotalPrice();
+        const data = {
+            name: firstName,
+            lastName: lastName,
+            email: email,
+            dateFrom: dateFrom.toISOString(),
+            dateTo: dateTo.toISOString(),
+        };
+        const headers = {}; // Auth headers here
+        sendRequest(url, "POST", headers, data)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error(`Error sending data to flatly, status code: ${response.status}`);
+        })
+        .then(responseJson => {
+            const externalBookingId = responseJson.id;
+            const bookingData = {
+                owner: {
+                    id: ownerId,
+                },
+                start_date_time: dateFrom.toISOString(),
+                end_date_time: dateTo.toISOString(),
+                type: "FLAT",
+                external_id: externalBookingId,
+            };
+            const bookingUrl = `${API_URL}/booking/`;
+            return sendRequest(bookingUrl, "POST", { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, bookingData);
+        })
+        .then(booklyResponse => {
+            if (booklyResponse.ok) {
+                const summaryData = { flat, totalCost: data.totalCost, dateFrom, dateTo, firstName, lastName, email };
+                this.props.navigation.navigate("FlatSummary", { summaryData });
+            } 
+            else {
+                throw new Error(`Error sending data to bookly, status code: ${booklyResponse.status}`);
+            }
+            this.setState({ isFetching: false });
+        })
+        .catch(error => {
+            this.props.anyError(error);
+        });
     }
     createChip(i)
     {
@@ -192,15 +271,15 @@ export default class ReservationFormScreen extends React.Component
                                 value={dateToFormatted} 
                                 style={styles.input}
                                 theme={{ colors: { primary: this.state.dateToValid ? themeColors.primary : themeColors.danger,underlineColor:'transparent',}}}/>
-                        {showDateToPicker && (
-                                <DateTimePicker
-                                minimumDate={new Date()}
-                                value={dateTo}
-                                mode="date"
-                                display="calendar"
-                                onChange={(event,date) => this.setDateTo(date)}
-                                />
-                        )}
+                                {showDateToPicker && (
+                                    <DateTimePicker
+                                    minimumDate={new Date()}
+                                    value={dateTo}
+                                    mode="date"
+                                    display="calendar"
+                                    onChange={(event,date) => this.setDateTo(date)}
+                                    />
+                                )}
                         </TouchableOpacity>
                     </View>
                     
@@ -223,17 +302,19 @@ export default class ReservationFormScreen extends React.Component
                     <View style={[styles.contentToEnd, styles.marginTopBig]}>
                         <View style={[{alignSelf: 'flex-end'}, styles.marginBottomSmall]}>
                             <Text style={styles.textToRight}>Total price</Text>
-                            <Title style={styles.textToRight}>{this.countTotalPrice()}</Title>
+                            <Title style={styles.textToRight}>{this.countTotalPrice().toString() + " PLN"}</Title>
                         </View>
+                        {this.state.isFetching ? <ActivityIndicator size="large" color={themeColors.primary}/> :
                         <Button
                                 style={styles.button}
                                 color={themeColors.primary}
                                 mode="contained"
+                                onPress={this.makeReservation}
                                 disabled={
-                                    this.state.firstName & this.state.lastName & this.state.email & this.state.dateTo &
-                                    this.state.firstNameValid & this.state.lastNameValid & this.state.emailValid & this.state.dateToValid}>
+                                    !(this.state.firstName && this.state.lastName && this.state.email &&
+                                    this.state.firstNameValid && this.state.lastNameValid && this.state.emailValid && this.state.dateToValid)}>
                                 Make reservation
-                        </Button>
+                        </Button>}
                     </View>
                 </ScrollView>
             </Container>
@@ -241,24 +322,16 @@ export default class ReservationFormScreen extends React.Component
     }
 }
 
-// const styles = StyleSheet.create({
-//     container: {
-//           flex: 1,
-//           backgroundColor: '#fff',
-//     },
-//     textInput: {
-//         backgroundColor: '#fff',
-//         padding: 0
-//     },
-//     inner: {
-//         padding: 10,
-//         flex: 1
-//     },
-//     button:{
-//         height: 54,
-//         justifyContent: "center",
-//     },
-//     helper:{
-//             color: 'red'
-//     }
-//   });
+const mapStateToProps = (state /* , ownProps */) => {
+    return {
+        auth: state.auth,
+    };
+};
+
+const mapDispatchToProps = dispatch => ({
+    anyError: data => dispatch(anyError(data)),
+    makeFlatlyReservation: data => dispatch(makeFlatlyReservation(data,auth)),
+    makeBooklyReservation: data => dispatch(makeBooklyReservation(data,auth))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReservationFormScreen);

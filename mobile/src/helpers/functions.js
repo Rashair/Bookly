@@ -1,12 +1,15 @@
 // eslint-disable-next-line import/prefer-default-export
-export const sendRequest = (url, method, additionalHeaders, body) => {
-  const request = new Request(url, {
+export const sendRequest = (url, method, additionalHeaders = {}, body = {}, useCache = false) => {
+  const requestData = {
     method,
     headers: { "Content-type": "application/json", ...additionalHeaders },
     mode: "cors",
-    cache: "no-cache",
-    body: JSON.stringify(body),
-  });
+    cache: useCache ? "only-if-cached" : "no-cache",
+  };
+  if (method !== "GET") {
+    requestData.body = JSON.stringify(body);
+  }
 
+  const request = new Request(url, requestData);
   return fetch(request);
 };

@@ -70,7 +70,11 @@ export default class FlatsListScreen extends React.Component
         // + PAGINACJA
         const URL = API_URL + '/flats'
         this.setState({isLoading: true})
-        sendRequest(URL, 'GET', /*headers*/)
+        // const body = 
+        // {
+            
+        // }
+        sendRequest(URL, 'GET')
             .then(response => {
                 if(response.ok)
                 {

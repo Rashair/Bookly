@@ -66,16 +66,3 @@ export default class FlatDetailsScreen extends React.Component
         )
     }
 }
-
-// const styles = StyleSheet.create({
-//     content: {
-//         padding: 20,
-//         backgroundColor: '#fff',
-//         alignItems: "stretch",
-//     },
-//     button:{
-//         marginTop: 10,
-//         height: 54,
-//         justifyContent: "center",
-//     },
-//   });

@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { Container, Header, Content, Text, Picker } from 'native-base'
 import { TextInput, HelperText, Title, Chip, Button } from 'react-native-paper';
 import React from 'react'
@@ -32,7 +32,8 @@ export default class SearchFlatScreen extends React.Component
                   cityValid: true,
                   dateToValid: true,
                   showDateFromPicker: false,
-                  showDateToPicker: false
+                  showDateToPicker: false,
+                  isSearching: false
             }
       }
       setDateFrom(date)
@@ -92,10 +93,11 @@ export default class SearchFlatScreen extends React.Component
             const body = 
             {
                   city: this.state.city,
-                  dateFrom: this.state.dateFrom,
-                  dateTo: this.state.dateTo,
+                  startDate: this.state.dateFrom,
+                  endDate: this.state.dateTo,
                   beds: this.state.beds
             }
+            this.setState({isSearching: true})
             sendRequest(API_URL + '/flats', 'GET', /*headers from redux*/ body)
       }
       errorMessage(field)
@@ -115,6 +117,8 @@ export default class SearchFlatScreen extends React.Component
             const dateToFormatted = LocalDate.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("d/MM/yyyy"));
             return(
                   <Container style={styles.container}>
+                        {this.state.isSearching ? <ActivityIndicator size="large" color={themeColors.primary}/> :
+                        <Container>
                               <Text>City</Text>
                               <TextInput
                                     mode="flat"
@@ -198,6 +202,8 @@ export default class SearchFlatScreen extends React.Component
                                           Search
                                     </Button>
                               </View>
+                        </Container>
+                        }
                   </Container>
             );
       }
