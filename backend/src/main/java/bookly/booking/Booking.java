@@ -121,7 +121,7 @@ public class Booking {
         return externalId;
     }
 
-    @JsonSetter("id")
+    @JsonSetter("external_id")
     public void setExternalId(Long id) {
         this.externalId = id;
     }

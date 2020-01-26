@@ -6,6 +6,7 @@ import bookly.security.AuthenticationWithToken;
 import bookly.security.UserDetailsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -58,7 +59,7 @@ public class BookingController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/")
+    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Booking> createBooking(@Valid @RequestBody Booking booking) {
         Booking result = bookingService.save(booking);
 
