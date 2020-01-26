@@ -82,7 +82,9 @@ class Bookings extends React.Component {
                 Type
               </th>
               <th scope="col">Booked by</th>
-              <th scope="col">Date</th>
+              <th scope="col">Date from</th>
+              <th scope="col">Date to</th>
+              <th scope="col">External id</th>
               <th scope="col">
                 Active{" "}
                 <Checkbox
@@ -104,17 +106,27 @@ class Bookings extends React.Component {
   }
 }
 
-const BookingLine = ({ booking, ind }) => (
-  <tr>
-    <th scope="row">{ind}</th>
-    <td>{booking.type}</td>
-    <td>
-      {booking.owner.first_name} {booking.owner.last_name} ({booking.owner.id})
-    </td>
-    <td>{booking.start_date_time}</td>
-    <td>{booking.active === true ? <i className="fas fa-check" /> : <i className="fas fa-times" />}</td>
-  </tr>
-);
+const BookingLine = ({ booking, ind }) => {
+  const splitStart = booking.start_date_time.split("T");
+  const splitEnd = booking.end_date_time.split("T");
+  return (
+    <tr>
+      <th scope="row">{ind}</th>
+      <td>{booking.type}</td>
+      <td>
+        {booking.owner.first_name} {booking.owner.last_name} ({booking.owner.id})
+      </td>
+      <td>
+        {splitStart[0]} {splitStart[1].substr(0, splitStart[1].lastIndexOf(":"))}
+      </td>
+      <td>
+        {splitEnd[0]} {splitEnd[1].substr(0, splitEnd[1].lastIndexOf(":"))}
+      </td>
+      <td>{booking.external_id}</td>
+      <td>{booking.active === true ? <i className="fas fa-check" /> : <i className="fas fa-times" />}</td>
+    </tr>
+  );
+};
 
 const mapStateToProps = (state /* , ownProps */) => {
   return {
