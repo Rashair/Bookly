@@ -1,10 +1,8 @@
 import React from "react";
-import { StyleSheet, Text, View, Button, ScrollView, FlatList, Image } from "react-native";
+import { StyleSheet, Text, View, FlatList, Image } from "react-native";
 import {ListItem} from 'react-native-elements'
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { Row, Container } from "native-base";
-import { styles, themeColors} from '../../styles'
-import { Paragraph } from "react-native-paper";
+import { styles, themeColors} from '../../styles';
 import {sendRequest} from '../../helpers/functions'
 
 const DATA = [
@@ -87,11 +85,11 @@ export default class MyReservationList extends React.Component {
     }
     if(item.type=='flat'){
       title="Flat reservation";
-      imgsource = require("./assets/car.png");
+      imgsource = require("./assets/home.jpg");
     }
     if(item.type=='parking'){
       title="Parking reservation";
-      imgsource = require("./assets/car.png");
+      imgsource = require("./assets/parking.png");
     }
     return (
       <ListItem 
@@ -100,7 +98,7 @@ export default class MyReservationList extends React.Component {
       <View>
         <Text>{item.startDateTime} - {item.endDateTime}</Text>
       </View>} 
-    leftAvatar={{source : imgsource}}
+    leftAvatar={{source : imgsource, rounded: false}}
     onPress={()=>this.openDetails(item.externalId, item.type, item.id, item.active)}
     chevron
     />

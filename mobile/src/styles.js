@@ -4,13 +4,16 @@ export const themeColors =
 {
     primary: '#3579e6',
     danger: 'red',
-    background: 'white'
+    background: 'white',
+    secondary: '#21C416'
 }
 
 export const styles = StyleSheet.create({
     button:{
         height: 54,
         justifyContent: 'center',
+        width: "100%",
+        margin:5
     },
     container:{
         padding: 10,
@@ -87,6 +90,7 @@ export const styles = StyleSheet.create({
         bottom: 0,
         marginBottom : 20,
         flexDirection: "row",
-        alignSelf : 'center'
+        alignSelf : 'center',
+        width: "100%"
     },
 })

@@ -1,11 +1,12 @@
-import { View, Modal, Button } from "react-native";
+import { View, Modal} from "react-native";
+import {Button} from 'react-native-paper'
 import {Container, Text} from 'native-base'
 import React from "react";
 import MyReservationCarDetails from "./MyReservationCarDetails";
 import MyReservationFlatDetails from "./MyReservationFlatDetails";
 import MyReservationParkingDetails from "./MyReservationParkingDetails";
 import { ScrollView } from "react-native-gesture-handler";
-import {styles} from '../../../styles'
+import {styles, themeColors} from '../../../styles'
 import { Title } from "react-native-paper";
 
 export default class MyReservationDetails extends React.Component {
@@ -106,10 +107,12 @@ export default class MyReservationDetails extends React.Component {
     let button;
     if(this.props.navigation.getParam("isActive")==true){
       button=<Button
+      color={themeColors.primary}
+      style={styles.button}
+      mode="contained"
       onPress={() => {
         this.setModalVisible(true);
-      }} title="Cancel reservation"
-    />;
+      }}>Cancel reservation</Button>;
     }
     return (
       <Container>
@@ -123,19 +126,24 @@ export default class MyReservationDetails extends React.Component {
         >
           <View style={styles.container_modal}>
               <Title>Do you want to cancel that reservation? This reservation won't be visible anymore.</Title>
-              <Button style={styles.button}
+              <Button 
+              color={themeColors.danger}
+              style={styles.button}
                 onPress={() => {
                   this.cancelReservation();
                 }}
                 mode="contained"
-                title="Yes"
-              />
-              <Button style={styles.button}
+                >Yes
+                </Button>
+                <Button 
+                color={themeColors.secondary}
+                mode="contained"
+                style={styles.button}
                 onPress={() => {
                   this.setModalVisible(false);
                 }}
-                title="No"
-              />
+              >No
+              </Button>
           </View>
         </Modal>
         
