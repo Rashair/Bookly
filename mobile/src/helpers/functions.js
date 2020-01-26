@@ -13,3 +13,9 @@ export const sendRequest = (url, method, additionalHeaders = {}, body = {}, useC
   const request = new Request(url, requestData);
   return fetch(request);
 };
+
+export const createQueryParams = object => {
+  const params = new URLSearchParams();
+  Object.entries(object).forEach(([key, value]) => params.append(key, value));
+  return params;
+};

@@ -1,14 +1,15 @@
 import { StyleSheet, View, TouchableOpacity, ActivityIndicator } from 'react-native'
-import { Container, Header, Content, Text, Picker } from 'native-base'
-import { TextInput, HelperText, Title, Chip, Button } from 'react-native-paper';
+import { Container, Text, Picker } from 'native-base'
+import { TextInput, HelperText, Chip, Button } from 'react-native-paper';
 import React from 'react'
-import { sendRequest } from '../../helpers/functions';
-import { API_URL } from '../../helpers/constants';
+import { anyError, searchByDate } from "../../redux/actions";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { LocalDate, DateTimeFormatter, nativeJs } from "@js-joda/core";
 import { styles, themeColors} from '../../styles'
+import { FLATLY_API_URL } from '../../helpers/constants'
+import { connect } from "react-redux";
 
-export default class SearchFlatScreen extends React.Component
+class SearchFlatScreen extends React.Component
 {
       static navigationOptions = { title: 'Find accommodation',};
       constructor(props)
@@ -90,15 +91,19 @@ export default class SearchFlatScreen extends React.Component
       }
       search()
       {
-            const body = 
-            {
-                  city: this.state.city,
-                  startDate: this.state.dateFrom,
-                  endDate: this.state.dateTo,
-                  beds: this.state.beds
-            }
-            this.setState({isSearching: true})
-            sendRequest(API_URL + '/flats', 'GET', /*headers from redux*/ body)
+            // const body = 
+            // {
+            //       city: this.state.city,
+            //       startDate: this.state.dateFrom,
+            //       endDate: this.state.dateTo,
+            //       beds: this.state.beds
+            // }
+            const { city, beds, dateFrom, dateTo } = this.state;
+            this.props.searchByDate({ from: dateFrom, to: dateTo });
+            const url = `${FLATLY_API_URL}/flats`;
+            this.props.navigation.navigate('FlatsList', { url, city, beds });
+            // this.setState({isSearching: true})
+            // sendRequest(API_URL + '/flats', 'GET', /*headers from redux*/ body)
       }
       errorMessage(field)
       {
@@ -208,3 +213,16 @@ export default class SearchFlatScreen extends React.Component
             );
       }
 }
+
+const mapStateToProps = (state /* , ownProps */) => {
+      return {
+        auth: state.auth,
+      };
+    };
+
+const mapDispatchToProps = dispatch => ({
+      anyError: data => dispatch(anyError(data)),
+      searchByDate: dates => dispatch(searchByDate(dates)),
+    });
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchFlatScreen);

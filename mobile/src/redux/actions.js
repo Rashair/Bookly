@@ -1,6 +1,7 @@
 import {  LOGIN_SUCCESS, 
           LOGIN_ERROR, 
-          ANY_ERROR,  } from "./constants";
+          ANY_ERROR, 
+          SEARCH_BY_DATE } from "./constants";
 
 export const loginSuccess = userDetails => {
   return {
@@ -25,6 +26,15 @@ export const anyError = error => {
     type: ANY_ERROR,
     payload: {
       error,
+    },
+  };
+};
+
+export const searchByDate = dates => {
+  return {
+    type: SEARCH_BY_DATE,
+    payload: {
+      dates,
     },
   };
 };

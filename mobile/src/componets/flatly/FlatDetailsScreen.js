@@ -2,8 +2,6 @@ import { StyleSheet, View, Image } from 'react-native'
 import { Container, Header, Content, DatePicker, Text, Picker } from 'native-base'
 import { Headline, Subheading, Title, Button, Paragraph } from 'react-native-paper';
 import React from 'react'
-import { sendRequest } from '../../helpers/functions';
-import { API_URL } from '../../helpers/constants';
 import { ScrollView } from 'react-native-gesture-handler';
 import { styles, themeColors} from '../../styles'
 
@@ -13,7 +11,6 @@ export default class FlatDetailsScreen extends React.Component
     constructor(props)
     {
         super(props)
-        //const { navigation } = this.props;
         this.flat = this.props.navigation.getParam('flat')
     }
     makeReservation()

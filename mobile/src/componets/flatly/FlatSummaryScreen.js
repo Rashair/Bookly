@@ -6,17 +6,24 @@ import { sendRequest } from '../../helpers/functions';
 import { API_URL } from '../../helpers/constants';
 import { ScrollView } from 'react-native-gesture-handler';
 import { styles, themeColors} from '../../styles'
+import { connect } from "react-redux";
 
 export default class FlatSummaryScreen extends React.Component
 {
-    static navigationOptions = { title: 'Summary',};
+    static navigationOptions = { 
+        title: 'Summary',
+        headerLeft: () => null
+    };
     constructor(props)
     {
         super(props)
         const { navigation } = this.props;
-        this.booking = navigation.getParam('booking')
-        this.flat = this.booking.flat
-        this.date = this.booking.date
+        this.summaryData = navigation.getParam('summaryData')
+        this.flat = this.summaryData.flat
+        this.dateFrom = this.summaryData.dateFrom
+        this.dateTo = this.summaryData.dateTo
+        this.totalCost = this.summaryData.totalCost
+        this.email = this.summaryData.email
         // this.date = 
         // {
         //     from: new Date(2020,0,31),
@@ -39,10 +46,10 @@ export default class FlatSummaryScreen extends React.Component
     }
     render()
     {
-        // To calculate the time difference of two dates 
-        const Difference_In_Time = this.date.to.getTime() - this.date.from.getTime(); 
-        // To calculate the no. of days between two dates 
-        const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24); 
+        // // To calculate the time difference of two dates 
+        // const Difference_In_Time = this.date.to.getTime() - this.date.from.getTime(); 
+        // // To calculate the no. of days between two dates 
+        // const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24); 
 
         return(
             <Container style={styles.container}>
@@ -53,7 +60,17 @@ export default class FlatSummaryScreen extends React.Component
                 <Text>
                     {this.flat.city + ", " + this.flat.address}
                 </Text>
-                <View style={[styles.contentRow,styles.marginTopSmall]}>
+
+                <View style={[styles.contentRow, styles.marginTopBig]}>
+                    <Title>From</Title>
+                    <Title>{this.dateFrom.toISOString().substr(0,10)}</Title>
+                </View>
+                <View style={styles.contentRow}>
+                    <Title>To</Title>
+                    <Title>{this.dateTo.toISOString().substr(0,10)}</Title>
+                </View>
+
+                <View style={[styles.contentRow,styles.marginTopBig]}>
                     <Title>Rooms</Title>
                     <Title>{this.flat.roomNumber.toString()}</Title>
                 </View>
@@ -61,17 +78,10 @@ export default class FlatSummaryScreen extends React.Component
                     <Title>Beds</Title>
                     <Title>{this.flat.beds.toString()}</Title>
                 </View>
-                <View style={styles.contentRow}>
-                    <Title>From</Title>
-                    <Title>{this.date.from.toLocaleDateString()}</Title>
-                </View>
-                <View style={styles.contentRow}>
-                    <Title>To</Title>
-                    <Title>{this.date.to.toLocaleDateString()}</Title>
-                </View>
+                
                 <View style={styles.contentRow}>
                     <Title>Total price</Title>
-                    <Title>{(this.flat.price * Difference_In_Days).toString()} PLN</Title>
+                    <Title>{this.totalCost.toString()} PLN</Title>
                 </View>
                 <View style={styles.contentToEnd}>
                     <Button

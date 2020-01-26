@@ -2,11 +2,12 @@ import { StyleSheet, View, Button, ActivityIndicator, FlatList, TouchableOpacity
 import { Container } from 'native-base'
 import { Title, Chip, Paragraph } from 'react-native-paper';
 import React from 'react'
-import { API_URL } from '../../helpers/constants';
-import { sendRequest } from '../../helpers/functions';
+import { FLATLY_API_URL } from '../../helpers/constants';
+import { sendRequest, createQueryParams } from '../../helpers/functions';
 import { styles, themeColors} from '../../styles'
+import { connect } from "react-redux";
 
-export default class FlatsListScreen extends React.Component
+class FlatsListScreen extends React.Component
 {
     static navigationOptions = { title: 'Choose accommodation',};
     constructor(props)
@@ -14,16 +15,22 @@ export default class FlatsListScreen extends React.Component
         super(props)
         this.sortingTypes = 
         {
-            highestPrice: 'Highest price',
-            lowestPrice: 'Lowest price',
-            highestRating: 'Highest rating'
+            dateStart: 'date-start',
+            dateEnd: 'date-end',
+            price: 'price',
+            rating: 'rating'
         }
+
+        this.city = this.props.navigation.getParam('city')
+        this.beds = this.props.navigation.getParam('beds')
+        this.url = this.props.navigation.getParam('url')
 
         this.state = 
         {
-            currentPage: 1,
-            flatsPerPage: 10,
-            sortingType: this.sortingTypes.lowestPrice,
+            // currentPage: 1,
+            // flatsPerPage: 10,
+            sortingDir: null,
+            sortingType: this.sortingTypes.dateStart,
             isLoading: false,
             flats: null
             // flats:
@@ -62,33 +69,41 @@ export default class FlatsListScreen extends React.Component
     componentDidMount()
     {
         //fetch get flats
-        return this.changeSortingType(this.sortingTypes.lowestPrice)
+        return this.changeSortingType(this.sortingTypes.dateStart, null)
     }
-    changeSortingType(type)
+    changeSortingType(type, dir=this.sortingDir)
     {
-        // DOROBIĆ RÓŻNE DZIAŁANIA DO RÓŻNYCH STATUSÓW ODPOWIEDZI
-        // + PAGINACJA
-        const URL = API_URL + '/flats'
-        this.setState({isLoading: true})
-        // const body = 
+        //For real server
+        // const paramsObj = 
         // {
-            
+        //     city: this.city,
+        //     start_date: this.props.dates.from,
+        //     end_date: this.props.dates.to,
+        //     beds: this.beds,
+        //     sort: type,
+        //     dir: dir
         // }
-        sendRequest(URL, 'GET')
+        // const params = createQueryParams(paramsObj)
+        // const url = `${this.url}/${params.toString()}`
+
+        //For mockserver
+        const url = this.url
+
+        this.setState({isLoading: true})
+        sendRequest(url, 'GET')
             .then(response => {
                 if(response.ok)
                 {
                     response.json()
-                        .then(json => this.setState({ sortingType: type, flats: json, isLoading: false }));
+                        .then(json => this.setState({ sortingType: type, sortingDir: dir, flats: json, isLoading: false }));
                 }
                 else
                 {
-
+                    throw new Error(`Error fetching, status code: ${response.statusCode}`);
                 }
             })
             .catch(function(error) {
                 console.log('There has been a problem with your fetch operation: ' + error.message);
-                throw error
             });
     }
     goToDetails = (flat) =>
@@ -116,23 +131,30 @@ export default class FlatsListScreen extends React.Component
                 <View style={[styles.marginTopSmall,styles.contentRow]}>
                     <Chip 
                         mode="outlined" 
-                        selected={this.state.sortingType === this.sortingTypes.lowestPrice ? true : false}
-                        onPress={() => this.changeSortingType(this.sortingTypes.lowestPrice)}>
-                        Lowest price
+                        selected={this.state.sortingType === this.sortingTypes.dateStart ? true : false}
+                        onPress={() => this.changeSortingType(this.sortingTypes.dateStart)}>
+                        Start date
                     </Chip>
                     <Chip 
                         mode="outlined" 
-                        selected={this.state.sortingType === this.sortingTypes.highestPrice ? true : false}
-                        onPress={() => this.changeSortingType(this.sortingTypes.highestPrice)}>
-                        Highest price
+                        selected={this.state.sortingType === this.sortingTypes.dateEnd ? true : false}
+                        onPress={() => this.changeSortingType(this.sortingTypes.dateEnd)}>
+                        End date
                     </Chip>
                     <Chip 
                         mode="outlined" 
-                        selected={this.state.sortingType === this.sortingTypes.highestRating ? true : false}
-                        onPress={() => this.changeSortingType(this.sortingTypes.highestRating)}>
-                        Highest rating
+                        selected={this.state.sortingType === this.sortingTypes.rating ? true : false}
+                        onPress={() => this.changeSortingType(this.sortingTypes.rating)}>
+                        Rating
+                    </Chip>
+                    <Chip 
+                        mode="outlined" 
+                        selected={this.state.sortingType === this.sortingTypes.price ? true : false}
+                        onPress={() => this.changeSortingType(this.sortingTypes.price)}>
+                        Price
                     </Chip>
                 </View>
+
                 <View style={styles.container}>
                     {this.state.isLoading ? <ActivityIndicator size="large" color={themeColors.primary}/> :
                     <FlatList
@@ -146,3 +168,15 @@ export default class FlatsListScreen extends React.Component
         )
     }
 }
+
+const mapStateToProps = (state /* , ownProps */) => {
+    return {
+        date: state.date
+    };
+};
+
+const mapDispatchToProps = dispatch => ({
+    anyError: data => dispatch(anyError(data)),
+  });
+  
+export default connect(mapStateToProps, mapDispatchToProps)(FlatsListScreen);
