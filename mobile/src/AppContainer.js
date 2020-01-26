@@ -13,6 +13,7 @@ import DetailsCar from  "./componets/carly/DetailsCar";
 import ListCars from "./componets/carly/ListCars";
 import ReserveCar from "./componets/carly/ReserveCar";
 import SearchCarScreen from "./componets/carly/SearchCarScreen";
+import SummaryCar from "./componets/carly/SummaryCar";
 const AppNavigator = createStackNavigator(
   {
     HomeScreen: { screen: HomeScreen },
@@ -26,7 +27,8 @@ const AppNavigator = createStackNavigator(
     DetailsCar: { screen: DetailsCar },
     ListCars:{screen: ListCars},
     ReserveCar:{screen: ReserveCar},
-    SearchCarScreen:{screen:SearchCarScreen}
+    SearchCarScreen:{screen:SearchCarScreen},
+    SummaryCar:{screen:SummaryCar}
   },
   {
     initialRouteName: "LoginScreen",

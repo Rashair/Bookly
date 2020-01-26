@@ -1,31 +1,20 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { ScrollView, StyleSheet, View, TouchableOpacity, KeyboardAvoidingView } from "react-native";
-import { Text } from "native-base";
+import { ScrollView, StyleSheet, View, TouchableOpacity, KeyboardAvoidingView, Text, Alert } from "react-native";
 import { Title, Button, TextInput, HelperText } from "react-native-paper";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { LocalDate, LocalTime, DateTimeFormatter, nativeJs } from "@js-joda/core";
-
-import { white, redA700 } from "react-native-paper/lib/commonjs/styles/colors";
-import { sendRequest } from "../../helpers/functions";
+import { sendRequest, combineDateAndTime } from "../../helpers/functions";
 import { anyError } from "../../redux/actions";
-import { BUTTON_COLOR } from "../../helpers/colors";
-import { CARLY_API_URL } from "../../helpers/constants";
+import { CARLY_API_URL, API_URL, TOKEN_HEADER_KEY } from "../../helpers/constants";
+import { styles, themeColors } from "../../styles";
 
-const styles = StyleSheet.create({
-  button: {
-    height: 54,
-    justifyContent: "center",
-  },
+const innerStyles = StyleSheet.create({
   container: {
-    backgroundColor: white,
-    flex: 1,
+    backgroundColor: themeColors.background,
     padding: 20,
-  },
-  helper: {
-    color: redA700,
   },
   inner: {
     flex: 1,
@@ -33,11 +22,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   input: {
-    backgroundColor: white,
+    backgroundColor: themeColors.background,
     fontSize: 18,
     height: 40,
   },
-  putOnBottom: { flex: 1, justifyContent: "flex-end" },
   row: {
     flexDirection: "row",
   },
@@ -52,24 +40,29 @@ class ReserveCar extends React.Component {
   constructor(props) {
     super(props);
     const { cars } = this.props.navigation.state.params;
-    const { dates } = this.props;
+   
+    const { firstName, lastName, email } = this.props.auth;
 
     this.state = {
-      cars,
-      firstName: "",
-      lastName: "",
-      email: "",
-      dateFrom: dates.from,
-      dateTo: dates.to,
+       cars,
+      firstName,
+      lastName,
+      email,
+      dateFrom: currDate,
+      dateTo:currDate,
       firstNameValid: true,
       lastNameValid: true,
       emailValid: true,
       dateToValid: true,
+      isFetching: false,
     };
 
     this.setFirstName = this.setFirstName.bind(this);
+    this.setLastName = this.setLastName.bind(this);
+    this.setEmail = this.setEmail.bind(this);
     this.setDateFrom = this.setDateFrom.bind(this);
     this.setDateTo = this.setDateTo.bind(this);
+    this.getTotalPrice = this.getTotalPrice.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -97,29 +90,33 @@ class ReserveCar extends React.Component {
     });
   }
 
-  setDateFrom(e, date) {
-    if (!date) {
+  setDateFrom(date, time) {
+    if (!date && !time) {
       this.setState({ showDateFromPicker: false, showTimeFromPicker: false });
       return;
     }
 
+    const oldDate = this.state.dateFrom;
+    const newDate = combineDateAndTime(date ?? oldDate, time ?? oldDate);
     this.setState(oldstate => ({
-      dateFrom: date,
-      dateToValid: this.validateDateTo(date, oldstate.dateFrom),
+      dateFrom: newDate,
+      dateToValid: this.validateDateTo(newDate, oldstate.dateTo),
       showDateFromPicker: false,
       showTimeFromPicker: false,
     }));
   }
 
-  setDateTo(e, date) {
-    if (!date) {
+  setDateTo(date, time) {
+    if (!date && !time) {
       this.setState({ showDateToPicker: false, showTimeToPicker: false });
       return;
     }
 
+    const oldDate = this.state.dateTo;
+    const newDate = combineDateAndTime(date ?? oldDate, time ?? oldDate);
     this.setState(oldstate => ({
-      dateTo: date,
-      dateToValid: this.validateDateTo(oldstate.dateFrom, date),
+      dateTo: newDate,
+      dateToValid: this.validateDateTo(oldstate.dateFrom, newDate),
       showDateToPicker: false,
       showTimeToPicker: false,
     }));
@@ -144,25 +141,78 @@ class ReserveCar extends React.Component {
     }
   }
 
+  getTotalPrice() {
+    const { cars, dateFrom, dateTo } = this.state;
+    const timeInMinutes = parseInt((dateTo - dateFrom) / 1000 / 60, 10);
+    const timeInHours = Math.ceil((timeInMinutes - 4) / 60);
+    return cars.price * timeInHours;
+  }
+
   handleSubmit() {
-    const { dateFrom, dateTo } = this.state;
+    const { cars, firstName, lastName, email, dateFrom, dateTo } = this.state;
     const dateToValid = this.validateDateTo(dateFrom, dateTo);
     if (!dateToValid) {
       this.setState({ dateToValid });
       return;
     }
 
-    // TODO: request here + body here
-    const url = `${CARLY_API_URL}/reservations/`;
-    const data = {};
-    sendRequest(url, "POST", {}, data).then();
-
-    // this.props.searchByDate({ from: dateFrom, to: dateTo });
-    // this.props.navigation.push("ListParking");
+    this.setState({ isFetching: true });
+    const url = `${CARLY_API_URL}/cars`; // reservations/`;
+    const ownerId = this.props.auth.id;
+    const data = {
+      carId: cars.id,
+      location: cars.location,
+     
+      totalCost: this.getTotalPrice(),
+      dateFrom: dateFrom.toISOString(),
+      dateTo: dateTo.toISOString(),
+    };
+    const headers = {}; // Auth headers here
+    sendRequest(url, "POST", headers, data)
+      .then(
+        response => {
+          if (response.ok) {
+            console.log("chicken");
+            return response.json();
+          }
+          throw new Error(`Error sending data to parkly, status code: ${response.status}`);
+        },
+        error => this.props.anyError(error)
+      )
+      .then(responseJson => {
+        const externalBookingId = responseJson.id;
+        const bookingData = {
+          owner: {
+            id: ownerId,
+          },
+          start_date_time: dateFrom.toISOString(),
+          end_date_time: dateTo.toISOString(),
+          type: "CAR",
+          external_id: externalBookingId,
+        };
+        const bookingUrl = `${API_URL}/booking/`;
+        return sendRequest(bookingUrl, "POST", { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, bookingData);
+      })
+      .then(
+        booklyResponse => {
+          if (booklyResponse.ok) {
+            const summaryData = { cars, totalCost: data.totalCost, dateFrom, dateTo, firstName, lastName, email };
+            this.props.navigation.navigate("SummaryCar", { summaryData });
+            console.log("kokokoko");
+          } else {
+            throw new Error(`Error sending data to bookly, status code: ${booklyResponse.status}`);
+          }
+        },
+        error => this.props.anyError(error)
+      )
+      .catch(error => {
+        this.setState({ isFetching: false });
+        this.props.anyError(error);
+      });
   }
 
   render() {
-    const { firstName, firstNameValid, lastName, lastNameValid, email, emailValid, cars } = this.state;
+    const { firstName, firstNameValid, lastName, lastNameValid, email, emailValid, isFetching } = this.state;
     const {
       showDateFromPicker,
       showTimeFromPicker,
@@ -172,27 +222,32 @@ class ReserveCar extends React.Component {
       dateTo,
       dateToValid,
     } = this.state;
-    const dateFromFormatted = LocalDate.from(nativeJs(dateFrom)).format(DateTimeFormatter.ofPattern("d/M/yyyy"));
+    const dateFromFormatted = LocalDate.from(nativeJs(dateFrom)).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     const timeFromFormatted = LocalTime.from(nativeJs(dateFrom)).format(DateTimeFormatter.ofPattern("HH:mm"));
-    const dateToFormatted = LocalDate.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("d/M/yyyy"));
+    const dateToFormatted = LocalDate.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     const timeToFormatted = LocalTime.from(nativeJs(dateTo)).format(DateTimeFormatter.ofPattern("HH:mm"));
-    const getPrice = () => {
-      const timeInMinutes = parseInt((dateTo - dateFrom) / 1000 / 60, 10);
-      const timeInHours = Math.ceil((timeInMinutes - 4) / 60);
-      return cars.pricePerHour * timeInHours;
-    };
+
+    const submitButtons = [
+      { text: "Cancel", onPress: () => {} },
+      { text: "Yes", onPress: () => this.handleSubmit() },
+    ];
+    const confirmationAlert = () =>
+      Alert.alert("Confirm reservation", "Dear, are you sure that you want to reserve this car?", submitButtons);
 
     return (
-      <ScrollView style={styles.container}>
-        <KeyboardAvoidingView contentContainerStyle={styles.inner} behavior="padding">
+      <ScrollView style={innerStyles.container}>
+        <KeyboardAvoidingView contentContainerStyle={innerStyles.inner} behavior="padding">
           <Title>First name</Title>
           <View>
             <TextInput
               mode="outlined"
               theme={{
-                colors: { primary: firstNameValid ? BUTTON_COLOR : redA700, underlineColor: "transparent" },
+                colors: {
+                  primary: firstNameValid ? themeColors.primary : themeColors.danger,
+                  underlineColor: "transparent",
+                },
               }}
-              style={styles.input}
+              style={innerStyles.input}
               onChangeText={text => this.setFirstName(text)}
               value={firstName}
             />
@@ -207,9 +262,12 @@ class ReserveCar extends React.Component {
           <TextInput
             mode="outlined"
             theme={{
-              colors: { primary: lastNameValid ? BUTTON_COLOR : redA700, underlineColor: "transparent" },
+              colors: {
+                primary: lastNameValid ? themeColors.primary : themeColors.danger,
+                underlineColor: "transparent",
+              },
             }}
-            style={styles.input}
+            style={innerStyles.input}
             onChangeText={text => this.setLastName(text)}
             value={lastName}
           />
@@ -222,10 +280,12 @@ class ReserveCar extends React.Component {
           <Title>Email</Title>
           <TextInput
             mode="outlined"
+            autoCompleteType="email"
+            autoCapitalize="none"
             theme={{
-              colors: { primary: emailValid ? BUTTON_COLOR : redA700, underlineColor: "transparent" },
+              colors: { primary: emailValid ? themeColors.primary : themeColors.danger, underlineColor: "transparent" },
             }}
-            style={styles.input}
+            style={innerStyles.input}
             onChangeText={text => this.setEmail(text)}
             value={email}
           />
@@ -237,29 +297,29 @@ class ReserveCar extends React.Component {
 
           <View>
             <Title>From</Title>
-            <View style={styles.row}>
+            <View style={innerStyles.row}>
               <TouchableOpacity onPress={() => this.setState({ showDateFromPicker: true })}>
-                <TextInput mode="flat" style={styles.input} value={dateFromFormatted} editable={false} />
+                <TextInput mode="flat" style={innerStyles.input} value={dateFromFormatted} editable={false} />
                 {showDateFromPicker && (
                   <DateTimePicker
                     minimumDate={currDate}
                     value={dateFrom}
                     mode="date"
                     display="calendar"
-                    onChange={this.setDateFrom}
+                    onChange={(e, date) => this.setDateFrom(date)}
                   />
                 )}
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => this.setState({ showTimeFromPicker: true })}>
-                <TextInput mode="flat" style={styles.input} value={timeFromFormatted} editable={false} />
+                <TextInput mode="flat" style={innerStyles.input} value={timeFromFormatted} editable={false} />
                 {showTimeFromPicker && (
                   <DateTimePicker
                     minimumDate={currDate}
                     value={dateFrom}
                     mode="time"
                     display="clock"
-                    onChange={this.setDateFrom}
+                    onChange={(e, date) => this.setDateFrom(null, date)}
                   />
                 )}
               </TouchableOpacity>
@@ -268,29 +328,29 @@ class ReserveCar extends React.Component {
 
           <View>
             <Title>To</Title>
-            <View style={styles.row}>
+            <View style={innerStyles.row}>
               <TouchableOpacity onPress={() => this.setState({ showDateToPicker: true })}>
-                <TextInput mode="flat" style={styles.input} value={dateToFormatted} editable={false} />
+                <TextInput mode="flat" style={innerStyles.input} value={dateToFormatted} editable={false} />
                 {showDateToPicker && (
                   <DateTimePicker
                     minimumDate={dateFrom}
                     value={dateTo}
                     mode="date"
                     display="calendar"
-                    onChange={this.setDateTo}
+                    onChange={(e, date) => this.setDateTo(date)}
                   />
                 )}
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => this.setState({ showTimeToPicker: true })}>
-                <TextInput mode="flat" style={styles.input} value={timeToFormatted} editable={false} />
+                <TextInput mode="flat" style={innerStyles.input} value={timeToFormatted} editable={false} />
                 {showTimeToPicker && (
                   <DateTimePicker
                     minimumDate={dateFrom}
                     value={dateTo}
                     mode="time"
                     display="clock"
-                    onChange={this.setDateTo}
+                    onChange={(e, date) => this.setDateTo(null, date)}
                   />
                 )}
               </TouchableOpacity>
@@ -298,11 +358,11 @@ class ReserveCar extends React.Component {
             {!this.state.dateToValid && <HelperText type="error">{this.errorMessage("DateTo")}</HelperText>}
           </View>
 
-          <Title style={styles.inner}>Price: {getPrice()}</Title>
-          <View style={styles.putOnBottom}>
+          <Title style={innerStyles.inner}>Price: {this.getTotalPrice()<0?0:this.getTotalPrice()}</Title>
+          <View style={styles.contentToEnd}>
             <Button
               style={styles.button}
-              color={BUTTON_COLOR}
+              color={themeColors.primary}
               mode="contained"
               disabled={
                 !(
@@ -314,12 +374,13 @@ class ReserveCar extends React.Component {
                   firstNameValid &&
                   lastNameValid &&
                   emailValid &&
-                  dateToValid
+                  dateToValid &&
+                  !isFetching
                 )
               }
-              onPress={this.handleSubmit}
+              onPress={confirmationAlert}
             >
-              <Text>Make reservation</Text>
+              <Text style={styles.buttonText}>Make reservation</Text>
             </Button>
           </View>
         </KeyboardAvoidingView>

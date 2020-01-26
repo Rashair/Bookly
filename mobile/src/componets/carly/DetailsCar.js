@@ -7,25 +7,19 @@ import { Headline, Button } from "react-native-paper";
 import { Table, Row } from "react-native-table-component";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { white } from "react-native-paper/lib/commonjs/styles/colors";
 import { anyError } from "../../redux/actions";
-import { BUTTON_COLOR } from "../../helpers/colors";
+import { styles, themeColors } from "../../styles";
 
-const styles = StyleSheet.create({
-  button: {
-    height: 54,
-    justifyContent: "center",
-  },
+const innerStyles = StyleSheet.create({
   content: {
     alignItems: "stretch",
-    backgroundColor: white,
+    backgroundColor: themeColors.background,
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 20,
   },
   fontBold: { fontWeight: "700" },
-  putOnBottom: { flex: 1, justifyContent: "flex-end" },
-  row: { alignItems: "flex-start", flexDirection: "row", marginBottom: 20 },
+  row: { alignItems: "flex-start", flexDirection: "row" },
   rowText: {
     fontSize: 20,
     letterSpacing: 0.15,
@@ -40,8 +34,8 @@ class DetailsCar extends React.Component {
 
   constructor(props) {
     super(props);
+
     const { cars } = this.props.navigation.state.params;
-   
     this.state = { cars };
   }
 
@@ -51,32 +45,52 @@ class DetailsCar extends React.Component {
 
     return (
       <Container>
-        <ScrollView contentContainerStyle={styles.content}>
+        <ScrollView contentContainerStyle={innerStyles.content}>
           <Headline>Almost your car</Headline>
           <Table>
             <Row
-              style={styles.row}
-              textStyle={[styles.rowText, styles.fontBold]}
-              flexArr={[20, 30, 5]}
-              data={["", cars.model, ""]}
+              style={[innerStyles.row, styles.marginBottomBig]}
+              textStyle={[innerStyles.rowText, innerStyles.fontBold]}
+              flexArr={[-5, 40]}
+              data={["", cars.make+"  "+ cars.model, ""]}
             />
-            <Row textStyle={styles.rowText} flexArr={[10, 30]} data={["Location:", `${cars.location}`]} />
-            <Row textStyle={styles.rowText} flexArr={[6, 30]} data={["Price:", `${cars.price} PLN / hour`]} />
-            <Row textStyle={styles.rowText} flexArr={[8, 30]} data={["Engine:", `${cars.engine}`]} />
-            <Row textStyle={styles.rowText} flexArr={[5, 30]} data={["Year:", `${cars.year}`]} />
-            <Row textStyle={styles.rowText} flexArr={[7, 30]} data={["Seats:", `${cars.seats}`]} />
-
-            
+          
+            <Row
+              textStyle={innerStyles.rowText}
+              flexArr={[6, 30]}
+              data={["Price:", `${cars.price} PLN / hour`]}
+            />
+              
+              <Row
+              textStyle={innerStyles.rowText}
+              flexArr={[30, 30]}
+              data={["Number of seats:", `${cars.seats}`]}
+            />
+             <Row
+              textStyle={innerStyles.rowText}
+              flexArr={[10, 30]}
+              data={["Licence:", `${cars.licence}`]}
+            />
+            <Row
+              textStyle={innerStyles.rowText}
+              flexArr={[6, 30]}
+              data={["Year:", `${cars.year}`]}
+            />
+          
           </Table>
-
-          <View style={styles.putOnBottom}>
+          <Text  
+              style={{fontSize:20}}>Address:</Text>
+         
+        
+         <Text   style={{fontSize:20 }}>{cars.location}</Text>
+          <View style={styles.contentToEnd}>
             <Button
-              style={styles.button}
-              color={BUTTON_COLOR}
               mode="contained"
-              onPress={() => navigation.push("ReserveCar", { cars })}
+              color={themeColors.primary}
+              style={styles.button}
+              onPress={() => navigation.navigate("ReserveCar", { cars  })}
             >
-              <Text>Make reservation</Text>
+              <Text style={styles.buttonText}>Make reservation</Text>
             </Button>
           </View>
         </ScrollView>
