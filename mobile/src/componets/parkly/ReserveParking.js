@@ -41,13 +41,13 @@ class ReserveParking extends React.Component {
     super(props);
     const { parking } = this.props.navigation.state.params;
     const { dates } = this.props;
-    const { firstName, lastName } = this.props.auth;
+    const { firstName, lastName, email } = this.props.auth;
 
     this.state = {
       parking,
       firstName,
       lastName,
-      email: "",
+      email,
       dateFrom: dates.from,
       dateTo: dates.to,
       firstNameValid: true,
@@ -170,12 +170,15 @@ class ReserveParking extends React.Component {
     };
     const headers = {}; // Auth headers here
     sendRequest(url, "POST", headers, data)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error(`Error sending data to parkly, status code: ${response.status}`);
-      })
+      .then(
+        response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error(`Error sending data to parkly, status code: ${response.status}`);
+        },
+        error => this.props.anyError(error)
+      )
       .then(responseJson => {
         const externalBookingId = responseJson.id;
         const bookingData = {
@@ -190,14 +193,17 @@ class ReserveParking extends React.Component {
         const bookingUrl = `${API_URL}/booking/`;
         return sendRequest(bookingUrl, "POST", { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, bookingData);
       })
-      .then(booklyResponse => {
-        if (booklyResponse.ok) {
-          const summaryData = { parking, totalCost: data.totalCost, dateFrom, dateTo, firstName, lastName, email };
-          this.props.navigation.navigate("SummaryParking", { summaryData });
-        } else {
-          throw new Error(`Error sending data to bookly, status code: ${booklyResponse.status}`);
-        }
-      })
+      .then(
+        booklyResponse => {
+          if (booklyResponse.ok) {
+            const summaryData = { parking, totalCost: data.totalCost, dateFrom, dateTo, firstName, lastName, email };
+            this.props.navigation.navigate("SummaryParking", { summaryData });
+          } else {
+            throw new Error(`Error sending data to bookly, status code: ${booklyResponse.status}`);
+          }
+        },
+        error => this.props.anyError(error)
+      )
       .catch(error => {
         this.setState({ isFetching: false });
         this.props.anyError(error);

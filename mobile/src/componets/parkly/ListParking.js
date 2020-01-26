@@ -54,20 +54,23 @@ class ListParking extends React.Component {
     const url = `${PARKLY_API_URL}/parking`; // this.state.fetchUrl
     console.log(`url ${this.state.fetchUrl}`);
     fetch(url)
-      .then(response => {
-        if (response.ok) {
-          response.json().then(responseJson => {
-            responseJson.forEach(parkingSpace => {
-              /* eslint-disable no-param-reassign */
-              parkingSpace.location = `${parkingSpace.street} ${parkingSpace.streetNumber}, ${parkingSpace.city}`;
+      .then(
+        response => {
+          if (response.ok) {
+            response.json().then(responseJson => {
+              responseJson.forEach(parkingSpace => {
+                /* eslint-disable no-param-reassign */
+                parkingSpace.location = `${parkingSpace.street} ${parkingSpace.streetNumber}, ${parkingSpace.city}`;
+              });
+              responseJson.sort(this.state.sortingType.cmp);
+              this.setState({ isLoading: false, parking: responseJson });
             });
-            responseJson.sort(this.state.sortingType.cmp);
-            this.setState({ isLoading: false, parking: responseJson });
-          });
-        } else {
-          throw new Error(`Error fetching, status code: ${response.statusCode}`);
-        }
-      })
+          } else {
+            throw new Error(`Error fetching, status code: ${response.statusCode}`);
+          }
+        },
+        error => this.props.anyError(error)
+      )
       .catch(error => {
         this.props.anyError(error);
       });
