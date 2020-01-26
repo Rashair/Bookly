@@ -7,7 +7,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import java.util.Collection;
 
 public class AuthenticationWithToken extends PreAuthenticatedAuthenticationToken {
-    private UserDetailsResponse detailsResponse = new UserDetailsResponse();
+    private UserDetailsResponse detailsResponse;
 
     public AuthenticationWithToken(Object aPrincipal, Object aCredentials) {
         super(aPrincipal, aCredentials);
@@ -19,9 +19,7 @@ public class AuthenticationWithToken extends PreAuthenticatedAuthenticationToken
 
     public AuthenticationWithToken(Object aPrincipal, Object aCredentials, Collection<? extends GrantedAuthority> anAuthorities, User user) {
         super(aPrincipal, aCredentials, anAuthorities);
-        detailsResponse.setId(user.getId()).setFirstName(user.getFirstName()).
-                setLastName(user.getLastName()).
-                setIdentificationToken(user.getIdToken());
+        detailsResponse = new UserDetailsResponse(user);
     }
 
     public String getToken() {
