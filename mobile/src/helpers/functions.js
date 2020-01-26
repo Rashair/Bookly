@@ -9,7 +9,7 @@
 export const sendRequest = (url, method, additionalHeaders = {}, body = {}, useCache = false) => {
   const requestData = {
     method,
-    headers: { "Content-type": "application/json", ...additionalHeaders },
+    headers: { "Content-type": "application/json;charset=utf-8", "data-type": "json", ...additionalHeaders },
     mode: "cors",
     cache: useCache ? "only-if-cached" : "no-cache",
   };
