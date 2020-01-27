@@ -23,7 +23,7 @@ const innerStyles = StyleSheet.create({
 });
 
 class LoginScreen extends React.Component {
-  static navigationOptions = { title: "Login, dear!:P" };
+  static navigationOptions = { title: "Login, dear!" };
 
   constructor(props) {
     super(props);

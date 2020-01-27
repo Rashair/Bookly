@@ -20,6 +20,7 @@ import MyReservationDetails from "./componets/userContent/details/MyReservationD
 const AppNavigator = createStackNavigator(
   {
     Home: { screen: HomeScreen },
+    LoginScreen: { screen: LoginScreen },
     MyReservationsList: { screen: MyReservationsList },
     MyReservationCarDetails: { screen: MyReservationCarDetails },
     MyReservationFlatDetails: { screen: MyReservationFlatDetails },
