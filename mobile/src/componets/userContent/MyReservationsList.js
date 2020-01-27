@@ -50,14 +50,14 @@ export default class MyReservationList extends React.Component {
   }
 
   componentDidMount() {
-    //fetch
+    // fetch
   }
 
   openDetails = (FKid, type, id) => {
     this.props.navigation.navigate("MyReservationDetails", {
-      FKid: FKid,
-      type: type,
-      id: id,
+      FKid,
+      type,
+      id,
     });
   };
 
@@ -77,7 +77,7 @@ export default class MyReservationList extends React.Component {
       <View style={styles.container}>
         <Text>Here will be reservation list !</Text>
         <FlatList data={DATA} keyExtractor={item => item.id.toString()} renderItem={this.renderItem} />
-        <Button title="Go back to Home" onPress={() => this.props.navigation.goBack()} />
+        <Button title="Go back to Home" onPress={() => this.props.navigation.navigate("Home")} />
       </View>
     );
   }
@@ -85,9 +85,9 @@ export default class MyReservationList extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
+    backgroundColor: "#fff",
+    flex: 1,
     justifyContent: "center",
   },
 });

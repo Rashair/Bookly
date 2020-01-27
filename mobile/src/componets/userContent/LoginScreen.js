@@ -1,21 +1,20 @@
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
+import { Container, Content } from "native-base";
+import { TextInput, HelperText, Title, Button } from "react-native-paper";
 
 import utf16 from "crypto-js/enc-utf16";
 import sha3 from "crypto-js/sha3";
 import hmacSHA512 from "crypto-js/hmac-sha512";
 import Base64 from "crypto-js/enc-base64";
 
-import { Container, Content } from "native-base";
-import { TextInput, HelperText, Title, Button } from "react-native-paper";
-
-import { white } from "react-native-paper/lib/commonjs/styles/colors";
 import { login } from "../../redux/thunk-functions";
+import { styles, themeColors } from "../../styles";
 
-const styles = StyleSheet.create({
+const innerStyles = StyleSheet.create({
   backgroundWhite: {
-    backgroundColor: white,
+    backgroundColor: themeColors.background,
   },
   content: {
     paddingHorizontal: 10,
@@ -42,13 +41,13 @@ class LoginScreen extends React.Component {
 
   componentDidUpdate() {
     if (this.props.auth) {
-      this.props.navigation.navigate("Home");
+      this.props.navigation.navigate("App");
     }
   }
 
   setLogin(login) {
     // will be useful if login will contain @
-    //  login.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) &&
+    // login.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) &&
     this.setState({
       login, // ,
       loginValid: login.length > 0,
@@ -75,7 +74,6 @@ class LoginScreen extends React.Component {
 
   handleSubmit() {
     // TODO: Check if password and login valid here (user may not changed it)
-
     const { login, password } = this.state;
     const randomMsg = utf16.parse("Keep it secret. Keep it safe");
     const hashDigest = sha3(password + randomMsg);
@@ -88,12 +86,12 @@ class LoginScreen extends React.Component {
 
   render() {
     return (
-      <Container>
-        <Content style={styles.content}>
+      <Container style={styles.container}>
+        <Content style={innerStyles.content}>
           <Title>Login</Title>
           <TextInput
             mode="outlined"
-            style={styles.backgroundWhite}
+            style={innerStyles.backgroundWhite}
             onChangeText={text => this.setLogin(text)}
             value={this.state.login}
           />
@@ -105,7 +103,7 @@ class LoginScreen extends React.Component {
           <TextInput
             secureTextEntry
             mode="outlined"
-            style={styles.backgroundWhite}
+            style={innerStyles.backgroundWhite}
             onChangeText={text => this.setPassword(text)}
             value={this.state.password}
           />
@@ -113,13 +111,17 @@ class LoginScreen extends React.Component {
             {this.errorMessage("Password")}
           </HelperText>
 
-          <Button
-            mode="contained"
-            disabled={!(this.state.loginValid && this.state.passwordValid)}
-            onPress={this.handleSubmit}
-          >
-            <Text> Login</Text>
-          </Button>
+          <View style={styles.contentToEnd}>
+            <Button
+              style={styles.button}
+              color={themeColors.primary}
+              mode="contained"
+              disabled={!(this.state.loginValid && this.state.passwordValid)}
+              onPress={this.handleSubmit}
+            >
+              <Text style={styles.buttonText}> Login</Text>
+            </Button>
+          </View>
         </Content>
       </Container>
     );

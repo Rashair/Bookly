@@ -4,12 +4,16 @@ export const themeColors = {
   primary: "#3579e6",
   danger: "red",
   background: "white",
+  textColorOnPrimary: "black",
 };
 
 export const styles = StyleSheet.create({
   button: {
     height: 54,
     justifyContent: "center",
+  },
+  buttonText: {
+    color: themeColors.textColorOnPrimary,
   },
   container: {
     padding: 10,
