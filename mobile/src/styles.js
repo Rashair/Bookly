@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native'
+import { StyleSheet } from "react-native";
 
 export const themeColors = 
 {
@@ -94,3 +94,4 @@ export const styles = StyleSheet.create({
         width: "100%"
     },
 })
+

@@ -32,6 +32,9 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "idToken")
     private String idToken;
 
@@ -110,6 +113,16 @@ public class User {
     @JsonSetter("last_name")
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @JsonGetter("email")
+    public String getEmail() {
+        return email;
+    }
+
+    @JsonSetter("email")
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @JsonGetter("idToken")

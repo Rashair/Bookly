@@ -7,10 +7,13 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "booking")
@@ -25,10 +28,10 @@ public class Booking {
     private User owner;
 
     @Column(name = "start_date_time", nullable = false)
-    private LocalDate startDateTime;
+    private LocalDateTime startDateTime;
 
     @Column(name = "end_date_time", nullable = false)
-    private LocalDate endDateTime;
+    private LocalDateTime endDateTime;
 
     @Column(name = "active", nullable = false)
     private boolean active;
@@ -72,24 +75,24 @@ public class Booking {
     @JsonGetter("start_date_time")
     @JsonDeserialize(using = JsonDateDeserializer.class)
     @JsonSerialize(using = JsonDateSerializer.class)
-    public LocalDate getStartDateTime() {
+    public LocalDateTime getStartDateTime() {
         return startDateTime;
     }
 
     @JsonSetter("start_date_time")
-    public void setStartDateTime(LocalDate startDateTime) {
+    public void setStartDateTime(LocalDateTime startDateTime) {
         this.startDateTime = startDateTime;
     }
 
     @JsonGetter("end_date_time")
     @JsonDeserialize(using = JsonDateDeserializer.class)
     @JsonSerialize(using = JsonDateSerializer.class)
-    public LocalDate getEndDateTime() {
+    public LocalDateTime getEndDateTime() {
         return endDateTime;
     }
 
     @JsonSetter("end_date_time")
-    public void setEndDateTime(LocalDate endDateTime) {
+    public void setEndDateTime(LocalDateTime endDateTime) {
         this.endDateTime = endDateTime;
     }
 
@@ -118,7 +121,7 @@ public class Booking {
         return externalId;
     }
 
-    @JsonSetter("id")
+    @JsonSetter("external_id")
     public void setExternalId(Long id) {
         this.externalId = id;
     }

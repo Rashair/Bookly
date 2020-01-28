@@ -109,7 +109,7 @@ public class AuthenticationFilter extends GenericFilterBean {
         httpResponse.setStatus(HttpServletResponse.SC_OK);
         UserDetailsResponse response = (UserDetailsResponse) resultOfAuthentication.getDetails();
         String userDetailsJsonResponse = new ObjectMapper().writeValueAsString(response);
-        httpResponse.addHeader("Content-Type", "application/json; charset=utf-8");
+        httpResponse.addHeader("Content-Type", "application/json;charset=utf-8");
         httpResponse.getWriter().print(userDetailsJsonResponse);
     }
 

@@ -8,16 +8,17 @@ import com.fasterxml.jackson.databind.node.TextNode;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class JsonDateDeserializer extends JsonDeserializer<LocalDate> {
+public class JsonDateDeserializer extends JsonDeserializer<LocalDateTime> {
 
     @Override
-    public LocalDate deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+    public LocalDateTime deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         ObjectCodec oc = jp.getCodec();
         TextNode node = oc.readTree(jp);
         String dateString = node.textValue();
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
-        return LocalDate.parse(dateString, formatter);
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+        return LocalDateTime.parse(dateString, formatter);
     }
 }

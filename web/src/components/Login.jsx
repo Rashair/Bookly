@@ -61,7 +61,7 @@ class Login extends React.Component {
     return (
       <div className="w-50" onSubmit={this.handleSubmit}>
         <form className="form-signin">
-          <h3 className="h3 mb-3 font-weight-normal">Please sign in</h3>
+          <h3 className="h3 mb-4 font-weight-normal">Please sign in</h3>
           <label htmlFor="inputLogin" className="sr-only">
             Login
           </label>
@@ -79,12 +79,12 @@ class Login extends React.Component {
           <input
             type="password"
             id="inputPassword"
-            className="form-control"
+            className="form-control mt-2"
             placeholder="Password"
             required="required"
             onChange={this.passwordChange}
           />
-          <button className="btn btn-lg btn-primary btn-block" type="submit">
+          <button className="btn btn-lg btn-primary btn-block mt-3" type="submit">
             Sign in
           </button>
         </form>
