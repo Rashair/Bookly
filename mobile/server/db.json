@@ -1,94 +1,129 @@
 {
-  "flats":[
-	{
-		"id" : 1,
-		"title": "Zielony apartament",
-		"roomNumber" : 2,
-		"beds" : 2,
-		"price": 500,
-		"rating" : 4.55,
-		"city" : "Warsaw",
-		"address" : "Marszalkowska 11",
-		"country": "Poland",
-		"description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-		"image": "https://pracownia-projekty.dom.pl/images/36/wizualizacje_1_arc_dom_dla_ciebie_1_z_garazem_ce.jpg"
-	},
-	{
-		"id" : 2,
-		"title": "Jerozolimski",
-		"roomNumber" : 3,
-		"beds" : 5,
-		"price": 700,
-		"rating" : 4.22,
-		"city" : "Warsaw",
-		"address" : "Aleje Jerozolimskie 21",
-		"country": "Poland",
-		"description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-		"image": "https://projektyzwizja.pl/media/cache/max_size/uploads/wyjatkowy-1/wyjatkowy1-front-1200_1507029951.jpeg"
-	}
-  ],
-  "cars":[
-	{
-		"id" : 1,
-		"model" : "Toyota",
-		"engine" : "3.4 L RV8KLM",
-		"seats": 4,
-		"year" : 2012,
-		"licence" : "",
-		"location" : "Svalbard"
-	},
-	{
-		"id" : 2,
-		"model" : "Porshe",
-		"engine" : "3.4 L RV8KLM",
-		"seats": 5,
-		"year" : 2015,
-		"licence" : "",
-		"location" : "Cittàgazze"
-	},
-	{
-		"id" : 3,
-		"model" : "Mercedes",
-		"engine" : "3.4 L RV8KLM",
-		"seats": 6,
-		"year" : 2000,
-		"licence" : "",
-		"location" : "Bolvangar"
-	},
-	{
-		"id" : 4,
-		"model" : "Porgggggshe",
-		"engine" : "3.4 L RV8KLM",
-		"seats": 5,
-		"year" : 2015,
-		"licence" : "",
-		"location" : "Cittàgazze"
-	},
-	{
-		"id" : 5,
-		"model" : "Merceggggdes",
-		"engine" : "3.4 L RV8KLM",
-		"seats": 6,
-		"year" : 2000,
-		"licence" : "",
-		"location" : "Bolvangar"
-	}
-  ],
-  "parking": [
-	{
-		"id" : 1,
-		"location" : "Urithiru",
-		"pricePerHour": 5
-	},
-	{
-		"id" : 2,
-		"location" : "Urithiru",
-		"pricePerHour": 4
-	},
-	{
-		"id" : 3,
-		"location" : "Urithiru",
-		"pricePerHour": 8
-	}
-  ]
-}
+	"flats":[
+	  {
+		  "id" : 1,
+		  "title": "Zielony apartament",
+		  "roomNumber" : 2,
+		  "beds" : 2,
+		  "price": 500,
+		  "rating" : 4.55,
+		  "city" : "Warsaw",
+		  "address" : "Marszalkowska 11",
+		  "country": "Poland",
+		  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+		  "image": "https://pracownia-projekty.dom.pl/images/36/wizualizacje_1_arc_dom_dla_ciebie_1_z_garazem_ce.jpg"
+	  },
+	  {
+		  "id" : 2,
+		  "title": "Jerozolimski",
+		  "roomNumber" : 3,
+		  "beds" : 5,
+		  "price": 700,
+		  "rating" : 4.22,
+		  "city" : "Warsaw",
+		  "address" : "Aleje Jerozolimskie 21",
+		  "country": "Poland",
+		  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+		  "image": "https://projektyzwizja.pl/media/cache/max_size/uploads/wyjatkowy-1/wyjatkowy1-front-1200_1507029951.jpeg"
+	  },
+	  {
+		  "id" : 3,
+		  "title": "Jerozolimski",
+		  "roomNumber" : 3,
+		  "beds" : 5,
+		  "price": 700,
+		  "rating" : 4.22,
+		  "city" : "Warsaw",
+		  "address" : "Aleje Jerozolimskie 21",
+		  "country": "Poland",
+		  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+		  "image": "https://projektyzwizja.pl/media/cache/max_size/uploads/wyjatkowy-1/wyjatkowy1-front-1200_1507029951.jpeg"
+	  },
+	  {
+		  "id" : 4,
+		  "title": "Jerozolimski",
+		  "roomNumber" : 3,
+		  "beds" : 5,
+		  "price": 700,
+		  "rating" : 4.22,
+		  "city" : "Warsaw",
+		  "address" : "Aleje Jerozolimskie 21",
+		  "country": "Poland",
+		  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+		  "image": "https://projektyzwizja.pl/media/cache/max_size/uploads/wyjatkowy-1/wyjatkowy1-front-1200_1507029951.jpeg"
+	  },
+	  {
+		  "id" : 5,
+		  "title": "Jerozolimski",
+		  "roomNumber" : 3,
+		  "beds" : 5,
+		  "price": 700,
+		  "rating" : 4.22,
+		  "city" : "Warsaw",
+		  "address" : "Aleje Jerozolimskie 21",
+		  "country": "Poland",
+		  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+		  "image": "https://projektyzwizja.pl/media/cache/max_size/uploads/wyjatkowy-1/wyjatkowy1-front-1200_1507029951.jpeg"
+	  },
+	  {
+		  "id" : 6,
+		  "title": "Jerozolimski",
+		  "roomNumber" : 3,
+		  "beds" : 5,
+		  "price": 700,
+		  "rating" : 4.22,
+		  "city" : "Warsaw",
+		  "address" : "Aleje Jerozolimskie 21",
+		  "country": "Poland",
+		  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+		  "image": "https://projektyzwizja.pl/media/cache/max_size/uploads/wyjatkowy-1/wyjatkowy1-front-1200_1507029951.jpeg"
+	  }
+	],
+	"cars":[
+	  {
+		  "id" : 1,
+		  "model" : "Toyota",
+		  "engine" : "3.4 L RV8KLM",
+		  "seats": 4,
+		  "year" : 2012,
+		  "licence" : "",
+		  "location" : "Svalbard"
+	  },
+	  {
+		  "id" : 2,
+		  "model" : "Porshe",
+		  "engine" : "3.4 L RV8KLM",
+		  "seats": 5,
+		  "year" : 2015,
+		  "licence" : "",
+		  "location" : "Cittàgazze"
+	  },
+	  {
+		  "id" : 3,
+		  "model" : "Mercedes",
+		  "engine" : "3.4 L RV8KLM",
+		  "seats": 6,
+		  "year" : 2000,
+		  "licence" : "",
+		  "location" : "Bolvangar"
+	  }
+	],
+	"parking": [
+	  {
+		  "id" : 1,
+		  "location" : "Urithiru",
+		  "pricePerHour": 5
+	  },
+	  {
+		  "id" : 2,
+		  "location" : "Urithiru",
+		  "pricePerHour": 4
+	  },
+	  {
+		  "id" : 3,
+		  "location" : "Urithiru",
+		  "pricePerHour": 8
+	  }
+	]
+  }
+
