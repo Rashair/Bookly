@@ -1,42 +1,12 @@
 import React from "react";
 import {connect} from 'react-redux'
 
-import { StyleSheet, Text, View, FlatList, Image } from "react-native";
+import { Text, View, FlatList, Image } from "react-native";
 import {ListItem} from 'react-native-elements'
-import { Row, Container } from "native-base";
+import { Container } from "native-base";
 import { styles, themeColors} from '../../styles';
 import {sendRequest, createQueryParams} from '../../helpers/functions'
 import {API_URL, TOKEN_HEADER_KEY} from '../../helpers/constants'
-
-
-const DATA = [
-  // temporary solution to display data
-  {
-    id: 1,
-    type: "car",
-    externalId: 1,
-    startDateTime: "10-02-2020",
-    active : false,
-    endDateTime : '20-02-2020'
-  },
-  {
-    id: 2,
-    type: "flat",
-    startDateTime: "02-01-2020",
-    externalId: 2,
-    active : true,
-    endDateTime : '20-02-2020'
-  },
-  {
-    id: 3,
-    type: "parking",
-    startDateTime: "19-12-2019",
-    externalId: 3,
-    active : true,
-    endDateTime : '20-02-2020'
-  },
-];
-
 
   class MyReservationList extends React.Component {
   constructor(props) {
@@ -64,7 +34,6 @@ const DATA = [
       }
       )
       .catch(function (error) {
-        //console.log(error);
         console.log(error.message);
       });
   }
@@ -116,7 +85,7 @@ const DATA = [
     );
   }
 }
-const mapStateToProps = (state /* , ownProps */) => {
+const mapStateToProps = (state ) => {
   return {
     auth: state.auth,
   };
