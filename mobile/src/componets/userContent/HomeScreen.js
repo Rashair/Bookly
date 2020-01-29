@@ -8,9 +8,12 @@ import { anyError, setCarlyToken, setFlatlyToken, setParklyToken } from "../../r
 class HomeScreen extends React.Component {
   componentDidMount()
   {
-    //let [carlyToken, flatlyToken, parklyToken] = [null, null, null];
-
-    //fetching carly token
+    this.fetchCarlyToken()
+    this.fetchParklyToken()
+    this.fetchFlatlyToken()
+  }
+  fetchCarlyToken()
+  {
     const carlyBody =
     {
       email: "bookly@bookly.com",
@@ -21,7 +24,6 @@ class HomeScreen extends React.Component {
       .then(response => {
         if(response.ok)
         {
-          //console.log(response)
           response.json()
             .then(json => this.props.setCarlyToken(json.Authorization))
         }
@@ -33,39 +35,55 @@ class HomeScreen extends React.Component {
       .catch(error => {
         this.props.anyError(error)
       })
+  }
 
-    //fetching parkly token
-    // const parklyHeader =
-    // {
-    //   user_name: "bookly"
-    // }
-    // const parklyUrl = `${PARKLY_API_URL}/service/login`
-    // const parklyPromise = sendRequest(parklyUrl, "GET", parklyHeader)
-    // .then(response => {
-    //   if(response.ok)
-    //   {
-    //     response.json()
-    //       .then(json => parklyToken = json.Authorization)
-    //   }
-    //   else
-    //   {
-    //     throw new Error(`Error sending fetching parkly token, status code: ${response.status}`);
-    //   }
-    // })
-    // .then(() => {
-    //   this.props.setParklyToken(parklyToken)
-    // })
-    // .catch(error => {
-    //   this.props.anyError(error)
-    // })
+  fetchParklyToken()
+  {
+    const parklyHeader =
+    {
+      user_name: "bookly"
+    }
+    const parklyUrl = `${PARKLY_API_URL}/service/login`
+    sendRequest(parklyUrl, "GET", parklyHeader)
+    .then(response => {
+      if(response.ok)
+      {
+        response.json()
+          .then(json => this.props.setParklyToken(json.Authorization))
+      }
+      else
+      {
+        throw new Error(`Error sending fetching parkly token, status code: ${response.status}`);
+      }
+    })
+    .catch(error => {
+      this.props.anyError(error)
+    })
+  }
 
-    //fetching flatly token
-
-
-
-
-    
-    //this.props.setFlatlyToken(flatlyToken)
+  fetchFlatlyToken()
+  {
+    const flatlyBody =
+    {
+      // email: "bookly@bookly.com",
+      // password: "reactbookly"
+    }
+    const flatlyUrl = `${FLATLY_API_URL}/login`
+    sendRequest(flatlyUrl, "POST", {}, flatlyBody)
+      .then(response => {
+        if(response.ok)
+        {
+          response.json()
+            .then(json => this.props.setFlatlyToken(json.Authorization))
+        }
+        else
+        {
+          throw new Error(`Error sending fetching carly token, status code: ${response.status}`);
+        }
+      })
+      .catch(error => {
+        this.props.anyError(error)
+      })
   }
   render() {
     const { navigate } = this.props.navigation;
