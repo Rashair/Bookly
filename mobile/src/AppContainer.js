@@ -2,9 +2,15 @@ import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import LoginScreen from "./componets/userContent/LoginScreen";
 import HomeScreen from "./componets/userContent/HomeScreen";
+
 import FlatsListScreen from "./componets/flatly/FlatsListScreen";
-import SearchParking from "./componets/parkly/SearchParking";
 import SearchFlatScreen from "./componets/flatly/SearchFlatScreen";
+import FlatDetailsScreen from "./componets/flatly/FlatDetailsScreen";
+import ReservationFormScreen from "./componets/flatly/ReservationFormScreen";
+import FlatSummaryScreen from "./componets/flatly/FlatSummaryScreen";
+
+import SearchParking from "./componets/parkly/SearchParking";
+
 import ListParking from "./componets/parkly/ListParking";
 import DetailsParking from "./componets/parkly/DetailsParking";
 import ReserveParking from "./componets/parkly/ReserveParking";
@@ -26,8 +32,7 @@ const AppNavigator = createStackNavigator(
     MyReservationFlatDetails: { screen: MyReservationFlatDetails },
     MyReservationParkingDetails: { screen: MyReservationParkingDetails },
     MyReservationDetails: { screen: MyReservationDetails },
-    SearchFlat: { screen: SearchFlatScreen },
-    FlatsList: { screen: FlatsListScreen },
+    
     SearchCar: { screen: SearchCarScreen },
     CarList: { screen: CarListScreen },
     SearchParking: { screen: SearchParking },
@@ -35,6 +40,12 @@ const AppNavigator = createStackNavigator(
     DetailsParking: { screen: DetailsParking },
     ReserveParking: { screen: ReserveParking },
     SummaryParking: { screen: SummaryParking },
+
+    SearchFlat: { screen: SearchFlatScreen },
+    FlatsList: { screen: FlatsListScreen },
+    ReservationForm: {screen: ReservationFormScreen},
+    FlatSummary: {screen: FlatSummaryScreen},
+    FlatDetails: {screen: FlatDetailsScreen}
   },
   {
     initialRouteName: "Home",
