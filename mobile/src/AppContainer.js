@@ -20,7 +20,11 @@ import MyReservationCarDetails from "./componets/userContent/details/MyReservati
 import MyReservationFlatDetails from "./componets/userContent/details/MyReservationFlatDetails";
 import MyReservationParkingDetails from "./componets/userContent/details/MyReservationParkingDetails";
 import MyReservationDetails from "./componets/userContent/details/MyReservationDetails";
-
+import DetailsCar from  "./componets/carly/DetailsCar";
+import ListCars from "./componets/carly/ListCars";
+import ReserveCar from "./componets/carly/ReserveCar";
+import SearchCarScreen from "./componets/carly/SearchCarScreen";
+import SummaryCar from "./componets/carly/SummaryCar";
 const AppNavigator = createStackNavigator(
   {
     HomeScreen: { screen: HomeScreen },

@@ -5,7 +5,8 @@ export const themeColors =
     primary: '#3579e6',
     danger: 'red',
     background: 'white',
-    secondary: '#21C416'
+    secondary: '#21C416',
+    textColorOnPrimary: "black",
 }
 
 export const styles = StyleSheet.create({
