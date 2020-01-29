@@ -33,8 +33,8 @@ public class Booking {
     @Column(name = "end_date_time", nullable = false)
     private LocalDateTime endDateTime;
 
-    @Column(name = "active", nullable = false)
-    private boolean active;
+    @Column(name = "active")
+    private boolean active = true;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)

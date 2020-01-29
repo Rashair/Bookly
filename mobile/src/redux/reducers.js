@@ -5,7 +5,6 @@ export const initialState = { auth: null, errorResponse: "", dates: { from: new 
 // Read this: https://redux.js.org/basics/reducers
 const appReducer = (state = initialState, action) => {
   switch (action.type) {
-    
     case SEARCH_BY_DATE: {
       const { dates } = action.payload;
       return { ...state, dates };
@@ -23,6 +22,8 @@ const appReducer = (state = initialState, action) => {
     }
 
     case ANY_ERROR: {
+      // eslint-disable-next-line no-console
+      console.log(action.payload.error);
       // eslint-disable-next-line no-alert
       alert("Something went wrong...");
       return state;

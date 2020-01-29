@@ -1,4 +1,4 @@
-import { createAppContainer } from "react-navigation";
+import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import LoginScreen from "./componets/userContent/LoginScreen";
 import HomeScreen from "./componets/userContent/HomeScreen";
@@ -7,6 +7,14 @@ import ReservationFormScreen from "./componets/flatly/ReservationFormScreen";
 import FlatSummaryScreen from "./componets/flatly/FlatSummaryScreen";
 import FlatDetailsScreen from "./componets/flatly/FlatDetailsScreen";
 import SearchFlatScreen from "./componets/flatly/SearchFlatScreen";
+import SearchParking from "./componets/parkly/SearchParking";
+import SearchFlatScreen from "./componets/flatly/SearchFlatScreen";
+import ListParking from "./componets/parkly/ListParking";
+import DetailsParking from "./componets/parkly/DetailsParking";
+import ReserveParking from "./componets/parkly/ReserveParking";
+import SummaryParking from "./componets/parkly/SummaryParking";
+import SearchCarScreen from "./componets/carly/SearchCarScreen";
+import CarListScreen from "./componets/carly/CarListScreen";
 import MyReservationsList from "./componets/userContent/MyReservationsList";
 import MyReservationCarDetails from "./componets/userContent/details/MyReservationCarDetails";
 import MyReservationFlatDetails from "./componets/userContent/details/MyReservationFlatDetails";
@@ -23,20 +31,33 @@ const AppNavigator = createStackNavigator(
     MyReservationFlatDetails: { screen: MyReservationFlatDetails },
     MyReservationParkingDetails: { screen: MyReservationParkingDetails },
     MyReservationDetails: { screen: MyReservationDetails },
-
-    SearchFlat : {screen: SearchFlatScreen},
+    SearchFlat: { screen: SearchFlatScreen },
     FlatsList: { screen: FlatsListScreen },
-    LoginScreen: { screen: LoginScreen },
-    ReservationForm: {screen: ReservationFormScreen},
-    FlatSummary: {screen: FlatSummaryScreen},
-    FlatDetails: {screen: FlatDetailsScreen}
+    SearchCar: { screen: SearchCarScreen },
+    CarList: { screen: CarListScreen },
+    SearchParking: { screen: SearchParking },
+    ListParking: { screen: ListParking },
+    DetailsParking: { screen: DetailsParking },
+    ReserveParking: { screen: ReserveParking },
+    SummaryParking: { screen: SummaryParking },
   },
   {
-    initialRouteName: "FlatsList",
+    initialRouteName: "Home",
     headerMode: "screen",
   }
 );
 
-const AppContainer = createAppContainer(AppNavigator);
+const AuthNavigator = createSwitchNavigator(
+  {
+    Login: { screen: LoginScreen },
+    App: AppNavigator,
+  },
+  {
+    initialRouteName: "Login",
+    headerMode: "screen",
+  }
+);
+
+const AppContainer = createAppContainer(AuthNavigator);
 
 export default AppContainer;

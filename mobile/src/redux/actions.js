@@ -1,7 +1,13 @@
-import {  LOGIN_SUCCESS, 
-          LOGIN_ERROR, 
-          ANY_ERROR, 
-          SEARCH_BY_DATE } from "./constants";
+import { LOGIN_SUCCESS, LOGIN_ERROR, ANY_ERROR, SEARCH_BY_DATE } from "./constants";
+
+export const searchByDate = dates => {
+  return {
+    type: SEARCH_BY_DATE,
+    payload: {
+      dates,
+    },
+  };
+};
 
 export const loginSuccess = userDetails => {
   return {
