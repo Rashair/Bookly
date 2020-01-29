@@ -1,7 +1,72 @@
 import React from "react";
+import { connect } from "react-redux";
 import { StyleSheet, View, Button } from "react-native";
+import { FLATLY_API_URL, PARKLY_API_URL, CARLY_API_URL } from "../../helpers/constants"
+import { sendRequest } from "../../helpers/functions"
+import { anyError, setCarlyToken, setFlatlyToken, setParklyToken } from "../../redux/actions"
 
-export default class HomeScreen extends React.Component {
+class HomeScreen extends React.Component {
+  componentDidMount()
+  {
+    //let [carlyToken, flatlyToken, parklyToken] = [null, null, null];
+
+    //fetching carly token
+    const carlyBody =
+    {
+      email: "bookly@bookly.com",
+      password: "reactbookly"
+    }
+    const carlyUrl = `${CARLY_API_URL}/login`
+    sendRequest(carlyUrl, "POST", {}, carlyBody)
+      .then(response => {
+        if(response.ok)
+        {
+          //console.log(response)
+          response.json()
+            .then(json => this.props.setCarlyToken(json.Authorization))
+        }
+        else
+        {
+          throw new Error(`Error sending fetching carly token, status code: ${response.status}`);
+        }
+      })
+      .catch(error => {
+        this.props.anyError(error)
+      })
+
+    //fetching parkly token
+    // const parklyHeader =
+    // {
+    //   user_name: "bookly"
+    // }
+    // const parklyUrl = `${PARKLY_API_URL}/service/login`
+    // const parklyPromise = sendRequest(parklyUrl, "GET", parklyHeader)
+    // .then(response => {
+    //   if(response.ok)
+    //   {
+    //     response.json()
+    //       .then(json => parklyToken = json.Authorization)
+    //   }
+    //   else
+    //   {
+    //     throw new Error(`Error sending fetching parkly token, status code: ${response.status}`);
+    //   }
+    // })
+    // .then(() => {
+    //   this.props.setParklyToken(parklyToken)
+    // })
+    // .catch(error => {
+    //   this.props.anyError(error)
+    // })
+
+    //fetching flatly token
+
+
+
+
+    
+    //this.props.setFlatlyToken(flatlyToken)
+  }
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -23,3 +88,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+const mapStateToProps = (state /* , ownProps */) => {
+  return {
+      carlyToken: state.carlyToken
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  anyError: data => dispatch(anyError(data)),
+  setCarlyToken: data => dispatch(setCarlyToken(data)),
+  setParklyToken: data => dispatch(setParklyToken(data)),
+  setFlatlyToken: data => dispatch(setFlatlyToken(data))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

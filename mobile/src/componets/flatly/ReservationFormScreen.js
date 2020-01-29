@@ -20,10 +20,7 @@ class ReservationFormScreen extends React.Component
     {
         super(props)
         const { navigation } = this.props
-        //const { dates } = navigation.getParam('dates')
         this.flat = navigation.getParam('flat')
-        // const tomorrowDate = new Date()
-        // tomorrowDate.setDate(tomorrowDate.getDate() + 1)
         this.state = 
         {
             firstName: this.props.auth.firstName,
@@ -31,17 +28,13 @@ class ReservationFormScreen extends React.Component
             email: this.props.auth.email,
             dateFrom: this.props.dates.from,
             dateTo: this.props.dates.to,
-            // dateFrom: dates.from,
-            // dateTo: dates.to,
             people: this.props.people,
-            // firstName: this.props.firstName,
-            // lastName: this.props.lastName,
-            // email: this.props.email,
-            // people: this.props.people,
+
             firstNameValid: true,
             lastNameValid: true,
             emailValid: true,
             dateToValid: true,
+
             showDateFromPicker: false,
             showDateToPicker: false,
             isFetching: false
@@ -180,38 +173,6 @@ class ReservationFormScreen extends React.Component
             this.setState({ isFetching: false });
             this.props.anyError(error);
         });
-
-        //only for booking
-        // const externalBookingId = 1;
-        // const bookingData = {
-        //     owner: {
-        //         id: ownerId
-        //     },
-        //     start_date_time: dateFrom.toISOString(),
-        //     end_date_time: dateTo.toISOString(),
-        //     type: "FLAT",
-        //     external_id: externalBookingId
-        // };
-        // console.log(JSON.stringify(bookingData))
-        // const bookingUrl = `${API_URL}/booking/`;
-        // //const securityToken = this.props.auth.securityToken;
-        // const securityToken = "d4c1efaa-e137-4255-95ae-513d9fb931ea";
-        // sendRequest(bookingUrl, "POST", { [TOKEN_HEADER_KEY]: securityToken }, bookingData)
-        // .then(booklyResponse => {
-        //     console.log("Response: " + booklyResponse.status.toString())
-        //     if (booklyResponse.ok) {
-        //         const summaryData = { flat, totalCost, dateFrom, dateTo, firstName, lastName, email };
-        //         this.props.navigation.navigate("FlatSummary", { summaryData });
-        //     } 
-        //     else {
-        //         throw new Error(`Error sending data to bookly, status code: ${booklyResponse.status}`);
-        //     }
-        //     this.setState({ isFetching: false });
-        // })
-        // .catch(error => {
-        //     console.log(error)
-        //     this.props.anyError(error);
-        // });
 
         //only for mockserver
         // const summaryData = { flat, totalCost, dateFrom, dateTo, firstName, lastName, email };
