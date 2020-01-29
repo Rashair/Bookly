@@ -4,11 +4,13 @@ import {  LOGIN_SUCCESS,
           SEARCH_BY_DATE, 
           SET_CARLY_TOKEN, 
           SET_FLATLY_TOKEN, 
-          SET_PARKLY_TOKEN } from "./constants";
+          SET_PARKLY_TOKEN,
+          SAVE_BEDS } from "./constants";
 
 export const initialState = { auth: null, 
                               errorResponse: "", 
                               dates: { from: new Date(), to: new Date() }, 
+                              people: null,
                               carlyToken: null,
                               flatlyToken: null,
                               parklyToken: null };
@@ -37,6 +39,11 @@ const appReducer = (state = initialState, action) => {
       // eslint-disable-next-line no-alert
       alert("Something went wrong...");
       return state;
+    }
+
+    case SAVE_BEDS: {
+      const { beds } = action.payload;
+      return { ...state, people: beds}
     }
 
     case SET_PARKLY_TOKEN: {

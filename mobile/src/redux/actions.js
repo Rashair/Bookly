@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, LOGIN_ERROR, ANY_ERROR, SEARCH_BY_DATE } from "./constants";
+import { LOGIN_SUCCESS, LOGIN_ERROR, ANY_ERROR, SEARCH_BY_DATE, SAVE_BEDS } from "./constants";
 
 export const searchByDate = dates => {
   return {
@@ -33,5 +33,15 @@ export const anyError = error => {
     payload: {
       error,
     },
-  };
+  }
 };
+
+export const saveBeds = beds => {
+  return{
+    type: SAVE_BEDS,
+    payload: {
+      beds
+    }
+  }
+}
+

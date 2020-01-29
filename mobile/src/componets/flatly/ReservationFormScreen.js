@@ -26,14 +26,14 @@ class ReservationFormScreen extends React.Component
         // tomorrowDate.setDate(tomorrowDate.getDate() + 1)
         this.state = 
         {
-            firstName: "Piotr",
-            lastName: "Nowak",
-            email: "p.nowak@mail.com",
+            firstName: this.props.auth.firstName,
+            lastName: this.props.auth.lastName,
+            email: this.props.auth.email,
             dateFrom: this.props.dates.from,
             dateTo: this.props.dates.to,
             // dateFrom: dates.from,
             // dateTo: dates.to,
-            people: 1,
+            people: this.props.people,
             // firstName: this.props.firstName,
             // lastName: this.props.lastName,
             // email: this.props.email,
@@ -374,7 +374,8 @@ class ReservationFormScreen extends React.Component
 const mapStateToProps = (state /* , ownProps */) => {
     return {
         auth: state.auth,
-        dates: state.dates
+        dates: state.dates,
+        people: state.people
     };
 };
 
