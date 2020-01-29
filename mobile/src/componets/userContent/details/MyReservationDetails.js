@@ -8,6 +8,7 @@ import MyReservationParkingDetails from "./MyReservationParkingDetails";
 import { ScrollView } from "react-native-gesture-handler";
 import {styles, themeColors} from '../../../styles'
 import { Title } from "react-native-paper";
+import {createQueryParams, sendRequest} from '../../../helpers/functions'
 
 export default class MyReservationDetails extends React.Component {
   constructor(props) {
@@ -73,23 +74,23 @@ export default class MyReservationDetails extends React.Component {
     //chyba brak
   }
   cancelReservationInBookly(id) {
-
-    // const bookingUrl = '${API_URL}/booking/';
-    // sendRequest(bookingUrl, 'delete', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, id)
-    //   .then(res => {
-    //     if (res.ok) {
-    //       response.json()
-    //         .then(res => {
-    //           if(res.deleted == true){
-    //             this.props.navigation.navigate("MyReservationsList");
-    // }           
-    //         })
-    //     }
-    //   }
-    //   )
-    //   .catch(function (error) {
-    //     console.log(error.message);
-    //   });
+    const params = createQueryParams({ id: id });
+    const bookingUrl = `${API_URL}/booking/?${params.toString()}`;
+    sendRequest(bookingUrl, 'delete', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken } )
+      .then(res => {
+        if (res.ok) {
+          response.json()
+            .then(res => {
+              if(res.deleted == true){
+                this.props.navigation.navigate("MyReservationsList");
+              }           
+            })
+        }
+      }
+      )
+      .catch(function (error) {
+        console.log(error.message);
+      });
   }
 
   static navigationOptions = { title: "Reservation Details" };
