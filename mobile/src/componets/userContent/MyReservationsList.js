@@ -1,9 +1,13 @@
 import React from "react";
+import {connect} from 'react-redux'
+
 import { StyleSheet, Text, View, FlatList, Image } from "react-native";
 import {ListItem} from 'react-native-elements'
 import { Row, Container } from "native-base";
 import { styles, themeColors} from '../../styles';
-import {sendRequest} from '../../helpers/functions'
+import {sendRequest, createQueryParams} from '../../helpers/functions'
+import {API_URL, TOKEN_HEADER_KEY} from '../../helpers/constants'
+
 
 const DATA = [
   // temporary solution to display data
@@ -11,7 +15,7 @@ const DATA = [
     id: 1,
     type: "car",
     externalId: 1,
-    startDateTime: "10=02-2020",
+    startDateTime: "10-02-2020",
     active : false,
     endDateTime : '20-02-2020'
   },
@@ -34,7 +38,7 @@ const DATA = [
 ];
 
 
-export default class MyReservationList extends React.Component {
+  class MyReservationList extends React.Component {
   constructor(props) {
     super(props);
     this.openDetails = this.openDetails.bind(this);
@@ -44,27 +48,25 @@ export default class MyReservationList extends React.Component {
       reservations: [],
     };
   }
-
   componentDidMount() {
-    // const ownerId = this.props.auth.id;
-
-    // const bookingUrl = '${API_URL}/booking/user';
-    // sendRequest(bookingUrl, 'get', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, ownerId)
-    //   .then(res => {
-    //     if (res.ok) {
-    //       response.json()
-    //         .then(res => {
-    //           console.log(res);
-    //           this.setState({
-    //             reservations: res
-    //           })
-    //         })
-    //     }
-    //   }
-    //   )
-    //   .catch(function (error) {
-    //     console.log(error.message);
-    //   });
+    const params = createQueryParams({ userDetails: this.props.auth.securityToken });
+    const bookingUrl = `${API_URL}/booking/user?${params.toString()}`;
+    sendRequest(bookingUrl, 'GET', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken })
+      .then(res => {
+        if (res.ok) {
+          res.json()
+            .then(res => {
+              this.setState({
+                reservations: res
+              })
+            })
+        }
+      }
+      )
+      .catch(function (error) {
+        //console.log(error);
+        console.log(error.message);
+      });
   }
 
   openDetails = (FKid, type, id, active) => {
@@ -79,15 +81,15 @@ export default class MyReservationList extends React.Component {
   renderItem({ item }) {
     let title;
     let imgsource;
-    if(item.type=='car'){
+    if(item.type=='cAR'){
       title= "Car reservation";
       imgsource = require("./assets/car.png");
     }
-    if(item.type=='flat'){
+    if(item.type=='FLAT'){
       title="Flat reservation";
       imgsource = require("./assets/home.jpg");
     }
-    if(item.type=='parking'){
+    if(item.type=='PARKING_SPACE'){
       title="Parking reservation";
       imgsource = require("./assets/parking.png");
     }
@@ -96,10 +98,10 @@ export default class MyReservationList extends React.Component {
     title={title}
     subtitle={
       <View>
-        <Text>{item.startDateTime} - {item.endDateTime}</Text>
+        <Text>{item.start_date_time} - {item.end_date_time}</Text>
       </View>} 
     leftAvatar={{source : imgsource, rounded: false}}
-    onPress={()=>this.openDetails(item.externalId, item.type, item.id, item.active)}
+    onPress={()=>this.openDetails(item.external_id, item.type, item.id, item.active)}
     chevron
     />
     );
@@ -109,9 +111,15 @@ export default class MyReservationList extends React.Component {
   render() {
     return (
       <Container>
-          <FlatList data={DATA} keyExtractor={item => item.id.toString()} renderItem={this.renderItem} />
+          <FlatList data={this.state.reservations} keyExtractor={item => item.id.toString()} renderItem={this.renderItem} />
       </Container>
     );
   }
 }
+const mapStateToProps = (state /* , ownProps */) => {
+  return {
+    auth: state.auth,
+  };
+};
 
+export default connect(mapStateToProps)(MyReservationList);

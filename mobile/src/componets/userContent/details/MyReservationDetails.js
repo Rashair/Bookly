@@ -29,9 +29,9 @@ export default class MyReservationDetails extends React.Component {
     let type = this.props.navigation.getParam("type");
     let id = this.props.navigation.getParam("id");
     let result;
-    if (type === "car") {
+    if (type === "CAR") {
       result = this.cancelCarReservation(fkid, id);
-    } else if (type === "flat") {
+    } else if (type === "FLAT") {
       result = this.cancelFlatReservation(fkid);
     } else {
       result = this.cancelParkingReservation(fkid, id);
@@ -97,14 +97,15 @@ export default class MyReservationDetails extends React.Component {
     let body;
     let type= this.props.navigation.getParam("type");
     let fkid = this.props.navigation.getParam("FKid");
-    if (type === "car") {
+    if (type === "CAR") {
       body = <MyReservationCarDetails FKid={fkid} />;
-    } else if (type === "flat") {
+    } else if (type === "FLAT") {
       body = <MyReservationFlatDetails FKid={fkid } />;
-    } else if (type === "parking") {
+    } else if (type === "PARKING_SPACE") {
       body = <MyReservationParkingDetails FKid={fkid} />;
     }
     let button;
+    console.log(this.props.navigation.getParam("isActive"));
     if(this.props.navigation.getParam("isActive")==true){
       button=<Button
       color={themeColors.primary}

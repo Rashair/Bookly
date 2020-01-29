@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text ,Image } from "react-native";
 import { connect } from "react-redux";
-import { Container, Content } from "native-base";
+import { View, Container, Content } from "native-base";
 import { TextInput, HelperText, Title, Button } from "react-native-paper";
 
 import utf16 from "crypto-js/enc-utf16";
@@ -10,10 +10,8 @@ import hmacSHA512 from "crypto-js/hmac-sha512";
 import Base64 from "crypto-js/enc-base64";
 
 import { white } from "react-native-paper/lib/commonjs/styles/colors";
-import { Container, Content } from "native-base";
-import { TextInput, HelperText, Title, Button } from "react-native-paper";
 
-//import { styles, themeColors} from  '../../styles'
+import { styles, themeColors} from  '../../styles'
 import { login } from "../../redux/thunk-functions";
 const inner_styles = StyleSheet.create({
   backgroundWhite: {
@@ -52,7 +50,7 @@ class LoginScreen extends React.Component {
 
   componentDidUpdate() {
     if (this.props.auth) {
-      this.props.navigation.navigate("SearchCarScreen");
+      this.props.navigation.navigate("App");
     }
   }
 

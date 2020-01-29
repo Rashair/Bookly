@@ -12,15 +12,7 @@ import { connect } from "react-redux";
 class SearchFlatScreen extends React.Component
 {
       static navigationOptions = { title: 'Find accommodation',};
-      constructor(props)
-      {
-            super(props)
-            
-            this.setDateFrom = this.setDateFrom.bind(this)
-            this.setDateTo = this.setDateTo.bind(this)
-            this.setCity = this.setCity.bind(this)
-            this.setBeds = this.setBeds.bind(this)
-
+     
   constructor(props) {
     super(props);
 
