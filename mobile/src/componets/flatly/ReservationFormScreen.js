@@ -118,7 +118,6 @@ class ReservationFormScreen extends React.Component
         }
         return "--- PLN"
     }
-
     makeReservation()
     {
         const { firstName, lastName, email, dateFrom, dateTo, people } = this.state;

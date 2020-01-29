@@ -5,6 +5,7 @@ import React from 'react'
 import { sendRequest, createQueryParams } from '../../helpers/functions';
 import { styles, themeColors} from '../../styles'
 import { connect } from "react-redux";
+import { se} from "../../redux/actions"
 
 class FlatsListScreen extends React.Component
 {
@@ -177,6 +178,6 @@ const mapStateToProps = (state /* , ownProps */) => {
 
 const mapDispatchToProps = dispatch => ({
     anyError: data => dispatch(anyError(data)),
-  });
+});
   
 export default connect(mapStateToProps, mapDispatchToProps)(FlatsListScreen);

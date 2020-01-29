@@ -1,44 +1,44 @@
 import React from "react";
-import { StyleSheet, Text, View, Button, ScrollView, FlatList, Image } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import {connect} from 'react-redux'
+
+import { StyleSheet, Text, View, FlatList, Image } from "react-native";
+import {ListItem} from 'react-native-elements'
+import { Row, Container } from "native-base";
+import { styles, themeColors} from '../../styles';
+import {sendRequest, createQueryParams} from '../../helpers/functions'
+import {API_URL, TOKEN_HEADER_KEY} from '../../helpers/constants'
+
 
 const DATA = [
   // temporary solution to display data
   {
     id: 1,
     type: "car",
-    FKid: 1,
-    DateFrom: " today",
+    externalId: 1,
+    startDateTime: "10-02-2020",
+    active : false,
+    endDateTime : '20-02-2020'
   },
   {
     id: 2,
     type: "flat",
-    DateFrom: "tommorow",
-    FKid: 2,
+    startDateTime: "02-01-2020",
+    externalId: 2,
+    active : true,
+    endDateTime : '20-02-2020'
   },
   {
     id: 3,
     type: "parking",
-    DateFrom: "never",
-    FKid: 3,
+    startDateTime: "19-12-2019",
+    externalId: 3,
+    active : true,
+    endDateTime : '20-02-2020'
   },
 ];
 
-function MyReservationItem({ DateFrom, FKid, type, navigation }) {
-  let image;
-  // if(type === 'car'){
-  image = <Image source={require("./assets/car.png")} />;
-  // }
-  return (
-    <TouchableOpacity onPress={navigation}>
-      {image}
-      <Text>{DateFrom}</Text>
-      <Text>{FKid}</Text>
-    </TouchableOpacity>
-  );
-}
 
-export default class MyReservationList extends React.Component {
+  class MyReservationList extends React.Component {
   constructor(props) {
     super(props);
     this.openDetails = this.openDetails.bind(this);
@@ -48,46 +48,78 @@ export default class MyReservationList extends React.Component {
       reservations: [],
     };
   }
-
   componentDidMount() {
-    // fetch
+    const params = createQueryParams({ userDetails: this.props.auth.securityToken });
+    const bookingUrl = `${API_URL}/booking/user?${params.toString()}`;
+    sendRequest(bookingUrl, 'GET', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken })
+      .then(res => {
+        if (res.ok) {
+          res.json()
+            .then(res => {
+              this.setState({
+                reservations: res
+              })
+            })
+        }
+      }
+      )
+      .catch(function (error) {
+        //console.log(error);
+        console.log(error.message);
+      });
   }
 
-  openDetails = (FKid, type, id) => {
+  openDetails = (FKid, type, id, active) => {
     this.props.navigation.navigate("MyReservationDetails", {
-      FKid,
-      type,
-      id,
+      FKid: FKid,
+      type: type,
+      id: id,
+      isActive : active
     });
   };
 
   renderItem({ item }) {
+    let title;
+    let imgsource;
+    if(item.type=='cAR'){
+      title= "Car reservation";
+      imgsource = require("./assets/car.png");
+    }
+    if(item.type=='FLAT'){
+      title="Flat reservation";
+      imgsource = require("./assets/home.jpg");
+    }
+    if(item.type=='PARKING_SPACE'){
+      title="Parking reservation";
+      imgsource = require("./assets/parking.png");
+    }
     return (
-      <MyReservationItem
-        DateFrom={item.DateFrom}
-        FKid={item.FKid}
-        type={item.type}
-        navigation={() => this.openDetails(item.FKid, item.type, item.id)}
-      />
+      <ListItem 
+    title={title}
+    subtitle={
+      <View>
+        <Text>{item.start_date_time} - {item.end_date_time}</Text>
+      </View>} 
+    leftAvatar={{source : imgsource, rounded: false}}
+    onPress={()=>this.openDetails(item.external_id, item.type, item.id, item.active)}
+    chevron
+    />
     );
   }
 
+  static navigationOptions = { title: "My reservations" };
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Here will be reservation list !</Text>
-        <FlatList data={DATA} keyExtractor={item => item.id.toString()} renderItem={this.renderItem} />
-        <Button title="Go back to Home" onPress={() => this.props.navigation.navigate("Home")} />
-      </View>
+      <Container>
+          <FlatList data={this.state.reservations} keyExtractor={item => item.id.toString()} renderItem={this.renderItem} />
+      </Container>
     );
   }
 }
+const mapStateToProps = (state /* , ownProps */) => {
+  return {
+    auth: state.auth,
+  };
+};
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    backgroundColor: "#fff",
-    flex: 1,
-    justifyContent: "center",
-  },
-});
+export default connect(mapStateToProps)(MyReservationList);

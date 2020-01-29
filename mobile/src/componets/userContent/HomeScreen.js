@@ -1,16 +1,18 @@
 import React from "react";
 import { connect } from "react-redux";
-import { StyleSheet, View, Button } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { Button } from "react-native-paper";
 import { FLATLY_API_URL, PARKLY_API_URL, CARLY_API_URL } from "../../helpers/constants"
 import { sendRequest } from "../../helpers/functions"
 import { anyError, setCarlyToken, setFlatlyToken, setParklyToken } from "../../redux/actions"
+import { themeColors, styles } from "../../styles"
 
 class HomeScreen extends React.Component {
   componentDidMount()
   {
     this.fetchCarlyToken()
-    this.fetchParklyToken()
-    this.fetchFlatlyToken()
+    // this.fetchParklyToken()
+    // this.fetchFlatlyToken()
   }
   fetchCarlyToken()
   {
@@ -86,32 +88,33 @@ class HomeScreen extends React.Component {
       })
   }
   render() {
+
     const { navigate } = this.props.navigation;
-    return (
-      <View style={styles.container}>
-        <Button title="My reservations" onPress={() => navigate("MyReservationsList")} />
-        <Button title="Find flat" onPress={() => navigate("SearchFlat")} />
-        <Button title="Find car" onPress={() => navigate("SearchCar")} />
-        <Button title="Find parking" onPress={() => navigate("SearchParking")} />
+    return(
+      <View style={styles.container_modal}>
+        <Button style={styles.button} color={themeColors.primary} mode="contained" onPress={() => navigate("MyReservationsList")}>My reservations</Button>
+        <Button style={styles.button} color={themeColors.primary} mode="contained" onPress={() => navigate("SearchFlat")}>Find flat</Button>
+        <Button style={styles.button} color={themeColors.primary} mode="contained" >Find car</Button>
+        <Button style={styles.button} color={themeColors.primary} mode="contained" >Find car</Button>
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    backgroundColor: "#fff",
-    flex: 1,
-    justifyContent: "center",
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     alignItems: "center",
+//     backgroundColor: "#fff",
+//     flex: 1,
+//     justifyContent: "center",
+//   },
+// });
 
-const mapStateToProps = (state /* , ownProps */) => {
-  return {
-      carlyToken: state.carlyToken
-  };
-};
+// const mapStateToProps = (state /* , ownProps */) => {
+//   return {
+//       carlyToken: state.carlyToken
+//   };
+// };
 
 const mapDispatchToProps = dispatch => ({
   anyError: data => dispatch(anyError(data)),
@@ -120,4 +123,4 @@ const mapDispatchToProps = dispatch => ({
   setFlatlyToken: data => dispatch(setFlatlyToken(data))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+export default connect(null, mapDispatchToProps)(HomeScreen);

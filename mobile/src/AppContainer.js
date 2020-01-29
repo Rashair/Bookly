@@ -16,17 +16,16 @@ import DetailsParking from "./componets/parkly/DetailsParking";
 import ReserveParking from "./componets/parkly/ReserveParking";
 import SummaryParking from "./componets/parkly/SummaryParking";
 import SearchCarScreen from "./componets/carly/SearchCarScreen";
-import CarListScreen from "./componets/carly/CarListScreen";
 import MyReservationsList from "./componets/userContent/MyReservationsList";
 import MyReservationCarDetails from "./componets/userContent/details/MyReservationCarDetails";
 import MyReservationFlatDetails from "./componets/userContent/details/MyReservationFlatDetails";
 import MyReservationParkingDetails from "./componets/userContent/details/MyReservationParkingDetails";
 import MyReservationDetails from "./componets/userContent/details/MyReservationDetails";
 
+
 const AppNavigator = createStackNavigator(
   {
     Home: { screen: HomeScreen },
-    LoginScreen: { screen: LoginScreen },
     MyReservationsList: { screen: MyReservationsList },
     MyReservationCarDetails: { screen: MyReservationCarDetails },
     MyReservationFlatDetails: { screen: MyReservationFlatDetails },
@@ -34,7 +33,6 @@ const AppNavigator = createStackNavigator(
     MyReservationDetails: { screen: MyReservationDetails },
     
     SearchCar: { screen: SearchCarScreen },
-    CarList: { screen: CarListScreen },
     SearchParking: { screen: SearchParking },
     ListParking: { screen: ListParking },
     DetailsParking: { screen: DetailsParking },
