@@ -11,7 +11,7 @@ class HomeScreen extends React.Component {
   componentDidMount()
   {
     this.fetchCarlyToken()
-    // this.fetchParklyToken()
+    this.fetchParklyToken()
     // this.fetchFlatlyToken()
   }
   fetchCarlyToken()
@@ -31,7 +31,7 @@ class HomeScreen extends React.Component {
         }
         else
         {
-          throw new Error(`Error sending fetching carly token, status code: ${response.status}`);
+          throw new Error(`Error fetching carly token, status code: ${response.status}`);
         }
       })
       .catch(error => {
@@ -43,19 +43,18 @@ class HomeScreen extends React.Component {
   {
     const parklyHeader =
     {
-      user_name: "bookly"
+      'User-name': "bookly"
     }
     const parklyUrl = `${PARKLY_API_URL}/service/login`
     sendRequest(parklyUrl, "GET", parklyHeader)
     .then(response => {
       if(response.ok)
       {
-        response.json()
-          .then(json => this.props.setParklyToken(json.Authorization))
+        response.text().then(text => this.props.setParklyToken(text))
       }
       else
       {
-        throw new Error(`Error sending fetching parkly token, status code: ${response.status}`);
+        throw new Error(`Error fetching parkly token, status code: ${response.status}`);
       }
     })
     .catch(error => {
