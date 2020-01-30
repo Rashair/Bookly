@@ -2,11 +2,12 @@
 import { View,} from 'react-native';
 import { Title, Paragraph, Headline } from 'react-native-paper';
 import React from 'react';
+import { connect } from "react-redux";
 import  {sendRequest, createQueryParams} from '../../../helpers/functions';
 import {styles} from '../../../styles'
-import { PARKLY_API_URL } from '../../../helpers/constants';
+import { PARKLY_API_URL,TOKEN_HEADER_KEY } from '../../../helpers/constants';
 
-export default class MyReservationParkingDetails extends React.Component {
+class MyReservationParkingDetails extends React.Component {
    
     constructor(props){
         super(props);
@@ -43,7 +44,7 @@ export default class MyReservationParkingDetails extends React.Component {
         }
         )
       .catch(function(error) {
-        console.log(error.message);
+        console.log(error);
         this.props.anyError(error);
       });
     }

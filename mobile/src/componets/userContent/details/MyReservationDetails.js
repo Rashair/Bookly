@@ -2,16 +2,17 @@ import { View, Modal} from "react-native";
 import {Button} from 'react-native-paper'
 import {Container, Text} from 'native-base'
 import React from "react";
+import { connect } from "react-redux";
 import MyReservationCarDetails from "./MyReservationCarDetails";
 import MyReservationFlatDetails from "./MyReservationFlatDetails";
 import MyReservationParkingDetails from "./MyReservationParkingDetails";
 import { ScrollView } from "react-native-gesture-handler";
 import {styles, themeColors} from '../../../styles'
 import { Title } from "react-native-paper";
-import {API_URL, CARLY_API_URL, FLATLY_API_URL, PARKLY_API_URL} from '../../../helpers/constants'
+import {API_URL, CARLY_API_URL, FLATLY_API_URL, PARKLY_API_URL, TOKEN_HEADER_KEY} from '../../../helpers/constants'
 import {createQueryParams, sendRequest} from '../../../helpers/functions'
 
-export default class MyReservationDetails extends React.Component {
+class MyReservationDetails extends React.Component {
   constructor(props) {
     super(props);
     this.cancelReservation = this.cancelReservation.bind(this);
@@ -108,7 +109,6 @@ export default class MyReservationDetails extends React.Component {
       body = <MyReservationParkingDetails FKid={fkid} />;
     }
     let button;
-    console.log(this.props.navigation.getParam("isActive"));
     if(this.props.navigation.getParam("isActive")==true){
       button=<Button
       color={themeColors.primary}

@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View, Button, ScrollView, Image, TouchableHighlight, Modal } from "react-native";
 import React from "react";
+import { connect } from "react-redux";
 import { Title, Headline, Paragraph } from "react-native-paper";
 import {styles} from '../../../styles'
-import {sendRequest, createQueryParams} from '../../helpers/functions'
-import {API_URL, TOKEN_HEADER_KEY, CARLY_API_URL} from '../../helpers/constants'
+import {sendRequest, createQueryParams} from '../../../helpers/functions'
+import {TOKEN_HEADER_KEY, CARLY_API_URL} from '../../../helpers/constants'
 
-export default class MyReservationCarDetails extends React.Component {
+class MyReservationCarDetails extends React.Component {
   constructor(props) {
     super(props);
 

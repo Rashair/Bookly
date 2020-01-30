@@ -1,11 +1,12 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Text, View,} from "react-native";
 import { Title, Paragraph, Headline } from 'react-native-paper';
-import {sendRequest} from '../../../helpers/functions'
+import {sendRequest, createQueryParams} from '../../../helpers/functions'
 import {styles} from '../../../styles'
-import {FLATLY_API_URL} from '../../../helpers/constants'
+import {FLATLY_API_URL,TOKEN_HEADER_KEY} from '../../../helpers/constants'
 
-export default class MyReservationFlatDetails extends React.Component {
+ class MyReservationFlatDetails extends React.Component {
   constructor(props) {
     super(props);
 
@@ -48,7 +49,7 @@ export default class MyReservationFlatDetails extends React.Component {
         }
         )
       .catch(function(error) {
-        console.log(error.message);
+        console.log(error);
         this.props.anyError(error);
       });
   }
