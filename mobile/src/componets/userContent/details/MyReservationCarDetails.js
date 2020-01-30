@@ -3,7 +3,7 @@ import React from "react";
 import { Title, Headline, Paragraph } from "react-native-paper";
 import {styles} from '../../../styles'
 import {sendRequest, createQueryParams} from '../../helpers/functions'
-import {API_URL, TOKEN_HEADER_KEY} from '../../helpers/constants'
+import {API_URL, TOKEN_HEADER_KEY, CARLY_API_URL} from '../../helpers/constants'
 
 export default class MyReservationCarDetails extends React.Component {
   constructor(props) {
@@ -21,8 +21,8 @@ export default class MyReservationCarDetails extends React.Component {
 
   componentDidMount() {
     const params = createQueryParams({ id: this.props.FKid });
-    const url = `${API_URL}/reservations?${params.toString()}`;
-    sendRequest(url, 'GET', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken })
+    const url = `${CARLY_API_URL}/reservations?${params.toString()}`;
+    sendRequest(url, 'GET', { [TOKEN_HEADER_KEY]: this.props.carlyToken })
       .then(res => {
         console.log(res);
         if (res.ok) {
@@ -41,6 +41,7 @@ export default class MyReservationCarDetails extends React.Component {
       )
       .catch(function (error) {
         console.log(error.message);
+        this.props.anyError(error);
       });
 
   }
@@ -98,3 +99,13 @@ export default class MyReservationCarDetails extends React.Component {
     );
   }
 }
+const mapStateToProps = (state ) => {
+  return {
+    carlyToken : state.carlyToken
+  };
+};
+const mapDispatchToProps = dispatch => ({
+  anyError: data => dispatch(anyError(data))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyReservationCarDetails);

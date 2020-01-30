@@ -8,6 +8,7 @@ import MyReservationParkingDetails from "./MyReservationParkingDetails";
 import { ScrollView } from "react-native-gesture-handler";
 import {styles, themeColors} from '../../../styles'
 import { Title } from "react-native-paper";
+import {API_URL, CARLY_API_URL, FLATLY_API_URL, PARKLY_API_URL} from '../../../helpers/constants'
 import {createQueryParams, sendRequest} from '../../../helpers/functions'
 
 export default class MyReservationDetails extends React.Component {
@@ -39,8 +40,8 @@ export default class MyReservationDetails extends React.Component {
     }
   }
   cancelCarReservation(fkid, id) {
-    // const carlyUrl = '${API_URL}/reservations/';
-    // sendRequest(carlyUrl, 'delete', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, fkid)
+    // const carlyUrl = '${CARLY_API_URL}/reservations/';
+    // sendRequest(carlyUrl, 'delete', { [TOKEN_HEADER_KEY]: this.props.carlyToken }, fkid)
     //   .then(res => {
     //     if (res.ok) {
     //       response.json()
@@ -55,8 +56,8 @@ export default class MyReservationDetails extends React.Component {
     //   });
   }
   cancelParkingReservation(fkid, id) {
-    // const parklyUrl = '${API_URL}/reservations/';
-    // sendRequest(parklyUrl, 'delete', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, fkid)
+    // const parklyUrl = '${PARKLY_API_URL}/reservations/';
+    // sendRequest(parklyUrl, 'delete', { [TOKEN_HEADER_KEY]: this.props.parklyToken }, fkid)
     //   .then(res => {
     //     if (res.ok) {
     //       response.json()
@@ -90,6 +91,7 @@ export default class MyReservationDetails extends React.Component {
       )
       .catch(function (error) {
         console.log(error.message);
+        this.props.anyError(error);
       });
   }
 
@@ -163,8 +165,13 @@ export default class MyReservationDetails extends React.Component {
 const mapStateToProps = (state ) => {
   return {
     auth: state.auth,
+    parklyToken : state.parklyToken,
+    carlyToken: state.carlyToken,
+    flatlyToken : state.flatlyToken
   };
 };
-
-export default connect(mapStateToProps)(MyReservationDetails);
+const mapDispatchToProps = dispatch => ({
+  anyError: data => dispatch(anyError(data))
+});
+export default connect(mapStateToProps, mapDispatchToProps)(MyReservationDetails);
 

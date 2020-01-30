@@ -100,21 +100,6 @@ class HomeScreen extends React.Component {
   }
 }
 
-// const styles = StyleSheet.create({
-//   container: {
-//     alignItems: "center",
-//     backgroundColor: "#fff",
-//     flex: 1,
-//     justifyContent: "center",
-//   },
-// });
-
-// const mapStateToProps = (state /* , ownProps */) => {
-//   return {
-//       carlyToken: state.carlyToken
-//   };
-// };
-
 const mapDispatchToProps = dispatch => ({
   anyError: data => dispatch(anyError(data)),
   setCarlyToken: data => dispatch(setCarlyToken(data)),

@@ -35,6 +35,7 @@ import {API_URL, TOKEN_HEADER_KEY} from '../../helpers/constants'
       )
       .catch(function (error) {
         console.log(error.message);
+        this.props.anyError(error);
       });
   }
 
@@ -90,5 +91,8 @@ const mapStateToProps = (state ) => {
     auth: state.auth,
   };
 };
+const mapDispatchToProps = dispatch => ({
+  anyError: data => dispatch(anyError(data))
+});
 
-export default connect(mapStateToProps)(MyReservationList);
+export default connect(mapStateToProps, mapDispatchToProps)(MyReservationList);
