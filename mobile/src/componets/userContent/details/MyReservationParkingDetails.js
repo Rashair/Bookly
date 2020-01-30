@@ -73,8 +73,8 @@ export default class MyReservationParkingDetails extends React.Component {
           <Title>{this.state.StreetNumber}</Title>
         </View>
         <View style={styles.contentRow}>
-          <Title>Price</Title>
-          <Title>{this.state.TotalCost} PLN / night</Title>
+          <Title>Total cost:</Title>
+          <Title>{this.state.TotalCost} PLN</Title>
         </View>
         </View>
       </View>

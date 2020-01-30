@@ -77,8 +77,8 @@ export default class MyReservationFlatDetails extends React.Component {
           <Title>{this.state.EndDate}</Title>
         </View>
         <View style={styles.contentRow}>
-          <Title>Price</Title>
-          <Title>{this.state.Price} PLN / night</Title>
+          <Title>Total cost:</Title>
+          <Title>{this.state.Price} PLN</Title>
         </View>
         </View>
       </View>

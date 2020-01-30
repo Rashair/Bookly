@@ -2,6 +2,8 @@ import { StyleSheet, Text, View, Button, ScrollView, Image, TouchableHighlight, 
 import React from "react";
 import { Title, Headline, Paragraph } from "react-native-paper";
 import {styles} from '../../../styles'
+import {sendRequest, createQueryParams} from '../../helpers/functions'
+import {API_URL, TOKEN_HEADER_KEY} from '../../helpers/constants'
 
 export default class MyReservationCarDetails extends React.Component {
   constructor(props) {
@@ -9,7 +11,6 @@ export default class MyReservationCarDetails extends React.Component {
 
     this.state ={
       Car : {},
-      BookingUserInfo : {},
       Comment : '',
       DateFrom : null ,
       DateTo: null,
@@ -19,25 +20,29 @@ export default class MyReservationCarDetails extends React.Component {
   }
 
   componentDidMount() {
-    const URL = "http://localhost:5000/car/reservations/"+this.props.FKid; //?
-    // fetch(URL,
-    //   {
-    //     method: 'get',
-    //     headers: {
-    //       //add token?
-    //     },
-    //     body: JSON.stringify({
-    //       id : this.props.FKid
-    //     })
-    //   })
-    //   .then(response => 
-    //     {
+    const params = createQueryParams({ id: this.props.FKid });
+    const url = `${API_URL}/reservations?${params.toString()}`;
+    sendRequest(url, 'GET', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken })
+      .then(res => {
+        console.log(res);
+        if (res.ok) {
+          res.json()
+            .then(res => {
+              this.setState({
+                Car: res.car,
+                Comment : res.comment,
+                DateFrom : res.dateFrom,
+                DateTo: res.dateTo,
+                Cost: res.cost
+              })
+            })
+        }
+      }
+      )
+      .catch(function (error) {
+        console.log(error.message);
+      });
 
-    //     }
-    //     )
-    //   .catch(function(error) {
-    //     console.log(error.message);
-    //   });
   }
 
   render() {
@@ -47,46 +52,46 @@ export default class MyReservationCarDetails extends React.Component {
         <View style={styles.container_reservationdetails}>
         <View style={styles.contentRow}>
           <Title>Date from : </Title>
-          <Paragraph>20-15-2020 {/* {this.state.DateFrom} */}</Paragraph>
+          <Title> {this.state.DateFrom}</Title>
         </View>
         <View style={styles.contentRow}>
           <Title>Date to : </Title>
-          <Paragraph>25-15-2020 {/* {this.state.DateTo} */}</Paragraph>
+          <Title>{this.state.DateTo}</Title>
         </View>
         <Text style={styles.marginBottomSmall}>
           Car details:
         </Text>
         <View style={styles.contentRow}>
           <Title>Make:</Title>
-          <Paragraph>Skoda {/* {this.state.Car.Make} */}</Paragraph>
+          <Title>{this.state.Car.Make} }</Title>
         </View>
         <View style={styles.contentRow}>
           <Title>Model:</Title>
-          <Paragraph>Fabia {/*{this.state.Car.Model}*/}</Paragraph>
+          <Title>{this.state.Car.Model}</Title>
         </View>
         <View style={styles.contentRow}>
           <Title>Seats:</Title>
-          <Paragraph>4 {/*{this.state.Car.Seats}*/}</Paragraph>
+          <Title>{this.state.Car.Seats}</Title>
         </View>
         <View style={styles.contentRow}>
           <Title>Year of production:</Title>
-          <Paragraph>1999 {/*{this.state.Car.Year}*/}</Paragraph>
+          <Title>{this.state.Car.Year}</Title>
         </View>
         <View style={styles.contentRow}>
           <Title>Number of doors:</Title>
-          <Paragraph>4 {/*{this.state.Car.Doors}*/}</Paragraph>
+          <Title>{this.state.Car.Doors}</Title>
         </View>
         <View style={styles.contentRow}>
           <Title>License:</Title>
-          <Paragraph>None {/*{this.state.Car.License}*/}</Paragraph>
+          <Title>{this.state.Car.License}</Title>
         </View>
         <View style={styles.contentRow}>
           <Title>Location:</Title>
-          <Paragraph>Nice {/*{this.state.Car.Location}*/}</Paragraph>
+          <Title>{this.state.Car.Location}</Title>
         </View>
         <View style={styles.contentRow}>
           <Title>Total cost:</Title>
-          <Paragraph>100 $ {/*{this.state.Cost}*/}</Paragraph>
+          <Title>{this.state.Cost} PLN</Title>
         </View>
         </View>
       </View>
