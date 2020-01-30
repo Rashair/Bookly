@@ -9,7 +9,8 @@ import { LocalDate, DateTimeFormatter, nativeJs } from "@js-joda/core";
 import { styles, themeColors} from '../../styles';
 import { anyError } from "../../redux/actions";
 import { makeBooklyReservation, makeFlatlyReservation} from "../../redux/thunk-functions";
-import { FLATLY_API_URL } from "../../helpers/constants"
+import { FLATLY_API_URL, API_URL, TOKEN_HEADER_KEY } from "../../helpers/constants"
+import { sendRequest } from "../../helpers/functions"
 
 
 class ReservationFormScreen extends React.Component
@@ -19,24 +20,21 @@ class ReservationFormScreen extends React.Component
     {
         super(props)
         const { navigation } = this.props
-        //const { dates } = navigation.getParam('dates')
         this.flat = navigation.getParam('flat')
-        // const tomorrowDate = new Date()
-        // tomorrowDate.setDate(tomorrowDate.getDate() + 1)
         this.state = 
         {
-            firstName: "",
-            lastName: "",
-            email: "",
+            firstName: this.props.auth.firstName,
+            lastName: this.props.auth.lastName,
+            email: this.props.auth.email,
             dateFrom: this.props.dates.from,
             dateTo: this.props.dates.to,
-            // dateFrom: dates.from,
-            // dateTo: dates.to,
-            people: 1,
+            people: this.props.people,
+
             firstNameValid: true,
             lastNameValid: true,
             emailValid: true,
             dateToValid: true,
+
             showDateFromPicker: false,
             showDateToPicker: false,
             isFetching: false
@@ -120,36 +118,15 @@ class ReservationFormScreen extends React.Component
         }
         return "--- PLN"
     }
-    // makeReservation()
-    // {
-    //     const data =
-    //     {
-    //         startDate: this.state.dateFrom,
-    //         endDate: this.state.endTo,
-    //         offerId: this.flat.id,
-    //         type: Types.FLATLY
-    //     };
-    //     const booking = 
-    //     {
-    //         flat: this.flat,
-    //         date:
-    //         {
-    //             from: this.state.dateFrom,
-    //             to: this.state.dateTo
-    //         }
-    //     }
-    //     //TODO FlatlyReservation instead of BooklyReservation
-    //     this.props.makeBooklyReservation(data, this.props.auth)
-    //         .then(this.props.navigation.navigate('FlatSummary', {booking: booking}))
-    // }
     makeReservation()
     {
         const { firstName, lastName, email, dateFrom, dateTo, people } = this.state;
         const flat = this.flat;
 
         this.setState({ isFetching: true });
-        const url = `${FLATLY_API_URL}/flat/${flat.id}`; // reservations/`;
-        //const ownerId = this.props.auth.id;
+        const url = `${FLATLY_API_URL}/flats`; // reservations/`;
+        const ownerId = this.props.auth.id;
+        //const ownerId = 2;
         const totalCost = this.countTotalPrice();
         const data = {
             name: firstName,
@@ -160,44 +137,45 @@ class ReservationFormScreen extends React.Component
             people: people
         };
         const headers = {}; // Auth headers here
-        // sendRequest(url, "POST", headers, data)
-        // .then(response => {
-        //     if (response.ok) {
-        //         return response.json();
-        //     }
-        //     throw new Error(`Error sending data to flatly, status code: ${response.status}`);
-        // })
-        // .then(responseJson => {
-        //     const externalBookingId = responseJson.id;
-        //     const bookingData = {
-        //         owner: {
-        //             id: ownerId,
-        //         },
-        //         start_date_time: dateFrom.toISOString(),
-        //         end_date_time: dateTo.toISOString(),
-        //         type: "FLAT",
-        //         external_id: externalBookingId,
-        //     };
-        //     const bookingUrl = `${API_URL}/booking/`;
-        //     return sendRequest(bookingUrl, "POST", { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, bookingData);
-        // })
-        // .then(booklyResponse => {
-        //     if (booklyResponse.ok) {
-        //         const summaryData = { flat, totalCost, dateFrom, dateTo, firstName, lastName, email };
-        //         this.props.navigation.navigate("FlatSummary", { summaryData });
-        //     } 
-        //     else {
-        //         throw new Error(`Error sending data to bookly, status code: ${booklyResponse.status}`);
-        //     }
-        //     this.setState({ isFetching: false });
-        // })
-        // .catch(error => {
-        //     this.props.anyError(error);
-        // });
+        sendRequest(url, "POST", headers, data)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error(`Error sending data to flatly, status code: ${response.status}`);
+        })
+        .then(responseJson => {
+            const externalBookingId = responseJson.id;
+            const bookingData = {
+                owner: {
+                    id: ownerId,
+                },
+                start_date_time: dateFrom.toISOString(),
+                end_date_time: dateTo.toISOString(),
+                type: "FLAT",
+                external_id: externalBookingId,
+            };
+            const bookingUrl = `${API_URL}/booking/`;
+            return sendRequest(bookingUrl, "POST", { [TOKEN_HEADER_KEY]: this.props.auth.securityToken }, bookingData);
+        })
+        .then(booklyResponse => {
+            if (booklyResponse.ok) {
+                const summaryData = { flat, totalCost, dateFrom, dateTo, firstName, lastName, email };
+                this.props.navigation.navigate("FlatSummary", { summaryData });
+            } 
+            else {
+                throw new Error(`Error sending data to bookly, status code: ${booklyResponse.status}`);
+            }
+            this.setState({ isFetching: false });
+        })
+        .catch(error => {
+            this.setState({ isFetching: false });
+            this.props.anyError(error);
+        });
 
         //only for mockserver
-        const summaryData = { flat, totalCost, dateFrom, dateTo, firstName, lastName, email };
-        this.props.navigation.navigate("FlatSummary", { summaryData });
+        // const summaryData = { flat, totalCost, dateFrom, dateTo, firstName, lastName, email };
+        // this.props.navigation.navigate("FlatSummary", { summaryData });
     }
     createChip(i)
     {
@@ -356,7 +334,8 @@ class ReservationFormScreen extends React.Component
 const mapStateToProps = (state /* , ownProps */) => {
     return {
         auth: state.auth,
-        dates: state.dates
+        dates: state.dates,
+        people: state.people
     };
 };
 

@@ -2,7 +2,7 @@ import { StyleSheet, View, TouchableOpacity, ActivityIndicator } from 'react-nat
 import { Container, Text, Picker } from 'native-base'
 import { TextInput, HelperText, Chip, Button } from 'react-native-paper';
 import React from 'react'
-import { anyError, searchByDate } from "../../redux/actions";
+import { anyError, searchByDate, saveBeds } from "../../redux/actions";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { LocalDate, DateTimeFormatter, nativeJs } from "@js-joda/core";
 import { styles, themeColors} from '../../styles'
@@ -12,9 +12,17 @@ import { connect } from "react-redux";
 class SearchFlatScreen extends React.Component
 {
       static navigationOptions = { title: 'Find accommodation',};
-     
-  constructor(props) {
-    super(props);
+      constructor(props)
+      {
+            super(props)
+            
+            this.setDateFrom = this.setDateFrom.bind(this)
+            this.setDateTo = this.setDateTo.bind(this)
+            this.setCity = this.setCity.bind(this)
+            this.setBeds = this.setBeds.bind(this)
+
+            const tomorrowDate = new Date()
+            tomorrowDate.setDate(tomorrowDate.getDate() + 1)
 
             this.state = 
             {
@@ -92,6 +100,7 @@ class SearchFlatScreen extends React.Component
             // }
             const { city, beds, dateFrom, dateTo } = this.state;
             this.props.searchByDate({ from: dateFrom, to: dateTo });
+            this.props.saveBeds(beds);
             const url = `${FLATLY_API_URL}/flats`;
             this.props.navigation.navigate('FlatsList', { url, city, beds });
             // this.setState({isSearching: true})
@@ -215,6 +224,7 @@ const mapStateToProps = (state /* , ownProps */) => {
 const mapDispatchToProps = dispatch => ({
       anyError: data => dispatch(anyError(data)),
       searchByDate: dates => dispatch(searchByDate(dates)),
+      saveBeds: data => dispatch(saveBeds(data))
     });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchFlatScreen);

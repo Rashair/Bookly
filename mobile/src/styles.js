@@ -16,8 +16,33 @@ export const styles = StyleSheet.create({
         width: "100%",
         margin:5
     },
+    button_bottompage:{
+        justifyContent: 'center', 
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: 0,
+        marginBottom : 20,
+        flexDirection: "row",
+        alignSelf : 'center',
+        width: "100%"
+    },
     container:{
         padding: 10,
+    },
+    container_modal:{
+        padding:10,
+        alignItems : "center",
+        textAlignVertical:"center",
+        justifyContent: "center",
+        flex :1
+    },
+    container_reservationdetails:{
+        marginTop : 20,
+        marginBottom : 20
+    },
+    container_reservationdetailsmain:{
+        padding: 10,
+        flex:1,
     },
     contentColumn:{
         flexDirection: 'column',
@@ -27,7 +52,6 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent:'space-between',
         textAlignVertical:"center",
-        
     },
     contentToEnd:{
         flex: 1,
@@ -35,6 +59,11 @@ export const styles = StyleSheet.create({
     },
     helper:{
         color: themeColors.danger
+    },
+    icon:{
+        height : 50,
+        width : 50,
+        padding : 3
     },
     image:{
         width: '100%',
@@ -63,36 +92,6 @@ export const styles = StyleSheet.create({
     },
     textToLeft:{
         textAlign: 'left'
-    },
-    icon:{
-        height : 50,
-        width : 50,
-        padding : 3
-    },
-    container_modal:{
-        padding:10,
-        alignItems : "center",
-        textAlignVertical:"center",
-        justifyContent: "center",
-        flex :1
-    },
-    container_reservationdetailsmain:{
-        padding: 10,
-        flex:1,
-    },
-    container_reservationdetails:{
-        marginTop : 20,
-        marginBottom : 20
-    },
-    button_bottompage:{
-        justifyContent: 'center', 
-        alignItems: 'center',
-        position: 'absolute',
-        bottom: 0,
-        marginBottom : 20,
-        flexDirection: "row",
-        alignSelf : 'center',
-        width: "100%"
     },
 })
 

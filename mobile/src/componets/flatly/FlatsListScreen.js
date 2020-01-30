@@ -2,7 +2,6 @@ import { StyleSheet, View, Button, ActivityIndicator, FlatList, TouchableOpacity
 import { Container } from 'native-base'
 import { Title, Chip, Paragraph } from 'react-native-paper';
 import React from 'react'
-import { FLATLY_API_URL } from '../../helpers/constants';
 import { sendRequest, createQueryParams } from '../../helpers/functions';
 import { styles, themeColors} from '../../styles'
 import { connect } from "react-redux";
@@ -13,10 +12,10 @@ class FlatsListScreen extends React.Component
     constructor(props)
     {
         super(props)
+
         this.sortingTypes = 
         {
             dateStart: 'date-start',
-            dateEnd: 'date-end',
             price: 'price',
             rating: 'rating'
         }
@@ -33,33 +32,6 @@ class FlatsListScreen extends React.Component
             sortingType: this.sortingTypes.dateStart,
             isLoading: false,
             flats: null
-            // flats:
-            // [
-            //     {
-            //         id: 1,
-            //         title: 'Cukrowa',
-            //         price: 300,
-            //         address: 'Cukrowa 18',
-            //         city: 'Warszawa',
-            //         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            //         rating: 4.3,
-            //         roomNumber: 1,
-            //         beds: 3,
-            //         image: 'https://pracownia-projekty.dom.pl/images/36/wizualizacje_1_arc_dom_dla_ciebie_1_z_garazem_ce.jpg'
-            //     },
-            //     {
-            //         id: 2,
-            //         title: 'Zielony apartament',
-            //         price: 450,
-            //         address: 'Czajnikowa 11',
-            //         city: 'Warszawa',
-            //         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            //         rating: 4.7,
-            //         roomNumber: 3,
-            //         beds: 2,
-            //         image: 'https://projektyzwizja.pl/media/cache/max_size/uploads/wyjatkowy-1/wyjatkowy1-front-1200_1507029951.jpeg'
-            //     }
-            // ]
         }
         this.changeSortingType = this.changeSortingType.bind(this)
         this.goToDetails = this.goToDetails.bind(this)
@@ -88,6 +60,7 @@ class FlatsListScreen extends React.Component
 
         //For mockserver
         const url = this.url
+        console.log(url)
 
         this.setState({isLoading: true})
         sendRequest(url, 'GET')
@@ -132,26 +105,20 @@ class FlatsListScreen extends React.Component
                     <Chip 
                         mode="outlined" 
                         selected={this.state.sortingType === this.sortingTypes.dateStart ? true : false}
-                        onPress={() => this.changeSortingType(this.sortingTypes.dateStart)}>
-                        Start date
-                    </Chip>
-                    <Chip 
-                        mode="outlined" 
-                        selected={this.state.sortingType === this.sortingTypes.dateEnd ? true : false}
-                        onPress={() => this.changeSortingType(this.sortingTypes.dateEnd)}>
-                        End date
+                        onPress={() => this.changeSortingType(this.sortingTypes.dateStart, 'asc')}>
+                        Earliest
                     </Chip>
                     <Chip 
                         mode="outlined" 
                         selected={this.state.sortingType === this.sortingTypes.rating ? true : false}
-                        onPress={() => this.changeSortingType(this.sortingTypes.rating)}>
-                        Rating
+                        onPress={() => this.changeSortingType(this.sortingTypes.rating, 'desc')}>
+                        Best rating
                     </Chip>
                     <Chip 
                         mode="outlined" 
                         selected={this.state.sortingType === this.sortingTypes.price ? true : false}
-                        onPress={() => this.changeSortingType(this.sortingTypes.price)}>
-                        Price
+                        onPress={() => this.changeSortingType(this.sortingTypes.price, 'asc')}>
+                        Lowest price
                     </Chip>
                 </View>
 
@@ -171,12 +138,12 @@ class FlatsListScreen extends React.Component
 
 const mapStateToProps = (state /* , ownProps */) => {
     return {
-        date: state.date
+        date: state.date,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
     anyError: data => dispatch(anyError(data)),
-  });
+});
   
 export default connect(mapStateToProps, mapDispatchToProps)(FlatsListScreen);
