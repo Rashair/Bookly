@@ -9,12 +9,10 @@ import sha3 from "crypto-js/sha3";
 import hmacSHA512 from "crypto-js/hmac-sha512";
 import Base64 from "crypto-js/enc-base64";
 
-import { white } from "react-native-paper/lib/commonjs/styles/colors";
-
 import { styles, themeColors } from "../../styles";
 import { login } from "../../redux/thunk-functions";
 
-const inner_styles = StyleSheet.create({
+const innerStyles = StyleSheet.create({
   backgroundWhite: {
     backgroundColor: themeColors.background,
   },
@@ -23,9 +21,11 @@ const inner_styles = StyleSheet.create({
     paddingVertical: 20,
   },
 });
-const image_styles = StyleSheet.create({
-  backgroundWhite: {
-    backgroundColor: white,
+const imageStyles = StyleSheet.create({
+  container: {
+    height: 100,
+    margin: 0,
+    width: 55,
   },
   content: {
     paddingHorizontal: 150,
@@ -98,10 +98,10 @@ class LoginScreen extends React.Component {
   render() {
     return (
       <Container>
-        <Content style={inner_styles.content}>
+        <Content style={innerStyles.content}>
           <Image
-            content={image_styles.content}
-            style={{ margin: 0, width: 55, height: 100 }}
+            content={imageStyles.content}
+            style={imageStyles.container}
             source={{
               uri:
                 "https://cdn2.iconfinder.com/data/icons/royal-crowns/512/royal-alphabet-crown-letter-english-b-512.png",
@@ -111,7 +111,7 @@ class LoginScreen extends React.Component {
           <Title>Login</Title>
           <TextInput
             mode="outlined"
-            style={inner_styles.backgroundWhite}
+            style={innerStyles.backgroundWhite}
             content={{
               paddingHorizontal: 5,
               paddingVertical: 20,
@@ -127,7 +127,7 @@ class LoginScreen extends React.Component {
           <TextInput
             secureTextEntry
             mode="outlined"
-            style={inner_styles.backgroundWhite}
+            style={innerStyles.backgroundWhite}
             content={{
               paddingHorizontal: 10,
               paddingVertical: 20,

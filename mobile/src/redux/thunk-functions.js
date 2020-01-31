@@ -1,9 +1,7 @@
 import * as HttpStatus from "http-status-codes";
 import { loginSuccess, loginError, anyError } from "./actions";
 import { sendRequest } from "../helpers/functions";
-import {  API_URL, 
-          LOGIN_HEADER_KEY, 
-          PASSWORD_HEADER_KEY} from "../helpers/constants";
+import { API_URL, LOGIN_HEADER_KEY, PASSWORD_HEADER_KEY } from "../helpers/constants";
 
 // eslint-disable-next-line import/prefer-default-export
 export const login = data => {

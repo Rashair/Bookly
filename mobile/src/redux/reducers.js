@@ -39,6 +39,9 @@ const appReducer = (state = initialState, action) => {
     }
 
     case ANY_ERROR: {
+      const { error } = action.payload;
+      // eslint-disable-next-line no-console
+      console.log(error);
       // eslint-disable-next-line no-alert
       alert("Something went wrong...");
       return state;

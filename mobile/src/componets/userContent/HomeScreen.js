@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { StyleSheet, View } from "react-native";
+import { Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import {
   FLATLY_API_URL,
@@ -86,7 +86,7 @@ class HomeScreen extends React.Component {
           mode="contained"
           onPress={() => navigate("MyReservationsList")}
         >
-          My reservations
+          <Text>My reservations</Text>
         </Button>
         <Button
           style={styles.button}
@@ -94,13 +94,23 @@ class HomeScreen extends React.Component {
           mode="contained"
           onPress={() => navigate("SearchFlat")}
         >
-          Find flat
+          <Text>Find flat </Text>
         </Button>
-        <Button style={styles.button} color={themeColors.primary} mode="contained">
-          Find car
+        <Button
+          style={styles.button}
+          color={themeColors.primary}
+          mode="contained"
+          onPress={() => navigate("SearchCar")}
+        >
+          <Text> Find car</Text>
         </Button>
-        <Button style={styles.button} color={themeColors.primary} mode="contained">
-          Find car
+        <Button
+          style={styles.button}
+          color={themeColors.primary}
+          mode="contained"
+          onPress={() => navigate("SearchParking")}
+        >
+          <Text> Find parking </Text>
         </Button>
       </View>
     );

@@ -9,6 +9,13 @@ import { Table, Row } from "react-native-table-component";
 import { ScrollView } from "react-native-gesture-handler";
 import { anyError } from "../../redux/actions";
 import { styles, themeColors } from "../../styles";
+import { sendRequest } from "../../helpers/functions";
+import {
+  PARKLY_API_URL,
+  PARKLY_LOGIN_HEADER_KEY,
+  PARKLY_LOGIN_HEADER_VALUE,
+  PARKLY_TOKEN_HEADER_KEY,
+} from "../../helpers/constants";
 
 const innerStyles = StyleSheet.create({
   content: {
@@ -39,6 +46,33 @@ class DetailsParking extends React.Component {
     this.state = { parking };
   }
 
+  componentDidMount() {
+    const { parking } = this.state;
+    const url = `${PARKLY_API_URL}/parkings/${parking.parkingId}`;
+    const headers = {
+      [PARKLY_LOGIN_HEADER_KEY]: [PARKLY_LOGIN_HEADER_VALUE],
+      [PARKLY_TOKEN_HEADER_KEY]: this.props.token,
+    };
+
+    sendRequest(url, "GET", headers)
+      .then(
+        response => {
+          if (response.ok) {
+            response.json().then(responseJson => {
+              const allDataParking = { ...responseJson, ...parking };
+              this.setState({ parking: allDataParking });
+            });
+          } else {
+            throw new Error(`Error fetching, status code: ${response.statusCode}`);
+          }
+        },
+        error => this.props.anyError(error)
+      )
+      .catch(error => {
+        this.props.anyError(error);
+      });
+  }
+
   render() {
     const { parking } = this.state;
     const { navigation } = this.props;
@@ -54,20 +88,16 @@ class DetailsParking extends React.Component {
               flexArr={[0, 30, 5]}
               data={["", parking.location, ""]}
             />
-            <Row
-              textStyle={innerStyles.rowText}
-              flexArr={[6, 30]}
-              data={["Price:", `${parking.pricePerHour} PLN / hour`]}
-            />
+            <Row textStyle={innerStyles.rowText} flexArr={[6, 30]} data={["Price:", `${parking.price} PLN / hour`]} />
             <Row
               textStyle={innerStyles.rowText}
               flexArr={[23, 30]}
-              data={["Working hours:", `${parking.workingHoursFrom}:00 - ${parking.workingHoursTo}:00`]}
+              data={["Working hours:", `${parking.opens}:00 - ${parking.closes}:00`]}
             />
             <Row
               textStyle={innerStyles.rowText}
               flexArr={[30, 30]}
-              data={["Number of spots:", `${parking.numberOfSpots}`]}
+              data={["Number of spots:", `${parking.spotsNumber}`]}
             />
           </Table>
 
@@ -90,4 +120,11 @@ class DetailsParking extends React.Component {
 const mapDispatchToProps = dispatch => ({
   anyError: data => dispatch(anyError(data)),
 });
-export default connect(null, mapDispatchToProps)(DetailsParking);
+
+const mapStateToProps = (state /* , ownProps */) => {
+  return {
+    token: state.parklyToken,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DetailsParking);
