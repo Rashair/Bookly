@@ -51,9 +51,8 @@ class ListParking extends React.Component {
   }
 
   componentDidMount() {
-    const url = `${PARKLY_API_URL}/parking`; // this.state.fetchUrl
-    console.log(`url ${this.state.fetchUrl}`);
-    fetch(url)
+    //  const url = `${PARKLY_API_URL}/parking`; // this.state.fetchUrl
+    fetch(this.state.fetchUrl)
       .then(
         response => {
           if (response.ok) {

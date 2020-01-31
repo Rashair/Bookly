@@ -22,7 +22,6 @@ import MyReservationFlatDetails from "./componets/userContent/details/MyReservat
 import MyReservationParkingDetails from "./componets/userContent/details/MyReservationParkingDetails";
 import MyReservationDetails from "./componets/userContent/details/MyReservationDetails";
 
-
 const AppNavigator = createStackNavigator(
   {
     Home: { screen: HomeScreen },
@@ -31,7 +30,7 @@ const AppNavigator = createStackNavigator(
     MyReservationFlatDetails: { screen: MyReservationFlatDetails },
     MyReservationParkingDetails: { screen: MyReservationParkingDetails },
     MyReservationDetails: { screen: MyReservationDetails },
-    
+
     SearchCar: { screen: SearchCarScreen },
     SearchParking: { screen: SearchParking },
     ListParking: { screen: ListParking },
@@ -41,9 +40,9 @@ const AppNavigator = createStackNavigator(
 
     SearchFlat: { screen: SearchFlatScreen },
     FlatsList: { screen: FlatsListScreen },
-    ReservationForm: {screen: ReservationFormScreen},
-    FlatSummary: {screen: FlatSummaryScreen},
-    FlatDetails: {screen: FlatDetailsScreen}
+    ReservationForm: { screen: ReservationFormScreen },
+    FlatSummary: { screen: FlatSummaryScreen },
+    FlatDetails: { screen: FlatDetailsScreen },
   },
   {
     initialRouteName: "Home",

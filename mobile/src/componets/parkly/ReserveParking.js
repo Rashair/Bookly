@@ -8,7 +8,14 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { LocalDate, LocalTime, DateTimeFormatter, nativeJs } from "@js-joda/core";
 import { sendRequest, combineDateAndTime } from "../../helpers/functions";
 import { anyError } from "../../redux/actions";
-import { PARKLY_API_URL, API_URL, TOKEN_HEADER_KEY } from "../../helpers/constants";
+import {
+  PARKLY_API_URL,
+  API_URL,
+  TOKEN_HEADER_KEY,
+  PARKLY_LOGIN_HEADER_KEY,
+  PARKLY_LOGIN_HEADER_VALUE,
+  PARKLY_TOKEN_HEADER_KEY,
+} from "../../helpers/constants";
 import { styles, themeColors } from "../../styles";
 
 const innerStyles = StyleSheet.create({
@@ -168,7 +175,10 @@ class ReserveParking extends React.Component {
       dateFrom: dateFrom.toISOString(),
       dateTo: dateTo.toISOString(),
     };
-    const headers = {}; // Auth headers here
+    const headers = {
+      [PARKLY_LOGIN_HEADER_KEY]: [PARKLY_LOGIN_HEADER_VALUE],
+      [PARKLY_TOKEN_HEADER_KEY]: this.props.token,
+    };
     sendRequest(url, "POST", headers, data)
       .then(
         response => {
@@ -392,6 +402,7 @@ const mapStateToProps = (state /* , ownProps */) => {
   return {
     dates: state.dates,
     auth: state.auth,
+    token: state.parklyToken,
   };
 };
 
