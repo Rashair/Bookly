@@ -11,7 +11,7 @@ class HomeScreen extends React.Component {
   componentDidMount()
   {
     this.fetchCarlyToken()
-    this.fetchParklyToken()
+    // this.fetchParklyToken()
     // this.fetchFlatlyToken()
   }
   fetchCarlyToken()
@@ -31,7 +31,7 @@ class HomeScreen extends React.Component {
         }
         else
         {
-          throw new Error(`Error fetching carly token, status code: ${response.status}`);
+          throw new Error(`Error sending fetching carly token, status code: ${response.status}`);
         }
       })
       .catch(error => {
@@ -43,18 +43,19 @@ class HomeScreen extends React.Component {
   {
     const parklyHeader =
     {
-      'User-name': "bookly"
+      user_name: "bookly"
     }
     const parklyUrl = `${PARKLY_API_URL}/service/login`
     sendRequest(parklyUrl, "GET", parklyHeader)
     .then(response => {
       if(response.ok)
       {
-        response.text().then(text => this.props.setParklyToken(text))
+        response.json()
+          .then(json => this.props.setParklyToken(json.Authorization))
       }
       else
       {
-        throw new Error(`Error fetching parkly token, status code: ${response.status}`);
+        throw new Error(`Error sending fetching parkly token, status code: ${response.status}`);
       }
     })
     .catch(error => {
@@ -66,8 +67,8 @@ class HomeScreen extends React.Component {
   {
     const flatlyBody =
     {
-      // email: "bookly@bookly.com",
-      // password: "reactbookly"
+       email: "bookly@bookly.com",
+      password: "reactbookly"
     }
     const flatlyUrl = `${FLATLY_API_URL}/login`
     sendRequest(flatlyUrl, "POST", {}, flatlyBody)
@@ -93,7 +94,7 @@ class HomeScreen extends React.Component {
       <View style={styles.container_modal}>
         <Button style={styles.button} color={themeColors.primary} mode="contained" onPress={() => navigate("MyReservationsList")}>My reservations</Button>
         <Button style={styles.button} color={themeColors.primary} mode="contained" onPress={() => navigate("SearchFlat")}>Find flat</Button>
-        <Button style={styles.button} color={themeColors.primary} mode="contained" >Find car</Button>
+        <Button style={styles.button} color={themeColors.primary} mode="contained" onPress={() => navigate("SearchCar")} >Find car,mur</Button>
         <Button style={styles.button} color={themeColors.primary} mode="contained" >Find car</Button>
       </View>
     );

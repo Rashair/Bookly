@@ -15,7 +15,8 @@ const innerStyles = StyleSheet.create({
   sortingRow: { display: "flex", justifyContent: "space-around", marginBottom: 20 },
   wrapInSameColumn: { flexShrink: 1 },
 });
-
+const currDate = new Date();
+const ONE_HOUR_IN_MINUTES = 60 * 60;
 class ListCars extends React.Component {
   static navigationOptions = { title: "Choose car, dear" };
 
@@ -39,39 +40,62 @@ class ListCars extends React.Component {
         },
       },
     };
+    const { carlyToken } = this.props;
     const { cars } = this.props.navigation.state.params;
+    const { dateFrom } = this.props.navigation.state.params;
+    const { dateTo } = this.props.navigation.state.params;
+    const { dates } =  this.props;
     const { city } = this.props.navigation.state.params;
     const { people } = this.props.navigation.state.params;
+    console.log("eeeeeeeeeeeeeeee");
+   console.log(dateTo);
     this.state = {
+      carlyToken,
       fetchUrl: this.props.navigation.getParam("url", ""),
       sortingType: this.sortingTypes.lowestPrice,
       cars_to_choose:[],
       cars,
       city,
       people,
+      dateFrom,
+      dateTo,
       isLoading: true,
     };
+ 
+    console.log(cars);
+    
 
+   
+   
     this.sortByType = this.sortParkingByType.bind(this);
   }
 
   componentDidMount() {
-    const url = `${CARLY_API_URL}/cars`; // this.state.fetchUrl
-    //console.log(`url ${this.state.fetchUrl}`);
-    fetch(url)
+    console.log("fdsfdsfsdfdsfdsfs");
+    console.log(this.state.dateTo);
+  
+    fetch(`${CARLY_API_URL}/cars?from=${this.state.dateFrom.toISOString()}&to=${this.state.dateTo.toISOString()}`, {
+      method: 'GET',
+      withCredentials: true,
+      credentials: 'include',
+      headers: {
+        
+          'Authorization': this.state.carlyToken
+         
+      }
+  })
       .then(
         response => {
           if (response.ok) {
             response.json().then(data => {
-            
-                console.log(data);
-                var arr =data.filter(car => 
-                  (this.state.cars.length!=0 ? this.state.cars.includes(car.model): true) &&  (this.state.city!=""?this.state.city==car.location:true) && this.state.people<=car.seats);
-                 console.log(arr);
-                  this.setState({ isLoading: false, cars_to_choose: arr });
-              
-             
-              data.sort(this.state.sortingType.cmp);
+              console.log("pppppppppppppppppppp");
+              console.log(data.content);
+              console.log(this.state.cars);
+              var arr =data.content.filter(car => (console.log(car.make),console.log( (this.state.cars.length!=0 ? this.state.cars.includes(car.make): true)),console.log((this.state.city)),
+                (this.state.cars.length!=0 ? this.state.cars.includes(car.make): true) &&  (this.state.city!=""?this.state.city==car.location:true) && this.state.people<=car.seats));
+               console.log(arr);
+                this.setState({ isLoading: false, cars_to_choose: arr });
+              data.content.sort(this.state.sortingType.cmp);
              
             });
           } else {
@@ -150,9 +174,14 @@ class ListCars extends React.Component {
     );
   }
 }
-
+const mapStateToProps = (state /*, ownProps*/) => {
+  return {
+    dates: state.dates,
+    carlyToken: state.carlyToken
+  }
+}
 const mapDispatchToProps = dispatch => ({
   anyError: data => dispatch(anyError(data)),
 });
 
-export default connect(null, mapDispatchToProps)(ListCars);
+export default connect(mapStateToProps, mapDispatchToProps)(ListCars);

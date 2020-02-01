@@ -1,10 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { ScrollView, StyleSheet, View, TouchableOpacity, KeyboardAvoidingView, Text, Alert } from "react-native";
-import { Title, Button, TextInput, HelperText } from "react-native-paper";
+import { ScrollView, StyleSheet, View, KeyboardAvoidingView, Text, Alert } from "react-native";
+import { Title, Button, TextInput, HelperText, Headline } from "react-native-paper";
 
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { Table, Row } from "react-native-table-component";
+
 import { LocalDate, LocalTime, DateTimeFormatter, nativeJs } from "@js-joda/core";
 import { sendRequest, combineDateAndTime } from "../../helpers/functions";
 import { anyError } from "../../redux/actions";
@@ -31,7 +32,6 @@ const innerStyles = StyleSheet.create({
   },
 });
 
-const currDate = new Date();
 const ONE_HOUR_IN_MINUTES = 60 * 60;
 
 class ReserveCar extends React.Component {
@@ -40,16 +40,18 @@ class ReserveCar extends React.Component {
   constructor(props) {
     super(props);
     const { cars } = this.props.navigation.state.params;
-   
-    const { firstName, lastName, email } = this.props.auth;
+    const { dates } = this.props;
 
+    const { firstName, lastName, email } = this.props.auth;
+    const { carlyToken } = this.props;
     this.state = {
-       cars,
+      cars,
+      carlyToken,
       firstName,
       lastName,
       email,
-      dateFrom: currDate,
-      dateTo:currDate,
+      dateFrom: dates.from,
+      dateTo: dates.to,
       firstNameValid: true,
       lastNameValid: true,
       emailValid: true,
@@ -92,7 +94,6 @@ class ReserveCar extends React.Component {
 
   setDateFrom(date, time) {
     if (!date && !time) {
-      this.setState({ showDateFromPicker: false, showTimeFromPicker: false });
       return;
     }
 
@@ -101,14 +102,11 @@ class ReserveCar extends React.Component {
     this.setState(oldstate => ({
       dateFrom: newDate,
       dateToValid: this.validateDateTo(newDate, oldstate.dateTo),
-      showDateFromPicker: false,
-      showTimeFromPicker: false,
     }));
   }
 
   setDateTo(date, time) {
     if (!date && !time) {
-      this.setState({ showDateToPicker: false, showTimeToPicker: false });
       return;
     }
 
@@ -117,8 +115,6 @@ class ReserveCar extends React.Component {
     this.setState(oldstate => ({
       dateTo: newDate,
       dateToValid: this.validateDateTo(oldstate.dateFrom, newDate),
-      showDateToPicker: false,
-      showTimeToPicker: false,
     }));
   }
 
@@ -157,22 +153,25 @@ class ReserveCar extends React.Component {
     }
 
     this.setState({ isFetching: true });
-    const url = `${CARLY_API_URL}/cars`; // reservations/`;
+    const url = `${CARLY_API_URL}/reservations`;
     const ownerId = this.props.auth.id;
     const data = {
       carId: cars.id,
-      location: cars.location,
-     
-      totalCost: this.getTotalPrice(),
-      dateFrom: dateFrom.toISOString(),
-      dateTo: dateTo.toISOString(),
+      name: firstName,
+      surname: lastName,
+      fromDate: dateFrom.toISOString(),
+      toDate: dateTo.toISOString(),
+      email,
     };
-    const headers = {}; // Auth headers here
+
+    const headers = {
+      Authorization: this.state.carlyToken,
+    };
+
     sendRequest(url, "POST", headers, data)
       .then(
         response => {
           if (response.ok) {
-            console.log("chicken");
             return response.json();
           }
           throw new Error(`Error sending data to parkly, status code: ${response.status}`);
@@ -180,7 +179,7 @@ class ReserveCar extends React.Component {
         error => this.props.anyError(error)
       )
       .then(responseJson => {
-        const externalBookingId = responseJson.id;
+        const externalBookingId = responseJson;
         const bookingData = {
           owner: {
             id: ownerId,
@@ -196,9 +195,8 @@ class ReserveCar extends React.Component {
       .then(
         booklyResponse => {
           if (booklyResponse.ok) {
-            const summaryData = { cars, totalCost: data.totalCost, dateFrom, dateTo, firstName, lastName, email };
+            const summaryData = { cars, totalCost: this.getTotalPrice(), dateFrom, dateTo, firstName, lastName, email };
             this.props.navigation.navigate("SummaryCar", { summaryData });
-            console.log("kokokoko");
           } else {
             throw new Error(`Error sending data to bookly, status code: ${booklyResponse.status}`);
           }
@@ -214,11 +212,8 @@ class ReserveCar extends React.Component {
   render() {
     const { firstName, firstNameValid, lastName, lastNameValid, email, emailValid, isFetching } = this.state;
     const {
-      showDateFromPicker,
-      showTimeFromPicker,
       dateFrom,
-      showDateToPicker,
-      showTimeToPicker,
+
       dateTo,
       dateToValid,
     } = this.state;
@@ -295,70 +290,24 @@ class ReserveCar extends React.Component {
             </HelperText>
           )}
 
-          <View>
-            <Title>From</Title>
-            <View style={innerStyles.row}>
-              <TouchableOpacity onPress={() => this.setState({ showDateFromPicker: true })}>
-                <TextInput mode="flat" style={innerStyles.input} value={dateFromFormatted} editable={false} />
-                {showDateFromPicker && (
-                  <DateTimePicker
-                    minimumDate={currDate}
-                    value={dateFrom}
-                    mode="date"
-                    display="calendar"
-                    onChange={(e, date) => this.setDateFrom(date)}
-                  />
-                )}
-              </TouchableOpacity>
+          <Headline>Time of reservation:</Headline>
 
-              <TouchableOpacity onPress={() => this.setState({ showTimeFromPicker: true })}>
-                <TextInput mode="flat" style={innerStyles.input} value={timeFromFormatted} editable={false} />
-                {showTimeFromPicker && (
-                  <DateTimePicker
-                    minimumDate={currDate}
-                    value={dateFrom}
-                    mode="time"
-                    display="clock"
-                    onChange={(e, date) => this.setDateFrom(null, date)}
-                  />
-                )}
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View>
-            <Title>To</Title>
-            <View style={innerStyles.row}>
-              <TouchableOpacity onPress={() => this.setState({ showDateToPicker: true })}>
-                <TextInput mode="flat" style={innerStyles.input} value={dateToFormatted} editable={false} />
-                {showDateToPicker && (
-                  <DateTimePicker
-                    minimumDate={dateFrom}
-                    value={dateTo}
-                    mode="date"
-                    display="calendar"
-                    onChange={(e, date) => this.setDateTo(date)}
-                  />
-                )}
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => this.setState({ showTimeToPicker: true })}>
-                <TextInput mode="flat" style={innerStyles.input} value={timeToFormatted} editable={false} />
-                {showTimeToPicker && (
-                  <DateTimePicker
-                    minimumDate={dateFrom}
-                    value={dateTo}
-                    mode="time"
-                    display="clock"
-                    onChange={(e, date) => this.setDateTo(null, date)}
-                  />
-                )}
-              </TouchableOpacity>
-            </View>
-            {!this.state.dateToValid && <HelperText type="error">{this.errorMessage("DateTo")}</HelperText>}
-          </View>
-
-          <Title style={innerStyles.inner}>Price: {this.getTotalPrice()<0?0:this.getTotalPrice()}</Title>
+          <Table>
+            <Row data={["  "]} />
+            <Row
+              style={innerStyles.row}
+              textStyle={[innerStyles.input]}
+              flexArr={[-2, 30, 5]}
+              data={["  ", `From: ${dateFromFormatted}- ${timeFromFormatted}:00`, ""]}
+            />
+            <Row
+              style={innerStyles.row}
+              textStyle={innerStyles.input}
+              flexArr={[-2, 2, 30]}
+              data={["  ", `To: ${dateToFormatted} - ${timeToFormatted}:00`]}
+            />
+          </Table>
+          <Title style={innerStyles.inner}>Price: {this.getTotalPrice() < 0 ? 0 : this.getTotalPrice()}</Title>
           <View style={styles.contentToEnd}>
             <Button
               style={styles.button}
@@ -393,6 +342,7 @@ const mapStateToProps = (state /* , ownProps */) => {
   return {
     dates: state.dates,
     auth: state.auth,
+    carlyToken: state.carlyToken,
   };
 };
 
