@@ -5,7 +5,7 @@ import React from 'react';
 import { connect } from "react-redux";
 import  {sendRequest, createQueryParams} from '../../../helpers/functions';
 import {styles} from '../../../styles'
-import { PARKLY_API_URL,TOKEN_HEADER_KEY } from '../../../helpers/constants';
+import { PARKLY_API_URL,PARKLY_LOGIN_HEADER_KEY,PARKLY_TOKEN_HEADER_KEY, PARKLY_LOGIN_HEADER_VALUE } from '../../../helpers/constants';
 
 class MyReservationParkingDetails extends React.Component {
    
@@ -13,8 +13,8 @@ class MyReservationParkingDetails extends React.Component {
         super(props);
 
         this.state={
-          DateFrom : '20.02.2020',
-          DateTo: '25.02.2020',
+          DateFrom : '00 -00 -00Tjj' ,
+          DateTo: '00 -00 -00Tjj' ,
           TotalCost: 1000,
           City : 'New York',
           Street : 'Park Avenue',
@@ -23,10 +23,13 @@ class MyReservationParkingDetails extends React.Component {
     }
 
     componentDidMount(){      
-      const params = createQueryParams({ id: this.props.FKid });
-      const URL = `${PARKLY_API_URL}/reservations?${params.toString()}`;
-      sendRequest(URL, 'GET', { [TOKEN_HEADER_KEY]: this.props.parklyToken })
-      .then(response => {
+      const headers = {
+        [PARKLY_LOGIN_HEADER_KEY]: [PARKLY_LOGIN_HEADER_VALUE],
+        [PARKLY_TOKEN_HEADER_KEY]: this.props.parklyToken,
+      };
+      const URL = `${PARKLY_API_URL}/reservations/${this.props.FKid}`;
+      sendRequest(URL, 'GET', headers)
+      .then(response => {      
         if(response.ok){
           response.json()
           .then(res=>{
@@ -48,7 +51,12 @@ class MyReservationParkingDetails extends React.Component {
         this.props.anyError(error);
       });
     }
-
+    getDate(datestring){
+      let date = datestring.split('-');
+      let day = date[2].split('T')[0];
+      return day+'/'+date[1]+'/'+date[0];
+      }
+  
     render() {
       return (
         <View>
@@ -58,11 +66,11 @@ class MyReservationParkingDetails extends React.Component {
         <View style={styles.container_reservationdetails}>   
         <View style={styles.contentRow}>
           <Title>Date from:</Title>
-          <Title>{this.state.DateFrom}</Title>
+          <Title>{this.getDate(this.state.DateFrom)}</Title>
         </View>
         <View style={styles.contentRow}>
           <Title>Date to:</Title>
-          <Title>{this.state.DateTo}</Title>
+          <Title>{this.getDate(this.state.DateTo)}</Title>
         </View>
         <View style={styles.contentRow}>
           <Title>City:</Title>

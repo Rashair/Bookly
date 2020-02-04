@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Button, ScrollView, Image, TouchableHighlight, 
 import React from "react";
 import { connect } from "react-redux";
 import { Title, Headline, Paragraph } from "react-native-paper";
+import { LocalDate, LocalTime, DateTimeFormatter, nativeJs } from "@js-joda/core";
 import {styles} from '../../../styles'
 import {sendRequest, createQueryParams} from '../../../helpers/functions'
 import {TOKEN_HEADER_KEY, CARLY_API_URL} from '../../../helpers/constants'
@@ -12,26 +13,25 @@ class MyReservationCarDetails extends React.Component {
 
     this.state ={
       Car : {},
-      Comment : '',
-      DateFrom : null ,
-      DateTo: null,
+      DateFrom : '00 -00 -00Tjj' ,
+      DateTo: '00 -00 -00Tjj',
       Cost :0,
       StatusType : null
     }
   }
 
   componentDidMount() {
-    const params = createQueryParams({ id: this.props.FKid });
-    const url = `${CARLY_API_URL}/reservations?${params.toString()}`;
-    sendRequest(url, 'GET', { [TOKEN_HEADER_KEY]: this.props.carlyToken })
-      .then(res => {
-        console.log(res);
-        if (res.ok) {
-          res.json()
-            .then(res => {
+    const url = `${CARLY_API_URL}/reservations/${this.props.FKid}`;
+    const headers = {
+      Authorization: this.props.carlyToken,
+    };
+
+    sendRequest(url, "GET", headers)
+      .then(result => {
+        if (result.ok) {
+          result.json().then(res => {
               this.setState({
-                Car: res.car,
-                Comment : res.comment,
+                Car: res.carDTO,
                 DateFrom : res.dateFrom,
                 DateTo: res.dateTo,
                 Cost: res.cost
@@ -47,6 +47,12 @@ class MyReservationCarDetails extends React.Component {
 
   }
 
+  getDate(datestring){
+    let date = datestring.split('-');
+    let day = date[2].split('T')[0];
+    return day+'/'+date[1]+'/'+date[0];
+    }
+
   render() {
     return (
       <View>
@@ -54,46 +60,42 @@ class MyReservationCarDetails extends React.Component {
         <View style={styles.container_reservationdetails}>
         <View style={styles.contentRow}>
           <Title>Date from : </Title>
-          <Title> {this.state.DateFrom}</Title>
+          <Title> {this.getDate(this.state.DateFrom)}</Title>
         </View>
         <View style={styles.contentRow}>
           <Title>Date to : </Title>
-          <Title>{this.state.DateTo}</Title>
+          <Title>{this.getDate(this.state.DateTo)}</Title>
         </View>
-        <Text style={styles.marginBottomSmall}>
+        <Title style={styles.marginBottomSmall}>
           Car details:
-        </Text>
+        </Title>
         <View style={styles.contentRow}>
           <Title>Make:</Title>
-          <Title>{this.state.Car.Make} }</Title>
+          <Title>{this.state.Car.make} </Title>
         </View>
         <View style={styles.contentRow}>
           <Title>Model:</Title>
-          <Title>{this.state.Car.Model}</Title>
+          <Title>{this.state.Car.model}</Title>
         </View>
         <View style={styles.contentRow}>
           <Title>Seats:</Title>
-          <Title>{this.state.Car.Seats}</Title>
+          <Title>{this.state.Car.seats}</Title>
         </View>
         <View style={styles.contentRow}>
           <Title>Year of production:</Title>
-          <Title>{this.state.Car.Year}</Title>
+          <Title>{this.state.Car.year}</Title>
         </View>
         <View style={styles.contentRow}>
-          <Title>Number of doors:</Title>
-          <Title>{this.state.Car.Doors}</Title>
-        </View>
-        <View style={styles.contentRow}>
-          <Title>License:</Title>
-          <Title>{this.state.Car.License}</Title>
+          <Title>Licence:</Title>
+          <Title>{this.state.Car.licence}</Title>
         </View>
         <View style={styles.contentRow}>
           <Title>Location:</Title>
-          <Title>{this.state.Car.Location}</Title>
+          <Title>{this.state.Car.location}</Title>
         </View>
         <View style={styles.contentRow}>
           <Title>Total cost:</Title>
-          <Title>{this.state.Cost} PLN</Title>
+          <Title>{this.state.Car.price} PLN</Title>
         </View>
         </View>
       </View>
