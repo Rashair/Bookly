@@ -40,16 +40,16 @@ class ReserveCar extends React.Component {
   constructor(props) {
     super(props);
     const { cars } = this.props.navigation.state.params;
-   
+
     const { firstName, lastName, email } = this.props.auth;
 
     this.state = {
-       cars,
+      cars,
       firstName,
       lastName,
       email,
       dateFrom: currDate,
-      dateTo:currDate,
+      dateTo: currDate,
       firstNameValid: true,
       lastNameValid: true,
       emailValid: true,
@@ -162,7 +162,7 @@ class ReserveCar extends React.Component {
     const data = {
       carId: cars.id,
       location: cars.location,
-     
+
       totalCost: this.getTotalPrice(),
       dateFrom: dateFrom.toISOString(),
       dateTo: dateTo.toISOString(),
@@ -358,7 +358,7 @@ class ReserveCar extends React.Component {
             {!this.state.dateToValid && <HelperText type="error">{this.errorMessage("DateTo")}</HelperText>}
           </View>
 
-          <Title style={innerStyles.inner}>Price: {this.getTotalPrice()<0?0:this.getTotalPrice()}</Title>
+          <Title style={innerStyles.inner}>Price: {this.getTotalPrice() < 0 ? 0 : this.getTotalPrice()}</Title>
           <View style={styles.contentToEnd}>
             <Button
               style={styles.button}

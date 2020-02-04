@@ -11,9 +11,7 @@ import { anyError } from "../../redux/actions";
 import { styles, themeColors } from "../../styles";
 
 const innerStyles = StyleSheet.create({
-  fontBold: { fontWeight: "bold" },
   sortingRow: { display: "flex", justifyContent: "space-around", marginBottom: 20 },
-  wrapInSameColumn: { flexShrink: 1 },
 });
 
 class ListCars extends React.Component {
@@ -43,9 +41,9 @@ class ListCars extends React.Component {
     const { city } = this.props.navigation.state.params;
     const { people } = this.props.navigation.state.params;
     this.state = {
-      fetchUrl: this.props.navigation.getParam("url", ""),
+      // fetchUrl: this.props.navigation.getParam("url", ""),
       sortingType: this.sortingTypes.lowestPrice,
-      cars_to_choose:[],
+      carsToChoose: [],
       cars,
       city,
       people,
@@ -57,22 +55,21 @@ class ListCars extends React.Component {
 
   componentDidMount() {
     const url = `${CARLY_API_URL}/cars`; // this.state.fetchUrl
-    //console.log(`url ${this.state.fetchUrl}`);
+    // console.log(`url ${this.state.fetchUrl}`);
     fetch(url)
       .then(
         response => {
           if (response.ok) {
             response.json().then(data => {
-            
-                console.log(data);
-                var arr =data.filter(car => 
-                  (this.state.cars.length!=0 ? this.state.cars.includes(car.model): true) &&  (this.state.city!=""?this.state.city==car.location:true) && this.state.people<=car.seats);
-                 console.log(arr);
-                  this.setState({ isLoading: false, cars_to_choose: arr });
-              
-             
+              const arr = data.filter(
+                car =>
+                  (this.state.cars.length !== 0 ? this.state.cars.includes(car.model) : true) &&
+                  (this.state.city !== "" ? this.state.city === car.location : true) &&
+                  this.state.people <= car.seats
+              );
+              this.setState({ isLoading: false, cars_to_choose: arr });
+
               data.sort(this.state.sortingType.cmp);
-             
             });
           } else {
             throw new Error(`Error fetching, status code: ${response.statusCode}`);
@@ -87,27 +84,27 @@ class ListCars extends React.Component {
 
   sortParkingByType(cmp) {
     this.setState(prevState => {
-      const cars_to_choose = [...prevState.cars_to_choose].sort(cmp);
-      return { isLoading: false, cars_to_choose };
+      const carsToChoose = [...prevState.cars_to_choose].sort(cmp);
+      return { isLoading: false, cars_to_choose: carsToChoose };
     });
   }
 
   createCardsList() {
-    const { cars_to_choose } = this.state;
+    const { carsToChoose } = this.state;
     const { navigation } = this.props;
 
-    if (!cars_to_choose) {
+    if (!carsToChoose) {
       return <Text>Error</Text>;
     }
 
-    return cars_to_choose.map(car => {
+    return carsToChoose.map(car => {
       return (
         <Card key={car.id} onPress={() => navigation.push("DetailsCar", { cars: car })}>
           <Card.Content>
-          <Text style={styles.fontBold}>{car.model}</Text>
-          <Text style={styles.fontBold}>{car.make}</Text>
+            <Text style={styles.fontBold}>{car.model}</Text>
+            <Text style={styles.fontBold}>{car.make}</Text>
 
-          <Text>Seats: {car.seats.toString()}</Text>
+            <Text>Seats: {car.seats.toString()}</Text>
             <Text>Price: {car.price.toString()} PLN / h</Text>
             <View style={styles.row}>
               <Text>Location: </Text>
