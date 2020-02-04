@@ -28,7 +28,7 @@ const innerStyles = StyleSheet.create({
   },
 });
 
-class SummaryParking extends React.Component {
+class SummaryCar extends React.Component {
   static navigationOptions = { title: "Summary", headerLeft: () => null };
 
   constructor(props) {
@@ -51,7 +51,7 @@ class SummaryParking extends React.Component {
   }
 
   render() {
-    const { parking, totalCost, dateFrom, dateTo, firstName, lastName, email } = this.state;
+    const { cars, totalCost, dateFrom, dateTo, firstName, lastName, email } = this.state;
     const dateFromFormatted = LocalDateTime.from(nativeJs(dateFrom)).format(
       DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy")
     );
@@ -64,19 +64,33 @@ class SummaryParking extends React.Component {
     return (
       <Container style={styles.container}>
         <ScrollView contentContainerStyle={innerStyles.content}>
-          <Headline>Parking</Headline>
+          <Headline>Car</Headline>
           <Table>
+          <Row
+              style={innerStyles.row}
+              textStyle={[innerStyles.rowText, innerStyles.fontBold, styles.marginBottomBig]}
+              flexArr={[-5, 30, 0]}
+              data={[
+                "",
+                `${cars.make}`+` `+`${cars.model}`,
+                "",
+              ]}
+            />
             <Row
               style={innerStyles.row}
               textStyle={[innerStyles.rowText, innerStyles.fontBold, styles.marginBottomBig]}
-              flexArr={[0, 30, 5]}
-              data={["", `${parking.location}\nWorking hours: ${parking.opens}:00 - ${parking.closes}:00`, ""]}
+              flexArr={[-5, 30, 5]}
+              data={[
+                "",
+                `${cars.location}`,
+                "",
+              ]}
             />
             <Row
               style={innerStyles.row}
               textStyle={innerStyles.rowText}
               flexArr={[30, 30]}
-              data={["Reservation date :", `${dateFromFormatted} - ${dateToFormatted}`]}
+              data={["Reservation from-to:", `${dateFromFormatted} - ${dateToFormatted}`]}
             />
             <Row textStyle={innerStyles.rowText} flexArr={[30, 30]} data={["Total cost:", `${totalCost} PLN`]} />
             <Row textStyle={innerStyles.rowText} flexArr={[30, 30]} data={["Reserver:", `${firstName} ${lastName}`]} />
@@ -115,4 +129,4 @@ class SummaryParking extends React.Component {
 const mapDispatchToProps = dispatch => ({
   anyError: data => dispatch(anyError(data)),
 });
-export default connect(null, mapDispatchToProps)(SummaryParking);
+export default connect(null, mapDispatchToProps)(SummaryCar);

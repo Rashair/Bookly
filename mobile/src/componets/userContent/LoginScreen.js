@@ -1,7 +1,7 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, Image } from "react-native";
 import { connect } from "react-redux";
-import { Container, Content } from "native-base";
+import { View, Container, Content } from "native-base";
 import { TextInput, HelperText, Title, Button } from "react-native-paper";
 
 import utf16 from "crypto-js/enc-utf16";
@@ -9,8 +9,8 @@ import sha3 from "crypto-js/sha3";
 import hmacSHA512 from "crypto-js/hmac-sha512";
 import Base64 from "crypto-js/enc-base64";
 
-import { login } from "../../redux/thunk-functions";
 import { styles, themeColors } from "../../styles";
+import { login } from "../../redux/thunk-functions";
 
 const innerStyles = StyleSheet.create({
   backgroundWhite: {
@@ -21,7 +21,17 @@ const innerStyles = StyleSheet.create({
     paddingVertical: 20,
   },
 });
-
+const imageStyles = StyleSheet.create({
+  container: {
+    height: 100,
+    margin: 0,
+    width: 55,
+  },
+  content: {
+    paddingHorizontal: 150,
+    paddingVertical: 160,
+  },
+});
 class LoginScreen extends React.Component {
   static navigationOptions = { title: "Login, dear!" };
 
@@ -74,24 +84,38 @@ class LoginScreen extends React.Component {
 
   handleSubmit() {
     // TODO: Check if password and login valid here (user may not changed it)
-    const { login, password } = this.state;
-    const randomMsg = utf16.parse("Keep it secret. Keep it safe");
-    const hashDigest = sha3(password + randomMsg);
-    const hash = Base64.stringify(hmacSHA512(hashDigest, login));
+    if (this.state.loginValid && this.state.passwordValid) {
+      const { login, password } = this.state;
+      const randomMsg = utf16.parse("Keep it secret. Keep it safe");
+      const hashDigest = sha3(password + randomMsg);
+      const hash = Base64.stringify(hmacSHA512(hashDigest, login));
 
-    const data = { login, password: hash };
-    // For this to work, you must change API_URL in helpers/constants to your ngrok url
-    this.props.login(data);
+      const data = { login, password: hash };
+      this.props.login(data);
+    }
   }
 
   render() {
     return (
-      <Container style={styles.container}>
+      <Container>
         <Content style={innerStyles.content}>
+          <Image
+            content={imageStyles.content}
+            style={imageStyles.container}
+            source={{
+              uri:
+                "https://cdn2.iconfinder.com/data/icons/royal-crowns/512/royal-alphabet-crown-letter-english-b-512.png",
+            }}
+          />
+
           <Title>Login</Title>
           <TextInput
             mode="outlined"
             style={innerStyles.backgroundWhite}
+            content={{
+              paddingHorizontal: 5,
+              paddingVertical: 20,
+            }}
             onChangeText={text => this.setLogin(text)}
             value={this.state.login}
           />
@@ -104,6 +128,10 @@ class LoginScreen extends React.Component {
             secureTextEntry
             mode="outlined"
             style={innerStyles.backgroundWhite}
+            content={{
+              paddingHorizontal: 10,
+              paddingVertical: 20,
+            }}
             onChangeText={text => this.setPassword(text)}
             value={this.state.password}
           />

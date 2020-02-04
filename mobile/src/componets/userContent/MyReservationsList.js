@@ -1,44 +1,14 @@
 import React from "react";
-import { StyleSheet, Text, View, Button, ScrollView, FlatList, Image } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import {connect} from 'react-redux'
 
-const DATA = [
-  // temporary solution to display data
-  {
-    id: 1,
-    type: "car",
-    FKid: 1,
-    DateFrom: " today",
-  },
-  {
-    id: 2,
-    type: "flat",
-    DateFrom: "tommorow",
-    FKid: 2,
-  },
-  {
-    id: 3,
-    type: "parking",
-    DateFrom: "never",
-    FKid: 3,
-  },
-];
+import { Text, View, FlatList, Image } from "react-native";
+import {ListItem} from 'react-native-elements'
+import { Container } from "native-base";
+import { styles, themeColors} from '../../styles';
+import {sendRequest, createQueryParams} from '../../helpers/functions'
+import {API_URL, TOKEN_HEADER_KEY} from '../../helpers/constants'
 
-function MyReservationItem({ DateFrom, FKid, type, navigation }) {
-  let image;
-  // if(type === 'car'){
-  image = <Image source={require("./assets/car.png")} />;
-  // }
-  return (
-    <TouchableOpacity onPress={navigation}>
-      {image}
-      <Text>{DateFrom}</Text>
-      <Text>{FKid}</Text>
-    </TouchableOpacity>
-  );
-}
-
-export default class MyReservationList extends React.Component {
+  class MyReservationList extends React.Component {
   constructor(props) {
     super(props);
     this.openDetails = this.openDetails.bind(this);
@@ -48,46 +18,81 @@ export default class MyReservationList extends React.Component {
       reservations: [],
     };
   }
-
   componentDidMount() {
-    // fetch
+    const params = createQueryParams({ userDetails: this.props.auth.securityToken });
+    const bookingUrl = `${API_URL}/booking/user?${params.toString()}`;
+    sendRequest(bookingUrl, 'GET', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken })
+      .then(res => {
+        if (res.ok) {
+          res.json()
+            .then(res => {
+              this.setState({
+                reservations: res
+              })
+            })
+        }
+      }
+      )
+      .catch(function (error) {
+        console.log(error.message);
+        this.props.anyError(error);
+      });
   }
 
-  openDetails = (FKid, type, id) => {
+  openDetails = (FKid, type, id, active) => {
     this.props.navigation.navigate("MyReservationDetails", {
-      FKid,
-      type,
-      id,
+      FKid: FKid,
+      type: type,
+      id: id,
+      isActive : active
     });
   };
 
   renderItem({ item }) {
+    let title;
+    let imgsource;
+    if(item.type=='cAR'){
+      title= "Car reservation";
+      imgsource = require("./assets/car.png");
+    }
+    if(item.type=='FLAT'){
+      title="Flat reservation";
+      imgsource = require("./assets/home.jpg");
+    }
+    if(item.type=='PARKING_SPACE'){
+      title="Parking reservation";
+      imgsource = require("./assets/parking.png");
+    }
     return (
-      <MyReservationItem
-        DateFrom={item.DateFrom}
-        FKid={item.FKid}
-        type={item.type}
-        navigation={() => this.openDetails(item.FKid, item.type, item.id)}
-      />
+      <ListItem 
+    title={title}
+    subtitle={
+      <View>
+        <Text>{item.start_date_time} - {item.end_date_time}</Text>
+      </View>} 
+    leftAvatar={{source : imgsource, rounded: false}}
+    onPress={()=>this.openDetails(item.external_id, item.type, item.id, item.active)}
+    chevron
+    />
     );
   }
 
+  static navigationOptions = { title: "My reservations" };
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Here will be reservation list !</Text>
-        <FlatList data={DATA} keyExtractor={item => item.id.toString()} renderItem={this.renderItem} />
-        <Button title="Go back to Home" onPress={() => this.props.navigation.navigate("Home")} />
-      </View>
+      <Container>
+          <FlatList data={this.state.reservations} keyExtractor={item => item.id.toString()} renderItem={this.renderItem} />
+      </Container>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    backgroundColor: "#fff",
-    flex: 1,
-    justifyContent: "center",
-  },
+const mapStateToProps = (state ) => {
+  return {
+    auth: state.auth,
+  };
+};
+const mapDispatchToProps = dispatch => ({
+  anyError: data => dispatch(anyError(data))
 });
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyReservationList);

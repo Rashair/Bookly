@@ -6,10 +6,9 @@ import { Container } from "native-base";
 import { Card, Chip } from "react-native-paper";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { PARKLY_LOGIN_HEADER_KEY, PARKLY_LOGIN_HEADER_VALUE, PARKLY_TOKEN_HEADER_KEY } from "../../helpers/constants";
+import { CARLY_API_URL } from "../../helpers/constants";
 import { anyError } from "../../redux/actions";
 import { styles, themeColors } from "../../styles";
-import { sendRequest } from "../../helpers/functions";
 
 const innerStyles = StyleSheet.create({
   fontBold: { fontWeight: "bold" },
@@ -17,8 +16,8 @@ const innerStyles = StyleSheet.create({
   wrapInSameColumn: { flexShrink: 1 },
 });
 
-class ListParking extends React.Component {
-  static navigationOptions = { title: "Choose parking" };
+class ListCars extends React.Component {
+  static navigationOptions = { title: "Choose car, dear" };
 
   constructor(props) {
     super(props);
@@ -28,23 +27,28 @@ class ListParking extends React.Component {
       lowestPrice: {
         name: "Lowest price",
         cmp: (a, b) => {
-          const res = a.pricePerHour - b.pricePerHour;
+          const res = a.price - b.price;
           return res === 0 ? idCmp(a, b) : res;
         },
       },
       highestPrice: {
         name: "Highest price",
         cmp: (a, b) => {
-          const res = b.pricePerHour - a.pricePerHour;
+          const res = b.price - a.price;
           return res === 0 ? idCmp(a, b) : res;
         },
       },
     };
-
+    const { cars } = this.props.navigation.state.params;
+    const { city } = this.props.navigation.state.params;
+    const { people } = this.props.navigation.state.params;
     this.state = {
       fetchUrl: this.props.navigation.getParam("url", ""),
       sortingType: this.sortingTypes.lowestPrice,
-      parking: null,
+      cars_to_choose:[],
+      cars,
+      city,
+      people,
       isLoading: true,
     };
 
@@ -52,22 +56,23 @@ class ListParking extends React.Component {
   }
 
   componentDidMount() {
-    const url = this.state.fetchUrl;
-    const headers = {
-      [PARKLY_LOGIN_HEADER_KEY]: [PARKLY_LOGIN_HEADER_VALUE],
-      [PARKLY_TOKEN_HEADER_KEY]: this.props.token,
-    };
-    sendRequest(url, "GET", headers)
+    const url = `${CARLY_API_URL}/cars`; // this.state.fetchUrl
+    //console.log(`url ${this.state.fetchUrl}`);
+    fetch(url)
       .then(
         response => {
           if (response.ok) {
-            response.json().then(responseJson => {
-              responseJson.forEach(parkingSpace => {
-                /* eslint-disable no-param-reassign */
-                parkingSpace.location = `${parkingSpace.street} ${parkingSpace.streetNumber}, ${parkingSpace.city}`;
-              });
-              responseJson.sort(this.state.sortingType.cmp);
-              this.setState({ isLoading: false, parking: responseJson });
+            response.json().then(data => {
+            
+                console.log(data);
+                var arr =data.filter(car => 
+                  (this.state.cars.length!=0 ? this.state.cars.includes(car.model): true) &&  (this.state.city!=""?this.state.city==car.location:true) && this.state.people<=car.seats);
+                 console.log(arr);
+                  this.setState({ isLoading: false, cars_to_choose: arr });
+              
+             
+              data.sort(this.state.sortingType.cmp);
+             
             });
           } else {
             throw new Error(`Error fetching, status code: ${response.statusCode}`);
@@ -82,28 +87,31 @@ class ListParking extends React.Component {
 
   sortParkingByType(cmp) {
     this.setState(prevState => {
-      const parking = [...prevState.parking].sort(cmp);
-      return { isLoading: false, parking };
+      const cars_to_choose = [...prevState.cars_to_choose].sort(cmp);
+      return { isLoading: false, cars_to_choose };
     });
   }
 
   createCardsList() {
-    const { parking } = this.state;
+    const { cars_to_choose } = this.state;
     const { navigation } = this.props;
 
-    if (!parking) {
+    if (!cars_to_choose) {
       return <Text>Error</Text>;
     }
 
-    return parking.map(parkingSpace => {
+    return cars_to_choose.map(car => {
       return (
-        <Card key={parkingSpace.parkingId} onPress={() => navigation.push("DetailsParking", { parking: parkingSpace })}>
+        <Card key={car.id} onPress={() => navigation.push("DetailsCar", { cars: car })}>
           <Card.Content>
-            <Text style={innerStyles.fontBold}>Parking {parkingSpace.parkingId}</Text>
-            <Text>Total cost: {parkingSpace.totalCost.toString()} PLN</Text>
-            <View style={styles.contentRow}>
+          <Text style={styles.fontBold}>{car.model}</Text>
+          <Text style={styles.fontBold}>{car.make}</Text>
+
+          <Text>Seats: {car.seats.toString()}</Text>
+            <Text>Price: {car.price.toString()} PLN / h</Text>
+            <View style={styles.row}>
               <Text>Location: </Text>
-              <Text style={innerStyles.wrapInSameColumn}>{parkingSpace.location}</Text>
+              <Text style={styles.wrapInSameColumn}>{car.location}</Text>
             </View>
           </Card.Content>
         </Card>
@@ -147,10 +155,4 @@ const mapDispatchToProps = dispatch => ({
   anyError: data => dispatch(anyError(data)),
 });
 
-const mapStateToProps = (state /* , ownProps */) => {
-  return {
-    token: state.parklyToken,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ListParking);
+export default connect(null, mapDispatchToProps)(ListCars);

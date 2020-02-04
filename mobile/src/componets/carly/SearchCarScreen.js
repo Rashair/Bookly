@@ -4,69 +4,56 @@ import { TextInput, Subheading, List, Card, HelperText, Title, Chip, Button, Pic
 import React from "react";
 import { AuthSession } from "expo";
 import CustomMultiPicker from "react-native-multiple-select-list";
+import { CARLY_API_URL } from "../../helpers/constants";
+import { styles, themeColors } from "../../styles";
 
 export default class SearchCarScreen extends React.Component {
   static navigationOptions = { title: "Find your perfect car!" };
 
   constructor(props) {
     super(props);
-
+    
     this.showPeoplePicker = false;
-    this.showDateFromPicker = false;
-    this.showDateToPicker = false;
-
-    this.setDateFrom = this.setDateFrom.bind(this);
-    this.setDateTo = this.setDateTo.bind(this);
     this.setCity = this.setCity.bind(this);
     this.setPeople = this.setPeople.bind(this);
 
     this.state = {
       city: "",
-      dateFrom: null,
-      dateTo: null,
-      car: 1,
+      people: 1,
       cityValid: true,
       dateToValid: true,
       carValid: true,
       formValid: false,
-      cars: [],
+      all_cars: [],
       carsMap: [],
       isLoading: true,
+      cars:[],
+    
     };
   }
-
-  setDateFrom(date) {
-    this.setState({
-      dateFrom: date,
-      dateToValid: !!(this.state.dateTo && date <= this.state.dateTo),
-    });
-  }
-
-  setDateTo(date) {
-    this.setState({
-      dateTo: date,
-      dateToValid: !!(this.state.dateFrom && this.state.dateFrom <= date),
-    });
-  }
-
+ 
   setCity(city) {
     const cityPattern = /^[a-zA-z][a-zA-z][a-zA-z ]*$/;
     this.setState({
-      city,
-      cityValid: !!(cityPattern.test(city) && city.length >= 3),
+      city: city,
+      cityValid: cityPattern.test(city) || city.length==1 ? true : false,
     });
   }
-
-  setPeople(car) {
+  setPeople(people) {
     this.setState({
-      car,
-      carValid: !!car,
+      people: people,
+      carValid: people ? true : false,
     });
   }
-
+  setSelectedCars(car) {
+    this.setState({
+      cars: car
+     
+    });
+  }
   createChip(i) {
     return (
-      <Chip mode="outlined" selected={this.state.car === i} onPress={() => this.setPeople(i)}>
+      <Chip mode="outlined" selected={this.state.people === i ? true : false} onPress={() => this.setPeople(i)}>
         {i.toString()}
       </Chip>
     );
@@ -84,19 +71,24 @@ export default class SearchCarScreen extends React.Component {
   }
 
   componentDidMount() {
-    // Url should be variable
-    fetch("http://814e452c.ngrok.io/cars")
+      fetch(`${CARLY_API_URL}/cars`)
       .then(res => res.json())
       .then(data => {
         const arr = [];
         data.forEach(car => (arr[car.id] = car.model));
-        console.log(arr);
-        this.setState({ cars: data, carsMap: arr });
+      
+        this.setState({ all_cars: data, carsMap: arr });
       });
   }
 
   render() {
-    const userList = this.state.carsMap;
+    const userList = this.state.carsMap.filter(car=> typeof car!='undefined');
+   
+
+    console.log(userList);
+    const { navigation } = this.props;
+    const { all_cars } = this.state;
+    const { cars,city,people } = this.state;
 
     return (
       <Container>
@@ -112,23 +104,7 @@ export default class SearchCarScreen extends React.Component {
             {this.errorMessage("City")}
           </HelperText>
 
-          <Title>From</Title>
-          <DatePicker
-            value={this.state.dateFrom}
-            minimumDate={new Date()}
-            onDateChange={date => this.setDateFrom(date)}
-          />
-
-          <Title>To</Title>
-          <DatePicker
-            style={{ border: "solid 2px black" }}
-            value={this.state.dateTo}
-            minimumDate={new Date()}
-            onDateChange={date => this.setDateTo(date)}
-          />
-          <HelperText type="error" visible={!this.state.dateToValid}>
-            {this.errorMessage("DateTo")}
-          </HelperText>
+      
 
           <Title>People</Title>
           <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
@@ -145,26 +121,25 @@ export default class SearchCarScreen extends React.Component {
 
           <CustomMultiPicker
             options={userList}
-            search // should show search bar
-            multiple //
-            placeholder="Search"
-            placeholderTextColor="#fff"
-            returnValue="label" // label or value
-            callback={res => {
-              console.log(res);
-            }} // callback, array of selected items
-            rowBackgroundColor="#eee"
-            rowHeight={40}
+            search={true} // should show search bar
+            multiple={true} //
+            
+            returnValue={"label"} // label or value
+            callback={car => this.setSelectedCars(car)} // callback, array of selected items
+            rowBackgroundColor={"#eee"}
+            rowHeight={50}
             rowRadius={5}
             searchIconName="ios-checkmark"
             searchIconColor="red"
             searchIconSize={30}
             iconColor="#8500dd"
             iconSize={30}
-            selectedIconName="ios-checkmark-circle-outline"
-            unselectedIconName="ios-radio-button-off-outline"
-            scrollViewHeight={130}
-            // selected={["Tom", "Christin"]} // list of options which are selected by default
+            searchIconName={"ios-add-circle-outline"}
+            selectedIconName={"ios-checkmark-circle-outline"}
+            unselectedIconName={"ios-add-circle-outline"}
+            scrollViewHeight={250}
+            fixedHeight={false}
+            selected={["Tom", "Christin"]} // list of options which are selected by default
           />
           <HelperText type="error" visible={!this.state.carValid}>
             {this.errorMessage("Car")}
@@ -172,8 +147,8 @@ export default class SearchCarScreen extends React.Component {
 
           <Button
             mode="contained"
-            disabled={!(this.state.cityValid && this.state.dateTo && this.state.carValid)}
-            onPress={() => Alert.alert("Simple Button pressed")}
+            disabled={!(this.state.carValid)}
+            onPress={() => navigation.push("ListCars", { cars,city,people })}
           >
             Search
           </Button>
@@ -183,14 +158,3 @@ export default class SearchCarScreen extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    backgroundColor: "#fff",
-    flex: 1,
-    justifyContent: "center",
-    marginLeft: "auto",
-    marginRight: "auto",
-    width: "90%",
-  },
-});

@@ -8,14 +8,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { LocalDate, LocalTime, DateTimeFormatter, nativeJs } from "@js-joda/core";
 import { sendRequest, combineDateAndTime } from "../../helpers/functions";
 import { anyError } from "../../redux/actions";
-import {
-  PARKLY_API_URL,
-  API_URL,
-  TOKEN_HEADER_KEY,
-  PARKLY_LOGIN_HEADER_KEY,
-  PARKLY_LOGIN_HEADER_VALUE,
-  PARKLY_TOKEN_HEADER_KEY,
-} from "../../helpers/constants";
+import { CARLY_API_URL, API_URL, TOKEN_HEADER_KEY } from "../../helpers/constants";
 import { styles, themeColors } from "../../styles";
 
 const innerStyles = StyleSheet.create({
@@ -41,22 +34,22 @@ const innerStyles = StyleSheet.create({
 const currDate = new Date();
 const ONE_HOUR_IN_MINUTES = 60 * 60;
 
-class ReserveParking extends React.Component {
+class ReserveCar extends React.Component {
   static navigationOptions = { title: "Make reservation" };
 
   constructor(props) {
     super(props);
-    const { parking } = this.props.navigation.state.params;
-    const { dates } = this.props;
+    const { cars } = this.props.navigation.state.params;
+   
     const { firstName, lastName, email } = this.props.auth;
 
     this.state = {
-      parking,
+       cars,
       firstName,
       lastName,
       email,
-      dateFrom: dates.from,
-      dateTo: dates.to,
+      dateFrom: currDate,
+      dateTo:currDate,
       firstNameValid: true,
       lastNameValid: true,
       emailValid: true,
@@ -149,14 +142,14 @@ class ReserveParking extends React.Component {
   }
 
   getTotalPrice() {
-    const { parking, dateFrom, dateTo } = this.state;
+    const { cars, dateFrom, dateTo } = this.state;
     const timeInMinutes = parseInt((dateTo - dateFrom) / 1000 / 60, 10);
     const timeInHours = Math.ceil((timeInMinutes - 4) / 60);
-    return parking.price * timeInHours;
+    return cars.price * timeInHours;
   }
 
   handleSubmit() {
-    const { parking, firstName, lastName, email, dateFrom, dateTo } = this.state;
+    const { cars, firstName, lastName, email, dateFrom, dateTo } = this.state;
     const dateToValid = this.validateDateTo(dateFrom, dateTo);
     if (!dateToValid) {
       this.setState({ dateToValid });
@@ -164,28 +157,22 @@ class ReserveParking extends React.Component {
     }
 
     this.setState({ isFetching: true });
-    const url = `${PARKLY_API_URL}/reservations/`;
+    const url = `${CARLY_API_URL}/cars`; // reservations/`;
     const ownerId = this.props.auth.id;
     const data = {
-      parkingId: parking.id,
-      userFirstName: firstName,
-      userLastName: lastName,
-      userEmail: email,
-      city: parking.city,
-      street: parking.street,
-      streetNumber: parking.streetNumber,
-      totalCost: parking.totalCost,
+      carId: cars.id,
+      location: cars.location,
+     
+      totalCost: this.getTotalPrice(),
       dateFrom: dateFrom.toISOString(),
       dateTo: dateTo.toISOString(),
     };
-    const headers = {
-      [PARKLY_LOGIN_HEADER_KEY]: [PARKLY_LOGIN_HEADER_VALUE],
-      [PARKLY_TOKEN_HEADER_KEY]: this.props.token,
-    };
+    const headers = {}; // Auth headers here
     sendRequest(url, "POST", headers, data)
       .then(
         response => {
           if (response.ok) {
+            console.log("chicken");
             return response.json();
           }
           throw new Error(`Error sending data to parkly, status code: ${response.status}`);
@@ -198,10 +185,9 @@ class ReserveParking extends React.Component {
           owner: {
             id: ownerId,
           },
-          email,
           start_date_time: dateFrom.toISOString(),
           end_date_time: dateTo.toISOString(),
-          type: "PARKING_SPACE",
+          type: "CAR",
           external_id: externalBookingId,
         };
         const bookingUrl = `${API_URL}/booking/`;
@@ -210,8 +196,9 @@ class ReserveParking extends React.Component {
       .then(
         booklyResponse => {
           if (booklyResponse.ok) {
-            const summaryData = { parking, totalCost: data.totalCost, dateFrom, dateTo, firstName, lastName, email };
-            this.props.navigation.navigate("SummaryParking", { summaryData });
+            const summaryData = { cars, totalCost: data.totalCost, dateFrom, dateTo, firstName, lastName, email };
+            this.props.navigation.navigate("SummaryCar", { summaryData });
+            console.log("kokokoko");
           } else {
             throw new Error(`Error sending data to bookly, status code: ${booklyResponse.status}`);
           }
@@ -245,7 +232,7 @@ class ReserveParking extends React.Component {
       { text: "Yes", onPress: () => this.handleSubmit() },
     ];
     const confirmationAlert = () =>
-      Alert.alert("Confirm reservation", "Are you sure that you want to reserve this parking?", submitButtons);
+      Alert.alert("Confirm reservation", "Dear, are you sure that you want to reserve this car?", submitButtons);
 
     return (
       <ScrollView style={innerStyles.container}>
@@ -371,7 +358,7 @@ class ReserveParking extends React.Component {
             {!this.state.dateToValid && <HelperText type="error">{this.errorMessage("DateTo")}</HelperText>}
           </View>
 
-          <Title style={innerStyles.inner}>Price: {this.getTotalPrice()}</Title>
+          <Title style={innerStyles.inner}>Price: {this.getTotalPrice()<0?0:this.getTotalPrice()}</Title>
           <View style={styles.contentToEnd}>
             <Button
               style={styles.button}
@@ -406,7 +393,6 @@ const mapStateToProps = (state /* , ownProps */) => {
   return {
     dates: state.dates,
     auth: state.auth,
-    token: state.parklyToken,
   };
 };
 
@@ -414,4 +400,4 @@ const mapDispatchToProps = dispatch => ({
   anyError: data => dispatch(anyError(data)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReserveParking);
+export default connect(mapStateToProps, mapDispatchToProps)(ReserveCar);
