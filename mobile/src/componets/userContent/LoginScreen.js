@@ -99,14 +99,7 @@ class LoginScreen extends React.Component {
     return (
       <Container>
         <Content style={innerStyles.content}>
-          <Image
-            content={imageStyles.content}
-            style={imageStyles.container}
-            source={{
-              uri:
-                "https://cdn2.iconfinder.com/data/icons/royal-crowns/512/royal-alphabet-crown-letter-english-b-512.png",
-            }}
-          />
+          <Image content={imageStyles.content} style={imageStyles.container} source={require("./assets/logo.png")} />
 
           <Title>Login</Title>
           <TextInput
