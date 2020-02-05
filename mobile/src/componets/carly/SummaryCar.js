@@ -66,25 +66,18 @@ class SummaryCar extends React.Component {
         <ScrollView contentContainerStyle={innerStyles.content}>
           <Headline>Car</Headline>
           <Table>
-          <Row
+            <Row
               style={innerStyles.row}
               textStyle={[innerStyles.rowText, innerStyles.fontBold, styles.marginBottomBig]}
               flexArr={[-5, 30, 0]}
-              data={[
-                "",
-                `${cars.make}`+` `+`${cars.model}`,
-                "",
-              ]}
+              // eslint-disable-next-line no-useless-concat
+              data={["", `${cars.make}` + ` ` + `${cars.model}`, ""]}
             />
             <Row
               style={innerStyles.row}
               textStyle={[innerStyles.rowText, innerStyles.fontBold, styles.marginBottomBig]}
               flexArr={[-5, 30, 5]}
-              data={[
-                "",
-                `${cars.location}`,
-                "",
-              ]}
+              data={["", `${cars.location}`, ""]}
             />
             <Row
               style={innerStyles.row}

@@ -37,39 +37,52 @@ class ListCars extends React.Component {
         },
       },
     };
+    const { carlyToken } = this.props;
     const { cars } = this.props.navigation.state.params;
+    const { dateFrom } = this.props.navigation.state.params;
+    const { dateTo } = this.props.navigation.state.params;
+
     const { city } = this.props.navigation.state.params;
     const { people } = this.props.navigation.state.params;
+
     this.state = {
-      // fetchUrl: this.props.navigation.getParam("url", ""),
+      carlyToken,
+
       sortingType: this.sortingTypes.lowestPrice,
       carsToChoose: [],
       cars,
       city,
       people,
+      dateFrom,
+      dateTo,
       isLoading: true,
     };
 
     this.sortByType = this.sortParkingByType.bind(this);
   }
 
-  componentDidMount() {
-    const url = `${CARLY_API_URL}/cars`; // this.state.fetchUrl
-    // console.log(`url ${this.state.fetchUrl}`);
-    fetch(url)
+ componentDidMount() {
+    fetch(`${CARLY_API_URL}/cars?from=${this.state.dateFrom.toISOString()}&to=${this.state.dateTo.toISOString()}`, {
+      method: "GET",
+      withCredentials: true,
+      credentials: "include",
+      headers: {
+        Authorization: this.state.carlyToken,
+      },
+    })
       .then(
         response => {
           if (response.ok) {
             response.json().then(data => {
-              const arr = data.filter(
+              const arr = data.content.filter(
                 car =>
-                  (this.state.cars.length !== 0 ? this.state.cars.includes(car.model) : true) &&
+                  (this.state.cars.length !== 0 ? this.state.cars.includes(car.make) : true) &&
                   (this.state.city !== "" ? this.state.city === car.location : true) &&
                   this.state.people <= car.seats
               );
-              this.setState({ isLoading: false, cars_to_choose: arr });
 
-              data.sort(this.state.sortingType.cmp);
+              this.setState({ isLoading: false, carsToChoose: arr });
+              data.content.sort(this.state.sortingType.cmp);
             });
           } else {
             throw new Error(`Error fetching, status code: ${response.statusCode}`);
@@ -84,8 +97,9 @@ class ListCars extends React.Component {
 
   sortParkingByType(cmp) {
     this.setState(prevState => {
-      const carsToChoose = [...prevState.cars_to_choose].sort(cmp);
-      return { isLoading: false, cars_to_choose: carsToChoose };
+      const carsToChoose = [...prevState.carsToChoose].sort(cmp);
+      return { isLoading: false, carsToChoose };
+
     });
   }
 
@@ -147,9 +161,16 @@ class ListCars extends React.Component {
     );
   }
 }
-
+const mapStateToProps = (state /* , ownProps */) => {
+  return {
+    dates: state.dates,
+    carlyToken: state.carlyToken,
+  };
+};
 const mapDispatchToProps = dispatch => ({
   anyError: data => dispatch(anyError(data)),
 });
 
-export default connect(null, mapDispatchToProps)(ListCars);
+export default connect(mapStateToProps, mapDispatchToProps)(ListCars);
+
+

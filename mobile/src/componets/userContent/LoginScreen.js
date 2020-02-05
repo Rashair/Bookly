@@ -8,11 +8,10 @@ import utf16 from "crypto-js/enc-utf16";
 import sha3 from "crypto-js/sha3";
 import hmacSHA512 from "crypto-js/hmac-sha512";
 import Base64 from "crypto-js/enc-base64";
-
 import { styles, themeColors } from "../../styles";
 import { login } from "../../redux/thunk-functions";
 
-const innerStyles = StyleSheet.create({
+const inner_styles = StyleSheet.create({
   backgroundWhite: {
     backgroundColor: themeColors.background,
   },
@@ -22,11 +21,6 @@ const innerStyles = StyleSheet.create({
   },
 });
 const imageStyles = StyleSheet.create({
-  container: {
-    height: 100,
-    margin: 0,
-    width: 55,
-  },
   content: {
     paddingHorizontal: 150,
     paddingVertical: 160,
@@ -98,13 +92,20 @@ class LoginScreen extends React.Component {
   render() {
     return (
       <Container>
-        <Content style={innerStyles.content}>
-          <Image content={imageStyles.content} style={imageStyles.container} source={require("./assets/logo.png")} />
+        <Content style={inner_styles.content}>
+          <Image
+            content={imageStyles.content}
+            style={{ margin: 0, width: 55, height: 100 }}
+            source={{
+              uri:
+                "https://cdn2.iconfinder.com/data/icons/royal-crowns/512/royal-alphabet-crown-letter-english-b-512.png",
+            }}
+          />
 
           <Title>Login</Title>
           <TextInput
             mode="outlined"
-            style={innerStyles.backgroundWhite}
+            style={inner_styles.backgroundWhite}
             content={{
               paddingHorizontal: 5,
               paddingVertical: 20,
@@ -115,12 +116,11 @@ class LoginScreen extends React.Component {
           <HelperText type="error" visible={!this.state.loginValid}>
             {this.errorMessage("Login")}
           </HelperText>
-
           <Title>Password</Title>
           <TextInput
             secureTextEntry
             mode="outlined"
-            style={innerStyles.backgroundWhite}
+            style={inner_styles.backgroundWhite}
             content={{
               paddingHorizontal: 10,
               paddingVertical: 20,
@@ -131,7 +131,6 @@ class LoginScreen extends React.Component {
           <HelperText type="error" visible={!this.state.passwordValid}>
             {this.errorMessage("Password")}
           </HelperText>
-
           <View style={styles.contentToEnd}>
             <Button
               style={styles.button}

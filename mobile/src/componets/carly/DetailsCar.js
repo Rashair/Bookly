@@ -52,43 +52,24 @@ class DetailsCar extends React.Component {
               style={[innerStyles.row, styles.marginBottomBig]}
               textStyle={[innerStyles.rowText, innerStyles.fontBold]}
               flexArr={[-5, 40]}
-              data={["", cars.make+"  "+ cars.model, ""]}
+              data={["", `${cars.make}  ${cars.model}`, ""]}
             />
-          
-            <Row
-              textStyle={innerStyles.rowText}
-              flexArr={[6, 30]}
-              data={["Price:", `${cars.price} PLN / hour`]}
-            />
-              
-              <Row
-              textStyle={innerStyles.rowText}
-              flexArr={[30, 30]}
-              data={["Number of seats:", `${cars.seats}`]}
-            />
-             <Row
-              textStyle={innerStyles.rowText}
-              flexArr={[10, 30]}
-              data={["Licence:", `${cars.licence}`]}
-            />
-            <Row
-              textStyle={innerStyles.rowText}
-              flexArr={[6, 30]}
-              data={["Year:", `${cars.year}`]}
-            />
-          
+
+            <Row textStyle={innerStyles.rowText} flexArr={[6, 30]} data={["Price:", `${cars.price} PLN / hour`]} />
+
+            <Row textStyle={innerStyles.rowText} flexArr={[30, 30]} data={["Number of seats:", `${cars.seats}`]} />
+            <Row textStyle={innerStyles.rowText} flexArr={[10, 30]} data={["Licence:", `${cars.licence}`]} />
+            <Row textStyle={innerStyles.rowText} flexArr={[6, 30]} data={["Year:", `${cars.year}`]} />
           </Table>
-          <Text  
-              style={{fontSize:20}}>Address:</Text>
-         
-        
-         <Text   style={{fontSize:20 }}>{cars.location}</Text>
+          <Text style={{ fontSize: 20 }}>Address:</Text>
+
+          <Text style={{ fontSize: 20 }}>{cars.location}</Text>
           <View style={styles.contentToEnd}>
             <Button
               mode="contained"
               color={themeColors.primary}
               style={styles.button}
-              onPress={() => navigation.navigate("ReserveCar", { cars  })}
+              onPress={() => navigation.navigate("ReserveCar", { cars })}
             >
               <Text style={styles.buttonText}>Make reservation</Text>
             </Button>
