@@ -1,14 +1,13 @@
 import React from "react";
-import {connect} from 'react-redux'
+import { connect } from "react-redux";
 
-import { Text, View, FlatList, Image } from "react-native";
-import {ListItem} from 'react-native-elements'
+import { Text, View, FlatList } from "react-native";
+import { ListItem } from "react-native-elements";
 import { Container } from "native-base";
-import { styles, themeColors} from '../../styles';
-import {sendRequest, createQueryParams} from '../../helpers/functions'
-import {API_URL, TOKEN_HEADER_KEY} from '../../helpers/constants'
+import { sendRequest, createQueryParams } from "../../helpers/functions";
+import { API_URL, TOKEN_HEADER_KEY } from "../../helpers/constants";
 
-  class MyReservationList extends React.Component {
+class MyReservationList extends React.Component {
   constructor(props) {
     super(props);
     this.openDetails = this.openDetails.bind(this);
@@ -18,25 +17,29 @@ import {API_URL, TOKEN_HEADER_KEY} from '../../helpers/constants'
       reservations: [],
     };
   }
-  componentDidMount() {
+
+  componentDidMount(){
     const params = createQueryParams({ userDetails: this.props.auth.securityToken });
     const bookingUrl = `${API_URL}/booking/user?${params.toString()}`;
     sendRequest(bookingUrl, 'GET', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken })
       .then(res => {
         if (res.ok) {
-          res.json()
-            .then(res => {
+          res.json().then(res => {
               this.setState({
-                reservations: res
-              })
-            })
+              reservations: res,
+            });
+          });
         }
-      }
-      )
+      })
       .catch(function (error) {
         console.log(error.message);
         this.props.anyError(error);
       });
+  }
+
+  getDate(datestring){
+  let date= new Date(datestring);
+  return date.getDate()+'/'+(date.getMonth()+1)+'/'+date.getFullYear();
   }
 
   openDetails = (FKid, type, id, active) => {
@@ -51,7 +54,7 @@ import {API_URL, TOKEN_HEADER_KEY} from '../../helpers/constants'
   renderItem({ item }) {
     let title;
     let imgsource;
-    if(item.type=='cAR'){
+    if(item.type=='CAR'){
       title= "Car reservation";
       imgsource = require("./assets/car.png");
     }
@@ -68,7 +71,7 @@ import {API_URL, TOKEN_HEADER_KEY} from '../../helpers/constants'
     title={title}
     subtitle={
       <View>
-        <Text>{item.start_date_time} - {item.end_date_time}</Text>
+        <Text>{this.getDate(item.start_date_time)} - {this.getDate(item.end_date_time)}</Text>
       </View>} 
     leftAvatar={{source : imgsource, rounded: false}}
     onPress={()=>this.openDetails(item.external_id, item.type, item.id, item.active)}

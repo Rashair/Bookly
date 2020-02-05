@@ -4,12 +4,13 @@ import { Container, Text } from "native-base";
 import React from "react";
 import { connect } from "react-redux";
 import { ScrollView } from "react-native-gesture-handler";
+import { Title } from "react-native-paper";
 import MyReservationCarDetails from "./MyReservationCarDetails";
 import MyReservationFlatDetails from "./MyReservationFlatDetails";
 import MyReservationParkingDetails from "./MyReservationParkingDetails";
 import { styles, themeColors } from "../../../styles";
+import { API_URL, CARLY_API_URL, FLATLY_API_URL, PARKLY_API_URL, TOKEN_HEADER_KEY, PARKLY_LOGIN_HEADER_KEY, PARKLY_LOGIN_HEADER_VALUE, PARKLY_TOKEN_HEADER_KEY } from "../../../helpers/constants";
 
-import { API_URL, CARLY_API_URL, FLATLY_API_URL, PARKLY_API_URL, TOKEN_HEADER_KEY } from "../../../helpers/constants";
 import { createQueryParams, sendRequest } from "../../../helpers/functions";
 
 class MyReservationDetails extends React.Component {
@@ -43,37 +44,38 @@ class MyReservationDetails extends React.Component {
   }
 
   cancelCarReservation(fkid, id) {
-    // const carlyUrl = '${CARLY_API_URL}/reservations/';
-    // sendRequest(carlyUrl, 'delete', { [TOKEN_HEADER_KEY]: this.props.carlyToken }, fkid)
-    //   .then(res => {
-    //     if (res.ok) {
-    //       response.json()
-    //         .then(res => {
-    //           return this.cancelReservationInBookly(id);
-    //         })
-    //     }
-    //   }
-    //   )
-    //   .catch(function (error) {
-    //     console.log(error.message);
-    //   });
+    const headers = {
+      Authorization: this.props.carlyToken,
+    };
+    const carlyUrl = `${CARLY_API_URL}/reservations/${fkid}`;
+    sendRequest(carlyUrl, 'delete', headers)
+      .then(res => {
+        if (res.ok) {
+              return this.cancelReservationInBookly(id);
+        }
+      }
+      )
+      .catch(function (error) {
+        console.log(error.message);
+      });
   }
 
-  cancelParkingReservation(fkid, id) {
-    // const parklyUrl = '${PARKLY_API_URL}/reservations/';
-    // sendRequest(parklyUrl, 'delete', { [TOKEN_HEADER_KEY]: this.props.parklyToken }, fkid)
-    //   .then(res => {
-    //     if (res.ok) {
-    //       response.json()
-    //         .then(res => {
-    //           return this.cancelReservationInBookly(id);
-    //         })
-    //     }
-    //   }
-    //   )
-    //   .catch(function (error) {
-    //     console.log(error.message);
-    //   });
+  cancelParkingReservation(fkid, id) {    
+    const headers = {
+    [PARKLY_LOGIN_HEADER_KEY]: [PARKLY_LOGIN_HEADER_VALUE],
+    [PARKLY_TOKEN_HEADER_KEY]: this.props.parklyToken,
+  };
+  const URL = `${PARKLY_API_URL}/reservations/${fkid}`;
+  sendRequest(URL, 'DELETE', headers)    
+      .then(response => {
+        if (response.ok) {
+              return this.cancelReservationInBookly(id);
+        }
+      }
+      )
+      .catch(function (error) {
+        console.log(error.message);
+      });
   }
 
   cancelFlatReservation(fkid) {
@@ -81,16 +83,16 @@ class MyReservationDetails extends React.Component {
   }
 
   cancelReservationInBookly(id) {
-    const params = createQueryParams({ id });
-    const bookingUrl = `${API_URL}/booking/?${params.toString()}`;
-    sendRequest(bookingUrl, "delete", { [TOKEN_HEADER_KEY]: this.props.auth.securityToken })
-      .then(res => {
-        if (res.ok) {
-          response.json().then(res => {
-            if (res.deleted == true) {
-              this.props.navigation.navigate("MyReservationsList");
-            }
-          });
+    const bookingUrl = `${API_URL}/booking/${id}`;
+    sendRequest(bookingUrl, 'delete', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken } )
+      .then(response => {
+        if (response.ok) {
+          response.json()
+            .then(res => {
+              if(res.deleted == true){
+                this.props.navigation.navigate("MyReservationsList");
+              }           
+            })
         }
       })
       .catch(function(error) {
@@ -99,6 +101,7 @@ class MyReservationDetails extends React.Component {
       });
   }
 
+  // eslint-disable-next-line react/sort-comp
   static navigationOptions = { title: "Reservation Details" };
 
   render() {
@@ -114,18 +117,13 @@ class MyReservationDetails extends React.Component {
     }
     let button;
     if (this.props.navigation.getParam("isActive") == true) {
-      button = (
-        <Button
-          color={themeColors.primary}
-          style={styles.button}
-          mode="contained"
-          onPress={() => {
-            this.setModalVisible(true);
-          }}
-        >
-          Cancel reservation
-        </Button>
-      );
+      button=<Button
+      color={themeColors.primary}
+      style={styles.button}
+      mode="contained"
+        onPress={() => {
+        this.setModalVisible(true);
+      }}>Cancel reservation</Button>;
     }
     return (
       <Container>
