@@ -27,44 +27,17 @@ class FlatsListScreen extends React.Component
 
         this.state = 
         {
-            // currentPage: 1,
-            // flatsPerPage: 10,
+            
             sortingDir: null,
             sortingType: this.sortingTypes.dateStart,
             isLoading: false,
             flats: null
-            // flats:
-            // [
-            //     {
-            //         id: 1,
-            //         title: 'Cukrowa',
-            //         price: 300,
-            //         address: 'Cukrowa 18',
-            //         city: 'Warszawa',
-            //         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            //         rating: 4.3,
-            //         roomNumber: 1,
-            //         beds: 3,
-            //         image: 'https://pracownia-projekty.dom.pl/images/36/wizualizacje_1_arc_dom_dla_ciebie_1_z_garazem_ce.jpg'
-            //     },
-            //     {
-            //         id: 2,
-            //         title: 'Zielony apartament',
-            //         price: 450,
-            //         address: 'Czajnikowa 11',
-            //         city: 'Warszawa',
-            //         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            //         rating: 4.7,
-            //         roomNumber: 3,
-            //         beds: 2,
-            //         image: 'https://projektyzwizja.pl/media/cache/max_size/uploads/wyjatkowy-1/wyjatkowy1-front-1200_1507029951.jpeg'
-            //     }
-            // ]
+            
         }
         this.changeSortingType = this.changeSortingType.bind(this)
         this.goToDetails = this.goToDetails.bind(this)
         this.Item = this.Item.bind(this)
-        //flat {id, type, cost/night, address, rating}
+       
     }
     componentDidMount()
     {
@@ -73,19 +46,7 @@ class FlatsListScreen extends React.Component
     }
     changeSortingType(type, dir=this.sortingDir)
     {
-        //For real server
-        // const paramsObj = 
-        // {
-        //     city: this.city,
-        //     start_date: this.props.dates.from,
-        //     end_date: this.props.dates.to,
-        //     beds: this.beds,
-        //     sort: type,
-        //     dir: dir
-        // }
-        // const params = createQueryParams(paramsObj)
-        // const url = `${this.url}/${params.toString()}`
-
+      
         //For mockserver
         const url = this.url
         console.log(url)
