@@ -1,4 +1,13 @@
-import { LOGIN_SUCCESS, LOGIN_ERROR, ANY_ERROR, SEARCH_BY_DATE, SAVE_BEDS, SET_CARLY_TOKEN, SET_FLATLY_TOKEN, SET_PARKLY_TOKEN } from "./constants";
+import {
+  LOGIN_SUCCESS,
+  LOGIN_ERROR,
+  ANY_ERROR,
+  SEARCH_BY_DATE,
+  SAVE_BEDS,
+  SET_CARLY_TOKEN,
+  SET_FLATLY_TOKEN,
+  SET_PARKLY_TOKEN,
+} from "./constants";
 
 export const searchByDate = dates => {
   return {
@@ -33,42 +42,41 @@ export const anyError = error => {
     payload: {
       error,
     },
-  }
+  };
 };
 
 export const saveBeds = beds => {
-  return{
+  return {
     type: SAVE_BEDS,
     payload: {
-      beds
-    }
-  }
-}
+      beds,
+    },
+  };
+};
 
 export const setCarlyToken = token => {
-  return{
+  return {
     type: SET_CARLY_TOKEN,
     payload: {
-      token
-    }
-  }
-}
+      token,
+    },
+  };
+};
 
 export const setParklyToken = token => {
-  return{
+  return {
     type: SET_PARKLY_TOKEN,
     payload: {
-      token
-    }
-  }
-}
+      token,
+    },
+  };
+};
 
 export const setFlatlyToken = token => {
-  return{
+  return {
     type: SET_FLATLY_TOKEN,
     payload: {
-      token
-    }
-  }
-}
-
+      token,
+    },
+  };
+};

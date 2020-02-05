@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, ScrollView, Image, TouchableHighlight, Modal } from "react-native";
+import { Text, View } from "react-native";
 import React from "react";
 import { connect } from "react-redux";
 import { Title, Headline, Paragraph } from "react-native-paper";
@@ -7,9 +7,11 @@ import {styles} from '../../../styles'
 import {sendRequest, createQueryParams} from '../../../helpers/functions'
 import {TOKEN_HEADER_KEY, CARLY_API_URL} from '../../../helpers/constants'
 
+
 class MyReservationCarDetails extends React.Component {
   constructor(props) {
     super(props);
+
 
     this.state ={
       Car : {},
@@ -38,13 +40,10 @@ class MyReservationCarDetails extends React.Component {
               })
             })
         }
-      }
-      )
-      .catch(function (error) {
-        console.log(error.message);
+      })
+      .catch(error => {
         this.props.anyError(error);
       });
-
   }
 
   getDate(datestring){
@@ -56,7 +55,7 @@ class MyReservationCarDetails extends React.Component {
   render() {
     return (
       <View>
-        <Headline>Car reservation</Headline>        
+        <Headline>Car reservation</Headline>
         <View style={styles.container_reservationdetails}>
         <View style={styles.contentRow}>
           <Title>Date from : </Title>
@@ -102,13 +101,13 @@ class MyReservationCarDetails extends React.Component {
     );
   }
 }
-const mapStateToProps = (state ) => {
+const mapStateToProps = state => {
   return {
-    carlyToken : state.carlyToken
+    carlyToken: state.carlyToken,
   };
 };
 const mapDispatchToProps = dispatch => ({
-  anyError: data => dispatch(anyError(data))
+  anyError: data => dispatch(anyError(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyReservationCarDetails);

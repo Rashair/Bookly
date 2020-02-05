@@ -12,7 +12,7 @@ export default class SearchCarScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    
+
     this.showPeoplePicker = false;
     this.setCity = this.setCity.bind(this);
     this.setPeople = this.setPeople.bind(this);
@@ -27,33 +27,34 @@ export default class SearchCarScreen extends React.Component {
       all_cars: [],
       carsMap: [],
       isLoading: true,
-      cars:[],
-    
+      cars: [],
     };
   }
- 
+
   setCity(city) {
     const cityPattern = /^[a-zA-z][a-zA-z][a-zA-z ]*$/;
     this.setState({
-      city: city,
-      cityValid: cityPattern.test(city) || city.length==1 ? true : false,
+      city,
+      cityValid: !!(cityPattern.test(city) || city.length == 1),
     });
   }
+
   setPeople(people) {
     this.setState({
-      people: people,
-      carValid: people ? true : false,
+      people,
+      carValid: !!people,
     });
   }
+
   setSelectedCars(car) {
     this.setState({
-      cars: car
-     
+      cars: car,
     });
   }
+
   createChip(i) {
     return (
-      <Chip mode="outlined" selected={this.state.people === i ? true : false} onPress={() => this.setPeople(i)}>
+      <Chip mode="outlined" selected={this.state.people === i} onPress={() => this.setPeople(i)}>
         {i.toString()}
       </Chip>
     );
@@ -71,24 +72,23 @@ export default class SearchCarScreen extends React.Component {
   }
 
   componentDidMount() {
-      fetch(`${CARLY_API_URL}/cars`)
+    fetch(`${CARLY_API_URL}/cars`)
       .then(res => res.json())
       .then(data => {
         const arr = [];
         data.forEach(car => (arr[car.id] = car.model));
-      
+
         this.setState({ all_cars: data, carsMap: arr });
       });
   }
 
   render() {
-    const userList = this.state.carsMap.filter(car=> typeof car!='undefined');
-   
+    const userList = this.state.carsMap.filter(car => typeof car !== "undefined");
 
     console.log(userList);
     const { navigation } = this.props;
     const { all_cars } = this.state;
-    const { cars,city,people } = this.state;
+    const { cars, city, people } = this.state;
 
     return (
       <Container>
@@ -103,8 +103,6 @@ export default class SearchCarScreen extends React.Component {
           <HelperText type="error" visible={!this.state.cityValid}>
             {this.errorMessage("City")}
           </HelperText>
-
-      
 
           <Title>People</Title>
           <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-around" }}>
@@ -121,12 +119,11 @@ export default class SearchCarScreen extends React.Component {
 
           <CustomMultiPicker
             options={userList}
-            search={true} // should show search bar
-            multiple={true} //
-            
-            returnValue={"label"} // label or value
+            search // should show search bar
+            multiple //
+            returnValue="label" // label or value
             callback={car => this.setSelectedCars(car)} // callback, array of selected items
-            rowBackgroundColor={"#eee"}
+            rowBackgroundColor="#eee"
             rowHeight={50}
             rowRadius={5}
             searchIconName="ios-checkmark"
@@ -134,9 +131,9 @@ export default class SearchCarScreen extends React.Component {
             searchIconSize={30}
             iconColor="#8500dd"
             iconSize={30}
-            searchIconName={"ios-add-circle-outline"}
-            selectedIconName={"ios-checkmark-circle-outline"}
-            unselectedIconName={"ios-add-circle-outline"}
+            searchIconName="ios-add-circle-outline"
+            selectedIconName="ios-checkmark-circle-outline"
+            unselectedIconName="ios-add-circle-outline"
             scrollViewHeight={250}
             fixedHeight={false}
             selected={["Tom", "Christin"]} // list of options which are selected by default
@@ -147,8 +144,8 @@ export default class SearchCarScreen extends React.Component {
 
           <Button
             mode="contained"
-            disabled={!(this.state.carValid)}
-            onPress={() => navigation.push("ListCars", { cars,city,people })}
+            disabled={!this.state.carValid}
+            onPress={() => navigation.push("ListCars", { cars, city, people })}
           >
             Search
           </Button>
@@ -157,4 +154,3 @@ export default class SearchCarScreen extends React.Component {
     );
   }
 }
-

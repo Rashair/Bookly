@@ -25,7 +25,9 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "",
+    "githubUrl": "https://github.com/Rashair/Bookly"
   },
   "packagerOpts": {
     "sourceExts": [
