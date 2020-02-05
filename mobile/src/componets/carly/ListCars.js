@@ -11,12 +11,9 @@ import { anyError } from "../../redux/actions";
 import { styles, themeColors } from "../../styles";
 
 const innerStyles = StyleSheet.create({
-  fontBold: { fontWeight: "bold" },
   sortingRow: { display: "flex", justifyContent: "space-around", marginBottom: 20 },
-  wrapInSameColumn: { flexShrink: 1 },
 });
-const currDate = new Date();
-const ONE_HOUR_IN_MINUTES = 60 * 60;
+
 class ListCars extends React.Component {
   static navigationOptions = { title: "Choose car, dear" };
 
@@ -44,16 +41,15 @@ class ListCars extends React.Component {
     const { cars } = this.props.navigation.state.params;
     const { dateFrom } = this.props.navigation.state.params;
     const { dateTo } = this.props.navigation.state.params;
-    const { dates } =  this.props;
+
     const { city } = this.props.navigation.state.params;
     const { people } = this.props.navigation.state.params;
-    console.log("eeeeeeeeeeeeeeee");
-   console.log(dateTo);
+
     this.state = {
       carlyToken,
-      fetchUrl: this.props.navigation.getParam("url", ""),
+
       sortingType: this.sortingTypes.lowestPrice,
-      cars_to_choose:[],
+      carsToChoose: [],
       cars,
       city,
       people,
@@ -61,42 +57,32 @@ class ListCars extends React.Component {
       dateTo,
       isLoading: true,
     };
- 
-    console.log(cars);
-    
 
-   
-   
     this.sortByType = this.sortParkingByType.bind(this);
   }
 
   componentDidMount() {
-    console.log("fdsfdsfsdfdsfdsfs");
-    console.log(this.state.dateTo);
-  
     fetch(`${CARLY_API_URL}/cars?from=${this.state.dateFrom.toISOString()}&to=${this.state.dateTo.toISOString()}`, {
-      method: 'GET',
+      method: "GET",
       withCredentials: true,
-      credentials: 'include',
+      credentials: "include",
       headers: {
-        
-          'Authorization': this.state.carlyToken
-         
-      }
-  })
+        Authorization: this.state.carlyToken,
+      },
+    })
       .then(
         response => {
           if (response.ok) {
             response.json().then(data => {
-              console.log("pppppppppppppppppppp");
-              console.log(data.content);
-              console.log(this.state.cars);
-              var arr =data.content.filter(car => (console.log(car.make),console.log( (this.state.cars.length!=0 ? this.state.cars.includes(car.make): true)),console.log((this.state.city)),
-                (this.state.cars.length!=0 ? this.state.cars.includes(car.make): true) &&  (this.state.city!=""?this.state.city==car.location:true) && this.state.people<=car.seats));
-               console.log(arr);
-                this.setState({ isLoading: false, cars_to_choose: arr });
+              const arr = data.content.filter(
+                car =>
+                  (this.state.cars.length !== 0 ? this.state.cars.includes(car.make) : true) &&
+                  (this.state.city !== "" ? this.state.city === car.location : true) &&
+                  this.state.people <= car.seats
+              );
+
+              this.setState({ isLoading: false, carsToChoose: arr });
               data.content.sort(this.state.sortingType.cmp);
-             
             });
           } else {
             throw new Error(`Error fetching, status code: ${response.statusCode}`);
@@ -111,27 +97,27 @@ class ListCars extends React.Component {
 
   sortParkingByType(cmp) {
     this.setState(prevState => {
-      const cars_to_choose = [...prevState.cars_to_choose].sort(cmp);
-      return { isLoading: false, cars_to_choose };
+      const carsToChoose = [...prevState.carsToChoose].sort(cmp);
+      return { isLoading: false, carsToChoose };
     });
   }
 
   createCardsList() {
-    const { cars_to_choose } = this.state;
+    const { carsToChoose } = this.state;
     const { navigation } = this.props;
 
-    if (!cars_to_choose) {
+    if (!carsToChoose) {
       return <Text>Error</Text>;
     }
 
-    return cars_to_choose.map(car => {
+    return carsToChoose.map(car => {
       return (
         <Card key={car.id} onPress={() => navigation.push("DetailsCar", { cars: car })}>
           <Card.Content>
-          <Text style={styles.fontBold}>{car.model}</Text>
-          <Text style={styles.fontBold}>{car.make}</Text>
+            <Text style={styles.fontBold}>{car.model}</Text>
+            <Text style={styles.fontBold}>{car.make}</Text>
 
-          <Text>Seats: {car.seats.toString()}</Text>
+            <Text>Seats: {car.seats.toString()}</Text>
             <Text>Price: {car.price.toString()} PLN / h</Text>
             <View style={styles.row}>
               <Text>Location: </Text>
@@ -174,12 +160,12 @@ class ListCars extends React.Component {
     );
   }
 }
-const mapStateToProps = (state /*, ownProps*/) => {
+const mapStateToProps = (state /* , ownProps */) => {
   return {
     dates: state.dates,
-    carlyToken: state.carlyToken
-  }
-}
+    carlyToken: state.carlyToken,
+  };
+};
 const mapDispatchToProps = dispatch => ({
   anyError: data => dispatch(anyError(data)),
 });

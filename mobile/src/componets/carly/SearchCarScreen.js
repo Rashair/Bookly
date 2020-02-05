@@ -138,7 +138,6 @@ class SearchCarScreen extends React.Component {
         return "Date to must be later than date from";
       case "Cars":
         return "Please, choose number of people in the car";
-
       default:
         return null;
     }
