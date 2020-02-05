@@ -131,7 +131,6 @@ class MyReservationDetails extends React.Component {
         >
           Cancel reservation
         </Button>
-      );
     }
     return (
       <Container>
