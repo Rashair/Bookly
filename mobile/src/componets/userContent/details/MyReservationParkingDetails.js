@@ -1,25 +1,30 @@
 import { View } from "react-native";
-import { Title, Paragraph, Headline } from "react-native-paper";
+import { Title, Headline } from "react-native-paper";
 import React from "react";
 import { connect } from "react-redux";
-import  {sendRequest, createQueryParams} from '../../../helpers/functions';
-import {styles} from '../../../styles'
-import { PARKLY_API_URL,PARKLY_LOGIN_HEADER_KEY,PARKLY_TOKEN_HEADER_KEY, PARKLY_LOGIN_HEADER_VALUE } from '../../../helpers/constants';
+import { sendRequest } from "../../../helpers/functions";
+import { styles } from "../../../styles";
+import {
+  PARKLY_API_URL,
+  PARKLY_LOGIN_HEADER_KEY,
+  PARKLY_TOKEN_HEADER_KEY,
+  PARKLY_LOGIN_HEADER_VALUE,
+} from "../../../helpers/constants";
 
 class MyReservationParkingDetails extends React.Component {
   constructor(props) {
     super(props);
-        this.state={
-          DateFrom : '00 -00 -00Tjj' ,
-          DateTo: '00 -00 -00Tjj' ,
-          TotalCost: 1000,
-          City : 'New York',
-          Street : 'Park Avenue',
-          StreetNumber :55
-        };
-    }
+    this.state = {
+      DateFrom: "00 -00 -00Tjj",
+      DateTo: "00 -00 -00Tjj",
+      TotalCost: 1000,
+      City: "New York",
+      Street: "Park Avenue",
+      StreetNumber: 55,
+    };
+  }
 
-    componentDidMount(){      
+  componentDidMount() {
       const headers = {
         [PARKLY_LOGIN_HEADER_KEY]: [PARKLY_LOGIN_HEADER_VALUE],
         [PARKLY_TOKEN_HEADER_KEY]: this.props.parklyToken,

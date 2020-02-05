@@ -1,17 +1,24 @@
 import { View, Modal } from "react-native";
 import { Button, Title } from "react-native-paper";
-import { Container, Text } from "native-base";
+import { Container } from "native-base";
 import React from "react";
 import { connect } from "react-redux";
 import { ScrollView } from "react-native-gesture-handler";
-import { Title } from "react-native-paper";
 import MyReservationCarDetails from "./MyReservationCarDetails";
 import MyReservationFlatDetails from "./MyReservationFlatDetails";
 import MyReservationParkingDetails from "./MyReservationParkingDetails";
 import { styles, themeColors } from "../../../styles";
-import { API_URL, CARLY_API_URL, FLATLY_API_URL, PARKLY_API_URL, TOKEN_HEADER_KEY, PARKLY_LOGIN_HEADER_KEY, PARKLY_LOGIN_HEADER_VALUE, PARKLY_TOKEN_HEADER_KEY } from "../../../helpers/constants";
+import {
+  API_URL,
+  CARLY_API_URL,
+  PARKLY_API_URL,
+  TOKEN_HEADER_KEY,
+  PARKLY_LOGIN_HEADER_KEY,
+  PARKLY_LOGIN_HEADER_VALUE,
+  PARKLY_TOKEN_HEADER_KEY,
+} from "../../../helpers/constants";
 
-import { createQueryParams, sendRequest } from "../../../helpers/functions";
+import { sendRequest } from "../../../helpers/functions";
 
 class MyReservationDetails extends React.Component {
   constructor(props) {
@@ -51,28 +58,26 @@ class MyReservationDetails extends React.Component {
     sendRequest(carlyUrl, 'delete', headers)
       .then(res => {
         if (res.ok) {
-              return this.cancelReservationInBookly(id);
+          return this.cancelReservationInBookly(id);
         }
-      }
-      )
+      })
       .catch(function (error) {
         console.log(error.message);
       });
   }
 
-  cancelParkingReservation(fkid, id) {    
+  cancelParkingReservation(fkid, id) {
     const headers = {
-    [PARKLY_LOGIN_HEADER_KEY]: [PARKLY_LOGIN_HEADER_VALUE],
-    [PARKLY_TOKEN_HEADER_KEY]: this.props.parklyToken,
-  };
-  const URL = `${PARKLY_API_URL}/reservations/${fkid}`;
-  sendRequest(URL, 'DELETE', headers)    
+      [PARKLY_LOGIN_HEADER_KEY]: [PARKLY_LOGIN_HEADER_VALUE],
+      [PARKLY_TOKEN_HEADER_KEY]: this.props.parklyToken,
+    };
+    const URL = `${PARKLY_API_URL}/reservations/${fkid}`;
+    sendRequest(URL, "DELETE", headers)
       .then(response => {
         if (response.ok) {
-              return this.cancelReservationInBookly(id);
+          return this.cancelReservationInBookly(id);
         }
-      }
-      )
+      })
       .catch(function (error) {
         console.log(error.message);
       });
@@ -84,15 +89,14 @@ class MyReservationDetails extends React.Component {
 
   cancelReservationInBookly(id) {
     const bookingUrl = `${API_URL}/booking/${id}`;
-    sendRequest(bookingUrl, 'delete', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken } )
+    sendRequest(bookingUrl, "delete", { [TOKEN_HEADER_KEY]: this.props.auth.securityToken })
       .then(response => {
         if (response.ok) {
-          response.json()
-            .then(res => {
-              if(res.deleted == true){
-                this.props.navigation.navigate("MyReservationsList");
-              }           
-            })
+          response.json().then(res => {
+            if (res.deleted == true) {
+              this.props.navigation.navigate("MyReservationsList");
+            }
+          });
         }
       })
       .catch(function(error) {
@@ -118,12 +122,16 @@ class MyReservationDetails extends React.Component {
     let button;
     if (this.props.navigation.getParam("isActive") == true) {
       button=<Button
-      color={themeColors.primary}
-      style={styles.button}
-      mode="contained"
+        color={themeColors.primary}
+        style={styles.button}
+          mode="contained"
         onPress={() => {
         this.setModalVisible(true);
-      }}>Cancel reservation</Button>;
+          }}
+        >
+          Cancel reservation
+        </Button>
+      );
     }
     return (
       <Container>
