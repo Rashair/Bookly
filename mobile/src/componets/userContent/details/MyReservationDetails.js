@@ -44,7 +44,7 @@ class MyReservationDetails extends React.Component {
     if (type === "CAR") {
       result = this.cancelCarReservation(fkid, id);
     } else if (type === "FLAT") {
-      result = this.cancelFlatReservation(fkid);
+      result = this.cancelFlatReservation(fkid, id);
     } else {
       result = this.cancelParkingReservation(fkid, id);
     }
@@ -83,8 +83,8 @@ class MyReservationDetails extends React.Component {
       });
   }
 
-  cancelFlatReservation(fkid) {
-    // chyba brak
+  cancelFlatReservation(fkid, id) {
+    this.cancelReservationInBookly(id);
   }
 
   cancelReservationInBookly(id) {
@@ -94,6 +94,7 @@ class MyReservationDetails extends React.Component {
         if (response.ok) {
           response.json().then(res => {
             if (res.deleted == true) {
+              this.props.navigation.state.params.onGoBack();
               this.props.navigation.navigate("MyReservationsList");
             }
           });

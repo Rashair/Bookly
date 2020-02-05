@@ -12,6 +12,7 @@ class MyReservationList extends React.Component {
     super(props);
     this.openDetails = this.openDetails.bind(this);
     this.renderItem = this.renderItem.bind(this);
+    this.refresh = this.refresh.bind(this);
 
     this.state = {
       reservations: [],
@@ -19,6 +20,9 @@ class MyReservationList extends React.Component {
   }
 
   componentDidMount(){
+    this.refresh();
+  }
+  refresh(){
     const params = createQueryParams({ userDetails: this.props.auth.securityToken });
     const bookingUrl = `${API_URL}/booking/user?${params.toString()}`;
     sendRequest(bookingUrl, 'GET', { [TOKEN_HEADER_KEY]: this.props.auth.securityToken })
@@ -47,7 +51,8 @@ class MyReservationList extends React.Component {
       FKid: FKid,
       type: type,
       id: id,
-      isActive : active
+      isActive : active,
+      onGoBack: () => this.refresh()
     });
   };
 
