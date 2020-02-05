@@ -6,9 +6,10 @@ import { Container } from "native-base";
 import { Card, Chip } from "react-native-paper";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { PARKLY_API_URL } from "../../helpers/constants";
+import { PARKLY_LOGIN_HEADER_KEY, PARKLY_LOGIN_HEADER_VALUE, PARKLY_TOKEN_HEADER_KEY } from "../../helpers/constants";
 import { anyError } from "../../redux/actions";
 import { styles, themeColors } from "../../styles";
+import { sendRequest } from "../../helpers/functions";
 
 const innerStyles = StyleSheet.create({
   fontBold: { fontWeight: "bold" },
@@ -51,9 +52,12 @@ class ListParking extends React.Component {
   }
 
   componentDidMount() {
-    const url = `${PARKLY_API_URL}/parking`; // this.state.fetchUrl
-    console.log(`url ${this.state.fetchUrl}`);
-    fetch(url)
+    const url = this.state.fetchUrl;
+    const headers = {
+      [PARKLY_LOGIN_HEADER_KEY]: [PARKLY_LOGIN_HEADER_VALUE],
+      [PARKLY_TOKEN_HEADER_KEY]: this.props.token,
+    };
+    sendRequest(url, "GET", headers)
       .then(
         response => {
           if (response.ok) {
@@ -93,10 +97,10 @@ class ListParking extends React.Component {
 
     return parking.map(parkingSpace => {
       return (
-        <Card key={parkingSpace.id} onPress={() => navigation.push("DetailsParking", { parking: parkingSpace })}>
+        <Card key={parkingSpace.parkingId} onPress={() => navigation.push("DetailsParking", { parking: parkingSpace })}>
           <Card.Content>
-            <Text style={innerStyles.fontBold}>Parking {parkingSpace.id}</Text>
-            <Text>Price: {parkingSpace.pricePerHour?.toString()} PLN / h</Text>
+            <Text style={innerStyles.fontBold}>Parking {parkingSpace.parkingId}</Text>
+            <Text>Total cost: {parkingSpace.totalCost.toString()} PLN</Text>
             <View style={styles.contentRow}>
               <Text>Location: </Text>
               <Text style={innerStyles.wrapInSameColumn}>{parkingSpace.location}</Text>
@@ -143,4 +147,10 @@ const mapDispatchToProps = dispatch => ({
   anyError: data => dispatch(anyError(data)),
 });
 
-export default connect(null, mapDispatchToProps)(ListParking);
+const mapStateToProps = (state /* , ownProps */) => {
+  return {
+    token: state.parklyToken,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ListParking);

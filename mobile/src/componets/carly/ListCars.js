@@ -61,7 +61,7 @@ class ListCars extends React.Component {
     this.sortByType = this.sortParkingByType.bind(this);
   }
 
-  componentDidMount() {
+ componentDidMount() {
     fetch(`${CARLY_API_URL}/cars?from=${this.state.dateFrom.toISOString()}&to=${this.state.dateTo.toISOString()}`, {
       method: "GET",
       withCredentials: true,
@@ -99,6 +99,7 @@ class ListCars extends React.Component {
     this.setState(prevState => {
       const carsToChoose = [...prevState.carsToChoose].sort(cmp);
       return { isLoading: false, carsToChoose };
+
     });
   }
 
@@ -171,3 +172,5 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListCars);
+
+

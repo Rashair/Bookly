@@ -21,11 +21,14 @@ import MyReservationCarDetails from "./componets/userContent/details/MyReservati
 import MyReservationFlatDetails from "./componets/userContent/details/MyReservationFlatDetails";
 import MyReservationParkingDetails from "./componets/userContent/details/MyReservationParkingDetails";
 import MyReservationDetails from "./componets/userContent/details/MyReservationDetails";
+
 import DetailsCar from  "./componets/carly/DetailsCar";
 import ListCars from "./componets/carly/ListCars";
 import ReserveCar from "./componets/carly/ReserveCar";
 import SearchCarScreen from "./componets/carly/SearchCarScreen";
 import SummaryCar from "./componets/carly/SummaryCar";
+
+
 
 const AppNavigator = createStackNavigator(
   {
@@ -35,7 +38,7 @@ const AppNavigator = createStackNavigator(
     MyReservationFlatDetails: { screen: MyReservationFlatDetails },
     MyReservationParkingDetails: { screen: MyReservationParkingDetails },
     MyReservationDetails: { screen: MyReservationDetails },
-    
+
     SearchCar: { screen: SearchCarScreen },
     SearchParking: { screen: SearchParking },
     ListParking: { screen: ListParking },
@@ -45,6 +48,7 @@ const AppNavigator = createStackNavigator(
 
     SearchFlat: { screen: SearchFlatScreen },
     FlatsList: { screen: FlatsListScreen },
+ 
     ReservationForm: {screen: ReservationFormScreen},
     FlatSummary: {screen: FlatSummaryScreen},
     FlatDetails: {screen: FlatDetailsScreen},
@@ -57,6 +61,7 @@ const AppNavigator = createStackNavigator(
     ReserveCar:{screen: ReserveCar},
 
     SummaryCar:{screen:SummaryCar}
+
 
   },
   {

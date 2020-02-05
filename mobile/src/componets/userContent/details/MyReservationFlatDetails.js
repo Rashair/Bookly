@@ -1,10 +1,12 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Text, View,} from "react-native";
 import { Title, Paragraph, Headline } from 'react-native-paper';
-import {sendRequest} from '../../../helpers/functions'
+import {sendRequest, createQueryParams} from '../../../helpers/functions'
 import {styles} from '../../../styles'
+import {FLATLY_API_URL,TOKEN_HEADER_KEY} from '../../../helpers/constants'
 
-export default class MyReservationFlatDetails extends React.Component {
+ class MyReservationFlatDetails extends React.Component {
   constructor(props) {
     super(props);
 
@@ -23,31 +25,33 @@ export default class MyReservationFlatDetails extends React.Component {
   }
 
   componentDidMount() {
-    const URL = "BookingDetails/" + this.props.FKid; //?
-    // sendRequest(URL, 'get', '')
-    //   .then(response => {
-    //     if(response.ok){
-    //       response.json()
-    //       .then(res=>{
-    //         this.setState({
-    //           Description: res.description,
-    //           People: res.people,
-    //           StartDate: res.start_date.toString(),
-    //           EndDate: res.end_date.toString(),
-    //           Title: res.title,
-    //           Beds: res.beds,
-    //           Price: res.price,
-    //           City: res.city,
-    //           Address: res.address,
-    //           Country: res.country
-    //         })
-    //       })
-    //     }
-    //     }
-    //     )
-    //   .catch(function(error) {
-    //     console.log(error.message);
-    //   });
+    const params = createQueryParams({ id: this.props.FKid });
+      const URL = `${FLATLY_API_URL}/BookingDetails?${params.toString()}`;
+      sendRequest(URL, 'GET', { [TOKEN_HEADER_KEY]: this.props.flatlyToken })
+      .then(response => {
+        if(response.ok){
+          response.json()
+          .then(res=>{
+            this.setState({
+              Description: res.description,
+              People: res.people,
+              StartDate: res.start_date.toString(),
+              EndDate: res.end_date.toString(),
+              Title: res.title,
+              Beds: res.beds,
+              Price: res.price,
+              City: res.city,
+              Address: res.address,
+              Country: res.country
+            })
+          })
+        }
+        }
+        )
+      .catch(function(error) {
+        console.log(error);
+        this.props.anyError(error);
+      });
   }
 
   render() {
@@ -77,11 +81,21 @@ export default class MyReservationFlatDetails extends React.Component {
           <Title>{this.state.EndDate}</Title>
         </View>
         <View style={styles.contentRow}>
-          <Title>Price</Title>
-          <Title>{this.state.Price} PLN / night</Title>
+          <Title>Total cost:</Title>
+          <Title>{this.state.Price} PLN</Title>
         </View>
         </View>
       </View>
     );
   }
 }
+const mapStateToProps = (state ) => {
+  return {
+    flatlyToken : state.flatlyToken
+  };
+};
+const mapDispatchToProps = dispatch => ({
+  anyError: data => dispatch(anyError(data))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyReservationFlatDetails);

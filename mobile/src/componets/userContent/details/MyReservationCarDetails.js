@@ -1,95 +1,106 @@
-import { StyleSheet, Text, View, Button, ScrollView, Image, TouchableHighlight, Modal } from "react-native";
+import { Text, View } from "react-native";
 import React from "react";
-import { Title, Headline, Paragraph } from "react-native-paper";
-import {styles} from '../../../styles'
+import { connect } from "react-redux";
+import { Title, Headline } from "react-native-paper";
+import { styles } from "../../../styles";
+import { sendRequest, createQueryParams } from "../../../helpers/functions";
+import { anyError } from "../../../redux/actions";
+import { TOKEN_HEADER_KEY, CARLY_API_URL } from "../../../helpers/constants";
 
-export default class MyReservationCarDetails extends React.Component {
+class MyReservationCarDetails extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state ={
-      Car : {},
-      BookingUserInfo : {},
-      Comment : '',
-      DateFrom : null ,
+    this.state = {
+      Car: {},
+      // Comment: "",
+      DateFrom: null,
       DateTo: null,
-      Cost :0,
-      StatusType : null
-    }
+      Cost: 0,
+      // StatusType: null,
+    };
   }
 
   componentDidMount() {
-    const URL = "http://localhost:5000/car/reservations/"+this.props.FKid; //?
-    // fetch(URL,
-    //   {
-    //     method: 'get',
-    //     headers: {
-    //       //add token?
-    //     },
-    //     body: JSON.stringify({
-    //       id : this.props.FKid
-    //     })
-    //   })
-    //   .then(response => 
-    //     {
-
-    //     }
-    //     )
-    //   .catch(function(error) {
-    //     console.log(error.message);
-    //   });
+    const params = createQueryParams({ id: this.props.FKid });
+    const url = `${CARLY_API_URL}/reservations?${params.toString()}`;
+    sendRequest(url, "GET", { [TOKEN_HEADER_KEY]: this.props.carlyToken })
+      .then(res => {
+        if (res.ok) {
+          res.json().then(res => {
+            this.setState({
+              Car: res.car,
+              // Comment: res.comment,
+              DateFrom: res.dateFrom,
+              DateTo: res.dateTo,
+              Cost: res.cost,
+            });
+          });
+        }
+      })
+      .catch(error => {
+        this.props.anyError(error);
+      });
   }
 
   render() {
     return (
       <View>
-        <Headline>Car reservation</Headline>        
+        <Headline>Car reservation</Headline>
         <View style={styles.container_reservationdetails}>
-        <View style={styles.contentRow}>
-          <Title>Date from : </Title>
-          <Paragraph>20-15-2020 {/* {this.state.DateFrom} */}</Paragraph>
-        </View>
-        <View style={styles.contentRow}>
-          <Title>Date to : </Title>
-          <Paragraph>25-15-2020 {/* {this.state.DateTo} */}</Paragraph>
-        </View>
-        <Text style={styles.marginBottomSmall}>
-          Car details:
-        </Text>
-        <View style={styles.contentRow}>
-          <Title>Make:</Title>
-          <Paragraph>Skoda {/* {this.state.Car.Make} */}</Paragraph>
-        </View>
-        <View style={styles.contentRow}>
-          <Title>Model:</Title>
-          <Paragraph>Fabia {/*{this.state.Car.Model}*/}</Paragraph>
-        </View>
-        <View style={styles.contentRow}>
-          <Title>Seats:</Title>
-          <Paragraph>4 {/*{this.state.Car.Seats}*/}</Paragraph>
-        </View>
-        <View style={styles.contentRow}>
-          <Title>Year of production:</Title>
-          <Paragraph>1999 {/*{this.state.Car.Year}*/}</Paragraph>
-        </View>
-        <View style={styles.contentRow}>
-          <Title>Number of doors:</Title>
-          <Paragraph>4 {/*{this.state.Car.Doors}*/}</Paragraph>
-        </View>
-        <View style={styles.contentRow}>
-          <Title>License:</Title>
-          <Paragraph>None {/*{this.state.Car.License}*/}</Paragraph>
-        </View>
-        <View style={styles.contentRow}>
-          <Title>Location:</Title>
-          <Paragraph>Nice {/*{this.state.Car.Location}*/}</Paragraph>
-        </View>
-        <View style={styles.contentRow}>
-          <Title>Total cost:</Title>
-          <Paragraph>100 $ {/*{this.state.Cost}*/}</Paragraph>
-        </View>
+          <View style={styles.contentRow}>
+            <Title>Date from : </Title>
+            <Title> {this.state.DateFrom}</Title>
+          </View>
+          <View style={styles.contentRow}>
+            <Title>Date to : </Title>
+            <Title>{this.state.DateTo}</Title>
+          </View>
+          <Text style={styles.marginBottomSmall}>Car details:</Text>
+          <View style={styles.contentRow}>
+            <Title>Make:</Title>
+            <Title>{this.state.Car.Make} </Title>
+          </View>
+          <View style={styles.contentRow}>
+            <Title>Model:</Title>
+            <Title>{this.state.Car.Model}</Title>
+          </View>
+          <View style={styles.contentRow}>
+            <Title>Seats:</Title>
+            <Title>{this.state.Car.Seats}</Title>
+          </View>
+          <View style={styles.contentRow}>
+            <Title>Year of production:</Title>
+            <Title>{this.state.Car.Year}</Title>
+          </View>
+          <View style={styles.contentRow}>
+            <Title>Number of doors:</Title>
+            <Title>{this.state.Car.Doors}</Title>
+          </View>
+          <View style={styles.contentRow}>
+            <Title>License:</Title>
+            <Title>{this.state.Car.License}</Title>
+          </View>
+          <View style={styles.contentRow}>
+            <Title>Location:</Title>
+            <Title>{this.state.Car.Location}</Title>
+          </View>
+          <View style={styles.contentRow}>
+            <Title>Total cost:</Title>
+            <Title>{this.state.Cost} PLN</Title>
+          </View>
         </View>
       </View>
     );
   }
 }
+const mapStateToProps = state => {
+  return {
+    carlyToken: state.carlyToken,
+  };
+};
+const mapDispatchToProps = dispatch => ({
+  anyError: data => dispatch(anyError(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyReservationCarDetails);

@@ -8,7 +8,14 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { LocalDate, LocalTime, DateTimeFormatter, nativeJs } from "@js-joda/core";
 import { sendRequest, combineDateAndTime } from "../../helpers/functions";
 import { anyError } from "../../redux/actions";
-import { PARKLY_API_URL, API_URL, TOKEN_HEADER_KEY } from "../../helpers/constants";
+import {
+  PARKLY_API_URL,
+  API_URL,
+  TOKEN_HEADER_KEY,
+  PARKLY_LOGIN_HEADER_KEY,
+  PARKLY_LOGIN_HEADER_VALUE,
+  PARKLY_TOKEN_HEADER_KEY,
+} from "../../helpers/constants";
 import { styles, themeColors } from "../../styles";
 
 const innerStyles = StyleSheet.create({
@@ -145,7 +152,7 @@ class ReserveParking extends React.Component {
     const { parking, dateFrom, dateTo } = this.state;
     const timeInMinutes = parseInt((dateTo - dateFrom) / 1000 / 60, 10);
     const timeInHours = Math.ceil((timeInMinutes - 4) / 60);
-    return parking.pricePerHour * timeInHours;
+    return parking.price * timeInHours;
   }
 
   handleSubmit() {
@@ -157,18 +164,24 @@ class ReserveParking extends React.Component {
     }
 
     this.setState({ isFetching: true });
-    const url = `${PARKLY_API_URL}/parking`; // reservations/`;
+    const url = `${PARKLY_API_URL}/reservations/`;
     const ownerId = this.props.auth.id;
     const data = {
       parkingId: parking.id,
+      userFirstName: firstName,
+      userLastName: lastName,
+      userEmail: email,
       city: parking.city,
       street: parking.street,
       streetNumber: parking.streetNumber,
-      totalCost: this.getTotalPrice(),
+      totalCost: parking.totalCost,
       dateFrom: dateFrom.toISOString(),
       dateTo: dateTo.toISOString(),
     };
-    const headers = {}; // Auth headers here
+    const headers = {
+      [PARKLY_LOGIN_HEADER_KEY]: [PARKLY_LOGIN_HEADER_VALUE],
+      [PARKLY_TOKEN_HEADER_KEY]: this.props.token,
+    };
     sendRequest(url, "POST", headers, data)
       .then(
         response => {
@@ -185,6 +198,7 @@ class ReserveParking extends React.Component {
           owner: {
             id: ownerId,
           },
+          email,
           start_date_time: dateFrom.toISOString(),
           end_date_time: dateTo.toISOString(),
           type: "PARKING_SPACE",
@@ -392,6 +406,7 @@ const mapStateToProps = (state /* , ownProps */) => {
   return {
     dates: state.dates,
     auth: state.auth,
+    token: state.parklyToken,
   };
 };
 

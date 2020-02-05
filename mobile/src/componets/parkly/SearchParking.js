@@ -100,6 +100,7 @@ class SearchParking extends React.Component {
   }
 
   setCity(city) {
+    city.trim();
     this.setState({
       city,
       cityValid: this.validateCity(city),

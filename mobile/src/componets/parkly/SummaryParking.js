@@ -70,11 +70,7 @@ class SummaryParking extends React.Component {
               style={innerStyles.row}
               textStyle={[innerStyles.rowText, innerStyles.fontBold, styles.marginBottomBig]}
               flexArr={[0, 30, 5]}
-              data={[
-                "",
-                `${parking.location}\nWorking hours: ${parking.workingHoursFrom}:00 - ${parking.workingHoursTo}:00`,
-                "",
-              ]}
+              data={["", `${parking.location}\nWorking hours: ${parking.opens}:00 - ${parking.closes}:00`, ""]}
             />
             <Row
               style={innerStyles.row}
